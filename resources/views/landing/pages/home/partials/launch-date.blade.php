@@ -1,3 +1,15 @@
+@push('styles')
+
+<style>
+.swiper-slide-title{
+    color: var(--sigap-color) !important;
+}
+
+
+</style>
+
+@endpush
+
 <div class="box launch-date">
                             <div class="launch-date__content">
                                 <div class="launch-date__slider">
@@ -5,16 +17,16 @@
                                         <div class="swiper">
                                             <div class="swiper-wrapper">
                                                 <div class="swiper-slide">
-                                                    <h2 class="swiper-slide-title">537<span>+</span></h2>
-                                                    <p>Successful Projects Completed</p>
+                                                    <h2 class="swiper-slide-title">IGIF</h2>
+                                                    <p>Kerangka implementasi</p>
                                                 </div>
                                                 <div class="swiper-slide">
-                                                    <h2 class="swiper-slide-title">238<span>+</span></h2>
-                                                    <p>Multiple Award-Winning Designs</p>
+                                                    <h2 class="swiper-slide-title">IDS</h2>
+                                                    <p>Fondasi data spasial</p>
                                                 </div>
                                                 <div class="swiper-slide">
-                                                    <h2 class="swiper-slide-title">10,000</h2>
-                                                    <p>Global Clients All Over The World</p>
+                                                    <h2 class="swiper-slide-title">IGT</h2>
+                                                    <p>Data tematik kehutanan</p>
                                                 </div>
                                             </div>
                                             <div class="swiper-pagination"></div>

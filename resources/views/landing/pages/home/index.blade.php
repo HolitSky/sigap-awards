@@ -2,14 +2,12 @@
 @section('content')
 
 <div class="wrapper">
-
-
-                    @include('landing.pages.home.partials.box-form-choice')
-                    @include('landing.pages.home.partials.team-info')
-                    @include('landing.pages.home.partials.launch-date')
-                    @include('landing.pages.home.partials.box-counter')
-                    @include('landing.pages.home.partials.box-journal')
-                    </div>
+    @include('landing.pages.home.partials.box-form-choice')
+    @include('landing.pages.home.partials.team-info')
+    @include('landing.pages.home.partials.launch-date')
+    @include('landing.pages.home.partials.box-counter')
+    @include('landing.pages.home.partials.box-journal')
+</div>
 
 
 

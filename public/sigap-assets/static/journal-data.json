@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "title": "SIGAP Award 2025: Penilaian Infrastruktur Informasi Geospasial Kehutanan dengan Metodologi IGIF",
+        "date": "2025-08-05",
+        "time": "14:30",
+        "image": "journal/img1.png",
+        "content": [
+            "SIGAP Award 2025 menggunakan Form Penilaian (FP) sebagai alat analisis utama untuk mengevaluasi implementasi Infrastruktur Informasi Geospasial (IIG) Kehutanan. Metodologi ini mengacu pada Kerangka Kerja Informasi Geospasial Terintegrasi atau Integrated Geospatial Information Framework (IGIF) yang telah diakui secara internasional. Tujuan utama Form Penilaian adalah mengumpulkan informasi lengkap untuk menilai kondisi saat ini dari pengembangan IIG Kehutanan di Indonesia. Selain itu, FP juga berfungsi untuk menentukan target yang ingin dicapai setelah Rencana Aksi diimplementasikan. Proses penilaian ini akan berlangsung secara berkelanjutan selama implementasi Rencana Aksi untuk memantau kemajuan yang dicapai, termasuk dalam tinjauan tengah periode. Dengan pendekatan yang sistematis ini, SIGAP Award 2025 diharapkan dapat memberikan gambaran komprehensif tentang perkembangan infrastruktur geospasial di sektor kehutanan Indonesia."
+        ]
+    },
+    {
+        "id": 2,
+        "title": "Memahami Terminologi Kunci dalam Infrastruktur Data Spasial dan IGIF",
+        "date": "2024-08-05",
+        "time": "10:15",
+        "image": "journal/img2.png",
+        "content": [
+            "Dalam pengembangan sistem informasi geospasial, pemahaman terminologi yang tepat sangat penting untuk kesuksesan implementasi. Infrastruktur Data Spasial (IDS) menjadi istilah yang lebih fleksibel dibandingkan IDS Nasional (IDSN), karena dapat diterapkan pada konteks regional maupun kota. Sementara itu, Kerangka Informasi Geospasial Terintegrasi (IGIF) merupakan panduan komprehensif untuk mengimplementasikan IDS yang tidak hanya fokus pada aspek teknis, tetapi juga mencakup perspektif yang lebih luas melalui jalur-jalur strategis. Perlu dipahami bahwa istilah 'Geospasial' dan 'Spasial' memiliki makna yang setara, meskipun penggunaannya dapat bervariasi antar lembaga. Pemahaman yang baik terhadap terminologi ini akan membantu para praktisi dan stakeholder dalam berkomunikasi secara efektif dan mengimplementasikan sistem informasi geospasial dengan lebih optimal."
+        ]
+    }
+]

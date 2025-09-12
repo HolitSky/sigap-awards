@@ -1,0 +1,71 @@
+{
+  "description": "Tim juri terdiri dari para profesional yang berdedikasi untuk memberikan hasil penilaian yang luar biasa.",
+  "teams": [
+    {
+      "id": "tm001",
+      "name": "Sarah Miller",
+      "position": "Lead Designer",
+      "avatar": "avatar_1.png",
+      "social_links": {
+        "email": "sarah.miller@example.com",
+        "linkedin": "javascript:void(0);",
+        "instagram": "javascript:void(0);"
+      }
+    },
+    {
+      "id": "tm002",
+      "name": "Mark Harrison",
+      "position": "Lead Developer",
+      "avatar": "avatar_2.png",
+      "social_links": {
+        "email": "mark.harrison@example.com",
+        "linkedin": "javascript:void(0);",
+        "instagram": "javascript:void(0);"
+      }
+    },
+    {
+      "id": "tm003",
+      "name": "Desmond Pitardi",
+      "position": "UI/UX Designer",
+      "avatar": "avatar_3.png",
+      "social_links": {
+        "email": "desmond.pitardi@example.com",
+        "linkedin": "javascript:void(0);",
+        "instagram": "javascript:void(0);"
+      }
+    },
+    {
+      "id": "tm004",
+      "name": "Jessica Simon",
+      "position": "Marketing Specialist",
+      "avatar": "avatar_4.png",
+      "social_links": {
+        "email": "jessica.simon@example.com",
+        "linkedin": "javascript:void(0);",
+        "instagram": "javascript:void(0);"
+      }
+    },
+    {
+      "id": "tm005",
+      "name": "Coco Fratelli",
+      "position": "HR",
+      "avatar": "avatar_5.png",
+      "social_links": {
+        "email": "coco.fratelli@example.com",
+        "linkedin": "javascript:void(0);",
+        "instagram": "javascript:void(0);"
+      }
+    },
+    {
+      "id": "tm006",
+      "name": "Brian Filbert",
+      "position": "DevOps Engineer",
+      "avatar": "avatar_6.png",
+      "social_links": {
+        "email": "brian.filbert@example.com",
+        "linkedin": "javascript:void(0);",
+        "instagram": "javascript:void(0);"
+      }
+    }
+  ]
+}

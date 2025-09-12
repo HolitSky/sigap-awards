@@ -2,7 +2,7 @@
                             <div class="about-team__content">
                                 <div class="about-team__info">
                                     <div class="about-team__label">Tentang Juri</div>
-                                    <p class="about-team__description">Our team consists of true professionals, dedicated to delivering exceptional results.</p>
+                                    <p class="about-team__description">{{ $teamData['description'] }}</p>
                                 </div>
                                 <div class="about-team__image">
                                     <picture>
@@ -20,120 +20,26 @@
                                     </div>
                                 </div><div class="about-team__users-content">
                                     <ul class="about-team__cards">
+                                        @foreach($teamData['teams'] as $member)
                                         <li class="about-team__card">
                                             <div class="about-team__card-avatar">
                                                 <picture>
-                                                    <source srcset="{{ asset('sigap-assets/images/avatar_1.png') }}" type="image/webp">
-                                                    <img src="{{ asset('sigap-assets/images/avatar_1.png') }}" alt="">
+                                                    <source srcset="{{ asset('sigap-assets/images/' . $member['avatar']) }}" type="image/webp">
+                                                    <img src="{{ asset('sigap-assets/images/' . $member['avatar']) }}" alt="{{ $member['name'] }}">
                                                 </picture>
                                             </div>
                                             <div class="about-team__card-details">
-                                                <div class="about-team__card-name">Sarah Miller</div>
-                                                <div class="about-team__card-position">Lead Designer</div>
+                                                <div class="about-team__card-name">{{ $member['name'] }}</div>
+                                                <div class="about-team__card-position">{{ $member['position'] }}</div>
                                                 <ul class="about-team__card-social-links">
-                                                    <li class="about-team__facebook"><a href="javascript:void(0);"><i class="fa-brands fa-facebook"></i></a></li>
-                                                    <li class="about-team__twitter"><a href="javascript:void(0);"><i class="fa-brands fa-x-twitter"></i></a></li>
-                                                    <li class="about-team__linkedin"><a href="javascript:void(0);"><i class="fa-brands fa-linkedin"></i></a></li>
-                                                    <li class="about-team__instagram"><a href="javascript:void(0);"><i class="fa-brands fa-instagram"></i></a></li>
-                                                    <li class="about-team__pinterest"><a href="javascript:void(0);"><i class="fa-brands fa-pinterest"></i></a></li>
+                                                    <li class="about-team__email"><a href="mailto:{{ $member['social_links']['email'] }}"><i class="fa-solid fa-envelope"></i></a></li>
+                                                    <li class="about-team__linkedin"><a href="{{ $member['social_links']['linkedin'] }}"><i class="fa-brands fa-linkedin"></i></a></li>
+                                                    <li class="about-team__instagram"><a href="{{ $member['social_links']['instagram'] }}"><i class="fa-brands fa-instagram"></i></a></li>
                                                 </ul>
                                             </div>
                                         </li>
-                                        <li class="about-team__card">
-                                            <div class="about-team__card-avatar">
-                                                <picture>
-                                                    <source srcset="{{ asset('sigap-assets/images/avatar_2.png') }}" type="image/webp">
-                                                    <img src="{{ asset('sigap-assets/images/avatar_2.png') }}" alt="">
-                                                </picture>
-                                            </div>
-                                            <div class="about-team__card-details">
-                                                <div class="about-team__card-name">Mark Harrison</div>
-                                                <div class="about-team__card-position">Lead Developer</div>
-                                                <ul class="about-team__card-social-links">
-                                                    <li class="about-team__facebook"><a href="javascript:void(0);"><i class="fa-brands fa-facebook"></i></a></li>
-                                                    <li class="about-team__twitter"><a href="javascript:void(0);"><i class="fa-brands fa-x-twitter"></i></a></li>
-                                                    <li class="about-team__linkedin"><a href="javascript:void(0);"><i class="fa-brands fa-linkedin"></i></a></li>
-                                                    <li class="about-team__instagram"><a href="javascript:void(0);"><i class="fa-brands fa-instagram"></i></a></li>
-                                                    <li class="about-team__pinterest"><a href="javascript:void(0);"><i class="fa-brands fa-pinterest"></i></a></li>
-                                                </ul>
-                                            </div>
-                                        </li>
-                                        <li class="about-team__card">
-                                            <div class="about-team__card-avatar">
-                                                <picture>
-                                                    <source srcset="{{ asset('sigap-assets/images/avatar_3.png') }}" type="image/webp">
-                                                    <img src="{{ asset('sigap-assets/images/avatar_3.png') }}" alt="">
-                                                </picture>
-                                            </div>
-                                            <div class="about-team__card-details">
-                                                <div class="about-team__card-name">Desmond Pitardi</div>
-                                                <div class="about-team__card-position">UI/UX Designer</div>
-                                                <ul class="about-team__card-social-links">
-                                                    <li class="about-team__facebook"><a href="javascript:void(0);"><i class="fa-brands fa-facebook"></i></a></li>
-                                                    <li class="about-team__twitter"><a href="javascript:void(0);"><i class="fa-brands fa-x-twitter"></i></a></li>
-                                                    <li class="about-team__linkedin"><a href="javascript:void(0);"><i class="fa-brands fa-linkedin"></i></a></li>
-                                                    <li class="about-team__instagram"><a href="javascript:void(0);"><i class="fa-brands fa-instagram"></i></a></li>
-                                                    <li class="about-team__pinterest"><a href="javascript:void(0);"><i class="fa-brands fa-pinterest"></i></a></li>
-                                                </ul>
-                                            </div>
-                                        </li>
-                                         <li class="about-team__card">
-                                            <div class="about-team__card-avatar">
-                                                <picture>
-                                                    <source srcset="{{ asset('sigap-assets/images/avatar_4.png') }}" type="image/webp">
-                                                    <img src="{{ asset('sigap-assets/images/avatar_4.png') }}" alt="">
-                                                </picture>
-                                            </div>
-                                            <div class="about-team__card-details">
-                                                <div class="about-team__card-name">Jessica Simon</div>
-                                                <div class="about-team__card-position">Marketing Specialist</div>
-                                                <ul class="about-team__card-social-links">
-                                                    <li class="about-team__facebook"><a href="javascript:void(0);"><i class="fa-brands fa-facebook"></i></a></li>
-                                                    <li class="about-team__twitter"><a href="javascript:void(0);"><i class="fa-brands fa-x-twitter"></i></a></li>
-                                                    <li class="about-team__linkedin"><a href="javascript:void(0);"><i class="fa-brands fa-linkedin"></i></a></li>
-                                                    <li class="about-team__instagram"><a href="javascript:void(0);"><i class="fa-brands fa-instagram"></i></a></li>
-                                                    <li class="about-team__pinterest"><a href="javascript:void(0);"><i class="fa-brands fa-pinterest"></i></a></li>
-                                                </ul>
-                                            </div>
-                                        </li>
-                                        <li class="about-team__card">
-                                            <div class="about-team__card-avatar">
-                                                <picture>
-                                                    <source srcset="{{ asset('sigap-assets/images/avatar_5.png') }}" type="image/webp">
-                                                    <img src="{{ asset('sigap-assets/images/avatar_5.png') }}" alt="">
-                                                </picture>
-                                            </div>
-                                            <div class="about-team__card-details">
-                                                <div class="about-team__card-name">Coco Fratelli</div>
-                                                <div class="about-team__card-position">HR</div>
-                                                <ul class="about-team__card-social-links">
-                                                    <li class="about-team__facebook"><a href="javascript:void(0);"><i class="fa-brands fa-facebook"></i></a></li>
-                                                    <li class="about-team__twitter"><a href="javascript:void(0);"><i class="fa-brands fa-x-twitter"></i></a></li>
-                                                    <li class="about-team__linkedin"><a href="javascript:void(0);"><i class="fa-brands fa-linkedin"></i></a></li>
-                                                    <li class="about-team__instagram"><a href="javascript:void(0);"><i class="fa-brands fa-instagram"></i></a></li>
-                                                    <li class="about-team__pinterest"><a href="javascript:void(0);"><i class="fa-brands fa-pinterest"></i></a></li>
-                                                </ul>
-                                            </div>
-                                        </li>
-                                         <li class="about-team__card">
-                                            <div class="about-team__card-avatar">
-                                                <picture>
-                                                    <source srcset="{{ asset('sigap-assets/images/avatar_6.png') }}" type="image/webp">
-                                                    <img src="{{ asset('sigap-assets/images/avatar_6.png') }}" alt="">
-                                                </picture>
-                                            </div>
-                                            <div class="about-team__card-details">
-                                                <div class="about-team__card-name">Brian Filbert</div>
-                                                <div class="about-team__card-position">DevOps Engineer</div>
-                                                <ul class="about-team__card-social-links">
-                                                    <li class="about-team__facebook"><a href="javascript:void(0);"><i class="fa-brands fa-facebook"></i></a></li>
-                                                    <li class="about-team__twitter"><a href="javascript:void(0);"><i class="fa-brands fa-x-twitter"></i></a></li>
-                                                    <li class="about-team__linkedin"><a href="javascript:void(0);"><i class="fa-brands fa-linkedin"></i></a></li>
-                                                    <li class="about-team__instagram"><a href="javascript:void(0);"><i class="fa-brands fa-instagram"></i></a></li>
-                                                    <li class="about-team__pinterest"><a href="javascript:void(0);"><i class="fa-brands fa-pinterest"></i></a></li>
-                                                </ul>
-                                            </div>
-                                                                            </ul>
+                                        @endforeach
+                                    </ul>
                                 </div>
                             </div>
                         </div>

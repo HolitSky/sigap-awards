@@ -7,6 +7,7 @@
         <meta name="viewport" content="width=device-width,initial-scale=1">
         <meta name="description" content="Sigap Award">
         <link rel="stylesheet" href="{{ asset('sigap-assets/css/main.css') }}">
+        @stack('styles')
         <style>
 
         </style>
