@@ -75,6 +75,106 @@
                                         top: 60% !important;
                                     }
                             }
+                            
+                            /* Modal Styles */
+                            .modal-overlay {
+                                position: fixed;
+                                top: 0;
+                                left: 0;
+                                width: 100%;
+                                height: 100%;
+                                background: rgba(0, 0, 0, 0.5);
+                                backdrop-filter: blur(5px);
+                                -webkit-backdrop-filter: blur(5px);
+                                z-index: 9999;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                opacity: 0;
+                                visibility: hidden;
+                                transition: all 0.3s ease;
+                            }
+                            
+                            .modal-overlay.show {
+                                opacity: 1;
+                                visibility: visible;
+                            }
+                            
+                            .modal-content {
+                                background: rgba(255, 255, 255, 0.95);
+                                border-radius: 16px;
+                                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+                                backdrop-filter: blur(10px);
+                                -webkit-backdrop-filter: blur(10px);
+                                border: 1px solid rgba(255, 255, 255, 0.3);
+                                max-width: 400px;
+                                width: 90%;
+                                transform: scale(0.7);
+                                transition: transform 0.3s ease;
+                            }
+                            
+                            .modal-overlay.show .modal-content {
+                                transform: scale(1);
+                            }
+                            
+                            .modal-header {
+                                padding: 20px 20px 10px;
+                                border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                            }
+                            
+                            .modal-header h3 {
+                                margin: 0;
+                                color: #333;
+                                font-size: 1.5em;
+                                font-weight: bold;
+                            }
+                            
+                            .modal-close {
+                                font-size: 24px;
+                                color: #666;
+                                cursor: pointer;
+                                transition: color 0.3s ease;
+                            }
+                            
+                            .modal-close:hover {
+                                color: #333;
+                            }
+                            
+                            .modal-body {
+                                padding: 20px;
+                                text-align: center;
+                            }
+                            
+                            .modal-body p {
+                                margin: 0;
+                                color: #555;
+                                font-size: 1.1em;
+                                line-height: 1.5;
+                            }
+                            
+                            .modal-footer {
+                                padding: 10px 20px 20px;
+                                text-align: center;
+                            }
+                            
+                            .modal-btn-close {
+                                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                color: white;
+                                border: none;
+                                padding: 10px 30px;
+                                border-radius: 25px;
+                                font-size: 1em;
+                                cursor: pointer;
+                                transition: all 0.3s ease;
+                            }
+                            
+                            .modal-btn-close:hover {
+                                transform: translateY(-2px);
+                                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+                            }
                         </style>
 @endpush
 
@@ -105,6 +205,75 @@
                             </a>
                         </div>
                         </div>
+                    </div>
+                    
+                    <!-- Modal Popup -->
+                    <div id="formModal" class="modal-overlay" style="display: none;">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>Informasi</h3>
+                                <span class="modal-close">&times;</span>
+                            </div>
+                            <div class="modal-body">
+                                <p>Formulir akan dibuka dalam waktu dekat</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="modal-btn-close">Tutup</button>
+                            </div>
+                        </div>
+                    </div>
+</div>
 
-                    </div>
-                    </div>
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('formModal');
+        const formCards = document.querySelectorAll('.glass-card a');
+        const closeBtn = document.querySelector('.modal-close');
+        const closeBtnFooter = document.querySelector('.modal-btn-close');
+        
+        // Function to show modal
+        function showModal() {
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('show');
+            }, 10);
+        }
+        
+        // Function to hide modal
+        function hideModal() {
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+        
+        // Add click event to form cards
+        formCards.forEach(card => {
+            card.addEventListener('click', function(e) {
+                e.preventDefault();
+                showModal();
+            });
+        });
+        
+        // Close modal events
+        closeBtn.addEventListener('click', hideModal);
+        closeBtnFooter.addEventListener('click', hideModal);
+        
+        // Close modal when clicking outside
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                hideModal();
+            }
+        });
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modal.classList.contains('show')) {
+                hideModal();
+            }
+        });
+    });
+</script>
+@endpush
