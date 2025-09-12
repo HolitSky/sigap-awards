@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="public/sigap-assets/images/favicon.ico" width="128" height="128" alt="SIGAP Logo">
+
 # 🌳 SIGAP Award 2025
 
 ### Penilaian Komponen Tata Kelola Informasi Geospasial Kehutanan
@@ -41,6 +43,7 @@ Proyek ini dibangun menggunakan teknologi modern:
 - 📊 **Framework Penilaian IGIF**
   - Adopsi standar global untuk penilaian geospasial
   - Kriteria yang disesuaikan dengan konteks kehutanan Indonesia
+  - Terintegrasi dengan platform Tally.so untuk pengisian form penilaian
   - Sistem penilaian yang transparan dan terukur
 
 ## 🚀 Instalasi
