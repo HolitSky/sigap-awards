@@ -12396,7 +12396,7 @@ footer .copy {
 .notify-user {
     position: relative;
     background-color: var(--light-sky-blue);
-    z-index: 0;
+    z-index: 20;
     top: 0;
     left: 0;
     width: 100%;
