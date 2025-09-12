@@ -11,7 +11,7 @@ class HomeController extends Controller
     public function index()
     {
         // Konfigurasi launch date dari Controller
-        $launchStart = Carbon::create(2025, 10, 1, 0, 0, 0);
+        $launchStart = Carbon::create(2025, 8, 5, 0, 0, 0);
         $launchFinish = Carbon::create(2025, 10, 10, 0, 0, 0);
 
         // Load team data dari JSON
