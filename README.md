@@ -29,6 +29,7 @@ Proyek ini dibangun menggunakan teknologi modern:
 - Modern JavaScript dengan pendekatan OOP
 - Responsive Design dengan CSS modern
 - Countdown Timer & Dynamic UI Components
+- Terhubung dengan Platform https://tally.so/ sebagai form
 
 ## ✨ Fitur
 
@@ -86,5 +87,5 @@ Dikembangkan oleh Kementerian Kehutanan Indonesia © 2024
 ---
 
 <div align="center">
-Dibuat dengan ❤️ untuk Tata Kelola Informasi Geospasial Kehutanan yang lebih baik
+Dibuat dengan 🔥 untuk Tata Kelola Informasi Geospasial Kehutanan yang lebih baik
 </div>
