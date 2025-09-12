@@ -11004,6 +11004,11 @@ a {
     display: none;
     opacity: var(--aboutTeamOpacity);
 }
+@media (max-width: 450px) {
+    .about-team__content {
+        display: block;
+    }
+}
 @media (min-width: 1100px) and (min-height: 680px) {
     .about-team__content {
         position: relative;
@@ -11042,6 +11047,7 @@ a {
     top: 60px;
     left: 25px;
     font-size: 1.4rem;
+    z-index: 2;
     color: var(--deep-orange);
 }
 @media (min-width: 1280px) {
@@ -11076,6 +11082,29 @@ a {
     right: 19px;
     width: 176px;
     height: 202px;
+}
+@media (max-width: 478px) {
+    .about-team__users-header {
+        padding: 1em !important;
+    }
+    .about-team__image img {
+        position: relative;
+        bottom: 0;
+        top: 70px;
+        right: auto;
+        left: 65px;
+        width: 120px;
+        height: 120px;
+        margin: 0 auto;
+        display: block;
+        z-index: 1;
+    }
+    .about-team__image {
+        display: flex;
+        justify-content: end;
+        align-items: center;
+        margin-top: 20px;
+    }
 }
 @media (min-width: 1280px) {
     .about-team__image img {
