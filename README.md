@@ -16,10 +16,10 @@
 
 ## 🎯 Tentang
 
-SIGAP Award 2025 adalah platform penilaian untuk Tata Kelola Informasi Geospasial Kehutanan yang mengadopsi standar **Integrated Geospatial Information Framework (IGIF)** secara global. Platform ini dirancang khusus untuk:
+SIGAP Award 2025 adalah laman homepage platform penilaian untuk Tata Kelola Informasi Geospasial Kehutanan yang mengadopsi standar **Integrated Geospatial Information Framework (IGIF)** secara global. Platform ini dirancang khusus untuk:
 
 - **Unit Produsen Data & Informasi Kehutanan**
-- **Unit Pelayanan & Penyebarluasan Data Kehutanan**
+- **Unit Pelaksana Teknis - Balai Pemantapan Kawasan Hutan (BPKH)**
 
 di lingkungan Kementerian Kehutanan Indonesia.
 
