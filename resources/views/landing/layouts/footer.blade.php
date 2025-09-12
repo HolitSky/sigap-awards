@@ -1,3 +1,3 @@
 <footer>
-    <p class="copy">Copyright © 2025 SIGAP AWARD. All rights Reserved</p>
+    <p class="copy">Copyright © 2025 IPSDH - Kementerian Kehutanan. All rights Reserved</p>
 </footer>
