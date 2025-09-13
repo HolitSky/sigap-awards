@@ -75,7 +75,7 @@
                                         top: 60% !important;
                                     }
                             }
-                            
+
                             /* Modal Styles */
                             .modal-overlay {
                                 position: fixed;
@@ -94,12 +94,12 @@
                                 visibility: hidden;
                                 transition: all 0.3s ease;
                             }
-                            
+
                             .modal-overlay.show {
                                 opacity: 1;
                                 visibility: visible;
                             }
-                            
+
                             .modal-content {
                                 background: rgba(255, 255, 255, 0.95);
                                 border-radius: 16px;
@@ -112,11 +112,11 @@
                                 transform: scale(0.7);
                                 transition: transform 0.3s ease;
                             }
-                            
+
                             .modal-overlay.show .modal-content {
                                 transform: scale(1);
                             }
-                            
+
                             .modal-header {
                                 padding: 20px 20px 10px;
                                 border-bottom: 1px solid rgba(0, 0, 0, 0.1);
@@ -124,43 +124,43 @@
                                 justify-content: space-between;
                                 align-items: center;
                             }
-                            
+
                             .modal-header h3 {
                                 margin: 0;
                                 color: #333;
                                 font-size: 1.5em;
                                 font-weight: bold;
                             }
-                            
+
                             .modal-close {
                                 font-size: 24px;
                                 color: #666;
                                 cursor: pointer;
                                 transition: color 0.3s ease;
                             }
-                            
+
                             .modal-close:hover {
                                 color: #333;
                             }
-                            
+
                             .modal-body {
                                 padding: 20px;
                                 text-align: center;
                             }
-                            
+
                             .modal-body p {
                                 margin: 0;
                                 color: #555;
                                 font-size: 1.1em;
                                 line-height: 1.5;
                             }
-                            
+
                             .modal-footer {
                                 padding: 10px 20px 20px;
                                 text-align: center;
                             }
-                            
-                            .modal-btn-close {
+
+                            .modal-btn-close, .modal-btn-open {
                                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                                 color: white;
                                 border: none;
@@ -169,11 +169,20 @@
                                 font-size: 1em;
                                 cursor: pointer;
                                 transition: all 0.3s ease;
+                                margin: 0 5px;
                             }
-                            
-                            .modal-btn-close:hover {
+
+                            .modal-btn-close:hover, .modal-btn-open:hover {
                                 transform: translateY(-2px);
                                 box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+                            }
+
+                            .modal-btn-open {
+                                background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+                            }
+
+                            .modal-btn-open:hover {
+                                box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
                             }
                         </style>
 @endpush
@@ -206,7 +215,7 @@
                         </div>
                         </div>
                     </div>
-                    
+
                     <!-- Modal Popup -->
                     <div id="formModal" class="modal-overlay" style="display: none;">
                         <div class="modal-content">
@@ -215,10 +224,11 @@
                                 <span class="modal-close">&times;</span>
                             </div>
                             <div class="modal-body">
-                                <p>Formulir akan dibuka dalam waktu dekat</p>
+                                <p id="modal-message">Formulir sudah dibuka</p>
                             </div>
                             <div class="modal-footer">
                                 <button class="modal-btn-close">Tutup</button>
+                                <button class="modal-btn-open" id="modal-btn-open">Buka Form</button>
                             </div>
                         </div>
                     </div>
@@ -228,19 +238,43 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Configuration
+        const formPublish = false; // Set to false to show "coming soon" modal
+
         const modal = document.getElementById('formModal');
         const formCards = document.querySelectorAll('.glass-card a');
         const closeBtn = document.querySelector('.modal-close');
         const closeBtnFooter = document.querySelector('.modal-btn-close');
-        
+        const openBtn = document.getElementById('modal-btn-open');
+        const modalMessage = document.getElementById('modal-message');
+        let currentFormUrl = '';
+
         // Function to show modal
-        function showModal() {
+        function showModal(formType) {
+            if (formPublish) {
+                // Form is published - show with open button
+                modalMessage.textContent = 'Formulir sudah dibuka';
+                openBtn.style.display = 'inline-block';
+
+                // Set URL based on form type
+                if (formType === 'bpkh') {
+                    currentFormUrl = 'https://form.sigap-award.site/bpkh';
+                } else if (formType === 'produsen') {
+                    currentFormUrl = 'https://form.sigap-award.site/produsen';
+                }
+            } else {
+                // Form not published - show coming soon message
+                modalMessage.textContent = 'Formulir akan dibuka dalam waktu dekat';
+                openBtn.style.display = 'none';
+                currentFormUrl = '';
+            }
+
             modal.style.display = 'flex';
             setTimeout(() => {
                 modal.classList.add('show');
             }, 10);
         }
-        
+
         // Function to hide modal
         function hideModal() {
             modal.classList.remove('show');
@@ -248,26 +282,39 @@
                 modal.style.display = 'none';
             }, 300);
         }
-        
+
         // Add click event to form cards
-        formCards.forEach(card => {
+        formCards.forEach((card, index) => {
             card.addEventListener('click', function(e) {
                 e.preventDefault();
-                showModal();
+                // Determine form type based on card content
+                const cardText = card.textContent.trim().toLowerCase();
+                if (cardText.includes('bpkh')) {
+                    showModal('bpkh');
+                } else if (cardText.includes('produsen')) {
+                    showModal('produsen');
+                }
             });
         });
-        
+
+        // Open form button event
+        openBtn.addEventListener('click', function() {
+            if (currentFormUrl) {
+                window.open(currentFormUrl, '_blank');
+            }
+        });
+
         // Close modal events
         closeBtn.addEventListener('click', hideModal);
         closeBtnFooter.addEventListener('click', hideModal);
-        
+
         // Close modal when clicking outside
         modal.addEventListener('click', function(e) {
             if (e.target === modal) {
                 hideModal();
             }
         });
-        
+
         // Close modal with Escape key
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' && modal.classList.contains('show')) {
