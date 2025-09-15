@@ -239,7 +239,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Configuration
-        const formPublish = false; // Set to false to show "coming soon" modal
+        const formPublish = true; // Set to false to show "coming soon" modal
 
         const modal = document.getElementById('formModal');
         const formCards = document.querySelectorAll('.glass-card a');
@@ -258,9 +258,11 @@
 
                 // Set URL based on form type
                 if (formType === 'bpkh') {
-                    currentFormUrl = 'https://form.sigap-award.site/bpkh';
+                    currentFormUrl = 'https://tally.so/r/w5Ne2P';
+                    //currentFormUrl = 'https://form.sigap-award.site/bpkh';
                 } else if (formType === 'produsen') {
-                    currentFormUrl = 'https://form.sigap-award.site/produsen';
+                    currentFormUrl = 'https://tally.so/r/nrX1al';
+                    // currentFormUrl = 'https://form.sigap-award.site/produsen';
                 }
             } else {
                 // Form not published - show coming soon message
