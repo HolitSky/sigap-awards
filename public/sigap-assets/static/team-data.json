@@ -4,21 +4,21 @@
     {
       "id": "tm001",
       "name": "Prof. Adi Pandang",
-      "position": "Fakultas Teknik Universitas Brawijaya Malang",
+      "position": "Dosen Fakultas Teknik Universitas Brawijaya Malang",
       "avatar": "user-anon.png",
       "social_links": {
-        "email": "profadi@gmail.com",
+        "email": "javascript:void(0);",
         "linkedin": "javascript:void(0);",
         "instagram": "javascript:void(0);"
       }
     },
     {
       "id": "tm002",
-      "name": "John Doe",
-      "position": "IPSDH Staff",
+      "name": "Dr. Ir. RA. Belinda Arunarwati Margono, M.Sc.,",
+      "position": "Sekretaris Utama Badan Informasi Geospasial (BIG)",
       "avatar": "user-anon.png",
       "social_links": {
-        "email": "mark.harrison@example.com",
+        "email": "javascript:void(0);",
         "linkedin": "javascript:void(0);",
         "instagram": "javascript:void(0);"
       }
