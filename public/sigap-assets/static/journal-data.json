@@ -1,22 +1,26 @@
 [
     {
         "id": 1,
-        "title": "SIGAP Award 2025: Penilaian Infrastruktur Informasi Geospasial Kehutanan dengan Metodologi IGIF",
-        "date": "2025-08-05",
+        "title": "Pedoman Penilaian SIGAP Award 2025",
+        "date": "2025-09-15",
         "time": "14:30",
-        "image": "journal/img1.png",
-        "content": [
-            "SIGAP Award 2025 menggunakan Form Penilaian (FP) sebagai alat analisis utama untuk mengevaluasi implementasi Infrastruktur Informasi Geospasial (IIG) Kehutanan. Metodologi ini mengacu pada Kerangka Kerja Informasi Geospasial Terintegrasi atau Integrated Geospatial Information Framework (IGIF) yang telah diakui secara internasional. Tujuan utama Form Penilaian adalah mengumpulkan informasi lengkap untuk menilai kondisi saat ini dari pengembangan IIG Kehutanan di Indonesia. Selain itu, FP juga berfungsi untuk menentukan target yang ingin dicapai setelah Rencana Aksi diimplementasikan. Proses penilaian ini akan berlangsung secara berkelanjutan selama implementasi Rencana Aksi untuk memantau kemajuan yang dicapai, termasuk dalam tinjauan tengah periode. Dengan pendekatan yang sistematis ini, SIGAP Award 2025 diharapkan dapat memberikan gambaran komprehensif tentang perkembangan infrastruktur geospasial di sektor kehutanan Indonesia."
-        ]
+        "image": "journal/pedoman.png",
+        "content": {
+            "deskripsi": "Pedoman ini menjelaskan arah dan tata cara SIGAP Award 2025—ajang apresiasi bagi Produsen Data Geospasial (DG) dan BPKH—untuk menyatukan data, menguatkan informasi, dan mendorong tata kelola hutan berkelanjutan yang transparan, kredibel, dan dapat dipertanggungjawabkan.",
+            "paragraph": "Berlandaskan Permen LHK No. 24/2021 dan peran IPSDH sebagai Walidata, SIGAP Award dimaksudkan untuk meningkatkan kualitas penyediaan serta pemanfaatan IGT, memperkuat kolaborasi pusat–daerah melalui BPKH, dan menyelaraskan pengembangan IIG dengan kerangka IGIF. Tujuan utamanya: mendorong standar, inovasi, dan akuntabilitas pengelolaan data geospasial kehutanan. Penilaian mencakup tiga kategori (Produsen DG, BPKH, dan Pengelola IGT) dengan tiga tingkat penghargaan (Kancana, Salaka, Balitar). Mekanisme skoring: Kuesioner & data dukung 45%, Presentasi 35%, dan Exhibition 20%; seluruh proses berjalan terjadwal dari sosialisasi, verifikasi, presentasi/klarifikasi, pameran, hingga penganugerahan.",
+            "link": "https://docs.google.com/document/d/11btvrLkITa6mpm-l7Uc3_XHzaR5ifshU/edit?usp=sharing&ouid=103366727564794908504&rtpof=true&sd=true"
+        }
     },
     {
         "id": 2,
-        "title": "Memahami Terminologi Kunci dalam Infrastruktur Data Spasial dan IGIF",
-        "date": "2024-08-05",
-        "time": "10:15",
-        "image": "journal/img2.png",
-        "content": [
-            "Dalam pengembangan sistem informasi geospasial, pemahaman terminologi yang tepat sangat penting untuk kesuksesan implementasi. Infrastruktur Data Spasial (IDS) menjadi istilah yang lebih fleksibel dibandingkan IDS Nasional (IDSN), karena dapat diterapkan pada konteks regional maupun kota. Sementara itu, Kerangka Informasi Geospasial Terintegrasi (IGIF) merupakan panduan komprehensif untuk mengimplementasikan IDS yang tidak hanya fokus pada aspek teknis, tetapi juga mencakup perspektif yang lebih luas melalui jalur-jalur strategis. Perlu dipahami bahwa istilah 'Geospasial' dan 'Spasial' memiliki makna yang setara, meskipun penggunaannya dapat bervariasi antar lembaga. Pemahaman yang baik terhadap terminologi ini akan membantu para praktisi dan stakeholder dalam berkomunikasi secara efektif dan mengimplementasikan sistem informasi geospasial dengan lebih optimal."
-        ]
+        "title": "Indikator Penilaian SIGAP Award 2025",
+        "date": "2024-09-15",
+        "time": "13:15",
+        "image": "journal/indikator.png",
+        "content": {
+            "deskripsi": "Dokumen ini merangkum kerangka SIGAP Award 2025 dan menegaskan Infrastruktur Data Spasial (IDS) sebagai istilah yang lebih fleksibel untuk menjembatani proses dari data → informasi → pengetahuan → kebijakan, dengan penopang utama: standar data, SDM, teknologi, kebijakan, dan kelembagaan.",
+            "paragraph": "Pergeseran paradigma ditekankan: dari pengukuran dan pencatatan konvensional menuju akuisisi digital dan pengelolaan sistem informasi. IDS berperan mengubah data menjadi informasi; dilanjutkan Geospatial Knowledge Infrastructure/GeoAI untuk mengubah informasi menjadi pengetahuan, hingga akhirnya menopang kebijakan. Lima pilar IDS—data, SDM, teknologi, kebijakan, kelembagaan—menjadi fondasi tata kelola dan indikator penilaian. Dalam konteks SIGAP KLHK, informasi geospasial berfungsi sebagai sumber data & instrumen keputusan, visualisasi kondisi kehutanan, serta menu analisis spasial yang interaktif dan real-time. Basis SIGAP memuat ±103 IGT yang diproduksi 35 produsen DG, terintegrasi dengan simpul jaringan (BIG/KL/daerah) melalui PKS, memakai skala kecil-besar dan referensi WGS84/EPSG:4326 dan SRGI 2013, dengan siklus pemutakhiran periodik.",
+            "link": "https://drive.google.com/file/d/1cYsdzZi0Zps8QXHJ4VsaRng3y0842iap/view?usp=sharing"
+        }
     }
 ]

@@ -3,9 +3,9 @@
   "teams": [
     {
       "id": "tm001",
-      "name": "Prof. Adipandang Yudono, S.Si., MURP., Ph.D",
+      "name": "Adipandang Yudono, S.Si., MURP., Ph.D",
       "position": "Dosen Fakultas Teknik Universitas Brawijaya Malang",
-      "avatar": "user-anon.png",
+      "avatar": "panitia/adipandang.jpg",
       "social_links": {
         "email": "javascript:void(0);",
         "linkedin": "javascript:void(0);",
@@ -16,7 +16,7 @@
       "id": "tm002",
       "name": "Dr. Ir. RA. Belinda Arunarwati Margono, M.Sc.,",
       "position": "Sekretaris Utama Badan Informasi Geospasial (BIG)",
-      "avatar": "user-anon.png",
+      "avatar": "panitia/belinda.jpg",
       "social_links": {
         "email": "javascript:void(0);",
         "linkedin": "javascript:void(0);",
@@ -27,7 +27,7 @@
       "id": "tm003",
       "name": "Novia Widyaningtyas, S.Hut., M.Sc.",
       "position": "Staf Ahli Bidang Revitaliasasi Industri Kementerian Kehutanan",
-      "avatar": "user-anon.png",
+      "avatar": "panitia/novia.jpg",
       "social_links": {
         "email": "javascript:void(0);",
         "linkedin": "javascript:void(0);",

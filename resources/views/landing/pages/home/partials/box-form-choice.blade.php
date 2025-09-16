@@ -194,7 +194,7 @@
                                 <source src="{{ asset('sigap-assets/static/audio.mp3') }}" type="audio/mpeg">
                             </audio>
                             <button id="playButton" class="buttong"></button>
-                            <div class="round-player__text">We are coming soon * Stay tuned *</div>
+                            <div class="round-player__text">Sigap Award *2025* Kehutanan </div>
                         </div>
                     </div>
                     <div class="notify-user__content">
@@ -205,12 +205,12 @@
                         <div class="glass-container">
                             <div class="glass-card">
                             <a href="javascript:void(0);">
-                                Form Unit Produsen Data
+                                Form Produsen Data Geospasial
                             </a>
                         </div>
                         <div class="glass-card">
                             <a href="javascript:void(0);">
-                                Form Unit BPKH
+                                Form Balai Pemantapan Kawasan Hutan (BPKH)
                             </a>
                         </div>
                         </div>
@@ -249,8 +249,8 @@
         const modalMessage = document.getElementById('modal-message');
         let currentFormUrl = '';
 
-        // Function to show modal
-        function showModal(formType) {
+        // Function to show modal (make it global)
+        window.showModal = function(formType) {
             if (formPublish) {
                 // Form is published - show with open button
                 modalMessage.textContent = 'Formulir sudah dibuka';
@@ -277,8 +277,8 @@
             }, 10);
         }
 
-        // Function to hide modal
-        function hideModal() {
+        // Function to hide modal (make it global)
+        window.hideModal = function() {
             modal.classList.remove('show');
             setTimeout(() => {
                 modal.style.display = 'none';
