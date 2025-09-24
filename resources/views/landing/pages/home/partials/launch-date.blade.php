@@ -37,7 +37,7 @@
                                 </div>
                                 <div class="launch-date__calendar">
                                     <div class="launch-date__calendar-content">
-                                        <span class="launch-date__calendar-label">Launch Date</span>
+                                        <span class="launch-date__calendar-label">Tanggal Sosialisasi</span>
                                         <time class="launch-date__calendar-date" datetime="{{ optional($launchFinish)->format('Y-m-d') ?? '2025-10-10' }}">{{ optional($launchFinish)->format('d') ?? '10' }}</time>
                                         <p class="launch-date__calendar-month">{{ optional($launchFinish)->translatedFormat('F') ?? 'Oktober' }}</p>
                                     </div>

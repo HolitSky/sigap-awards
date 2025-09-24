@@ -4,11 +4,40 @@
         "title": "Pedoman Penilaian SIGAP Award 2025",
         "date": "2025-09-15",
         "time": "14:30",
+        "btn-text": "Lihat Detail Dokumen",
         "image": "journal/pedoman.png",
         "content": {
             "deskripsi": "Pedoman ini menjelaskan arah dan tata cara SIGAP Award 2025—ajang apresiasi bagi Produsen Data Geospasial (DG) dan BPKH—untuk menyatukan data, menguatkan informasi, dan mendorong tata kelola hutan berkelanjutan yang transparan, kredibel, dan dapat dipertanggungjawabkan.",
             "paragraph": "Berlandaskan Permen LHK No. 24/2021 dan peran IPSDH sebagai Walidata, SIGAP Award dimaksudkan untuk meningkatkan kualitas penyediaan serta pemanfaatan IGT, memperkuat kolaborasi pusat–daerah melalui BPKH, dan menyelaraskan pengembangan IIG dengan kerangka IGIF. Tujuan utamanya: mendorong standar, inovasi, dan akuntabilitas pengelolaan data geospasial kehutanan. Penilaian mencakup tiga kategori (Produsen DG, BPKH, dan Pengelola IGT) dengan tiga tingkat penghargaan (Kancana, Salaka, Balitar). Mekanisme skoring: Kuesioner & data dukung 45%, Presentasi 35%, dan Exhibition 20%; seluruh proses berjalan terjadwal dari sosialisasi, verifikasi, presentasi/klarifikasi, pameran, hingga penganugerahan.",
             "link": "https://drive.google.com/file/d/1e7t0rdcAxkkZI5mOvKDUrWNQH4RF_UE9/view?usp=sharing"
+        }
+    },
+
+    {
+        "id": 2,
+        "title": "Form Penilaian Produsen DG (SIGAP Award)",
+        "date": "2025-09-15",
+        "time": "14:30",
+        "btn-text": "Lihat Form",
+        "image": "journal/form-cover.png",
+        "content": {
+            "deskripsi": "Form Penilaian (FP) ini adalah salah satu dari sejumlah alat analisis dalam metodologi SIGAP Award 2025 untuk implementasi IIG (Infrastruktur Informasi Geospasial) Kehutanan.",
+            "paragraph": "Dengan menggunakan Kerangka Kerja Informasi Geospasial Terintegrasi - Integrated Geospatial Information Framework (IGIF). Tujuan utama FP adalah untuk mengumpulkan informasi yang diperlukan guna menyelesaikan penilaian dasar (kondisi saat ini) dari pengembangan IIG Kehutanan. FP juga dapat digunakan untuk menentukan kondisi target untuk setiap indikator setelah Rencana Aksi diimplementasikan. Penggunaan lebih lanjut dijelaskan sebagai sedang berjalan, yaitu selama implementasi Rencana Aksi, untuk menilai kemajuan, misalnya, sebagai bagian dari tinjauan tengah periode.",
+            "link": "https://docs.google.com/spreadsheets/d/1i569etVZ4q06NzXTL2uJQb4NM1K7Vzbc/edit?usp=sharing&ouid=108828936518170360254&rtpof=true&sd=true"
+        }
+    },
+
+    {
+        "id": 3,
+        "title": "Form Penilaian BPKH (SIGAP Award)",
+        "date": "2025-09-15",
+        "time": "14:30",
+        "btn-text": "Lihat Form",
+        "image": "journal/form-cover.png",
+        "content": {
+            "deskripsi": "Form Penilaian (FP) ini adalah salah satu dari sejumlah alat analisis dalam metodologi SIGAP Award 2025 untuk implementasi IIG (Infrastruktur Informasi Geospasial) Kehutanan.",
+            "paragraph": "Dengan menggunakan Kerangka Kerja Informasi Geospasial Terintegrasi - Integrated Geospatial Information Framework (IGIF). Tujuan utama FP adalah untuk mengumpulkan informasi yang diperlukan guna menyelesaikan penilaian dasar (kondisi saat ini) dari pengembangan IIG Kehutanan. FP juga dapat digunakan untuk menentukan kondisi target untuk setiap indikator setelah Rencana Aksi diimplementasikan. Penggunaan lebih lanjut dijelaskan sebagai sedang berjalan, yaitu selama implementasi Rencana Aksi, untuk menilai kemajuan, misalnya, sebagai bagian dari tinjauan tengah periode.",
+            "link": "https://docs.google.com/spreadsheets/d/1RvlYWyyr0px-o6lPi-QoA_NHOUu_pD-B/edit?usp=sharing&ouid=108828936518170360254&rtpof=true&sd=true"
         }
     }
 

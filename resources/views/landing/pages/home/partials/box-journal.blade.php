@@ -89,7 +89,7 @@
                                                             <div class="journal__post-link">
                                                                 <a href="{{ $journal['content']['link'] }}" target="_blank" class="journal__link-btn">
                                                                     <i class="fas fa-external-link-alt"></i>
-                                                                    Lihat Detail Dokumen
+                                                                    {{ $journal['btn-text'] }}
                                                                 </a>
                                                             </div>
                                                         @endif

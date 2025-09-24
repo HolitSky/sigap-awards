@@ -28,12 +28,22 @@
                                                 </picture>
                                             </div>
                                             <div class="about-team__card-details">
-                                                <div class="about-team__card-name">{{ $member['name'] }}</div>
+                                                <div class="about-team__card-name">
+                                                    <a href="{{ $member['social_links']['instagram'] }}" onclick="event.stopPropagation();" target="_blank">
+                                                        {{ $member['name'] }}
+                                                    </a>
+                                                </div>
                                                 <div class="about-team__card-position">{{ $member['position'] }}</div>
                                                 <ul class="about-team__card-social-links">
-                                                    <li class="about-team__email"><a href="mailto:{{ $member['social_links']['email'] }}"><i class="fa-solid fa-envelope"></i></a></li>
-                                                    <li class="about-team__linkedin"><a href="{{ $member['social_links']['linkedin'] }}"><i class="fa-brands fa-linkedin"></i></a></li>
-                                                    <li class="about-team__instagram"><a href="{{ $member['social_links']['instagram'] }}"><i class="fa-brands fa-instagram"></i></a></li>
+                                                    @if($member['social_links']['email'] !== 'javascript:void(0);')
+                                                    <li class="about-team__email"><a href="mailto:{{ $member['social_links']['email'] }}" target="_blank" onclick="event.stopPropagation();"><i class="fa-solid fa-envelope"></i></a></li>
+                                                    @endif
+                                                    @if($member['social_links']['linkedin'] !== 'javascript:void(0);')
+                                                    <li class="about-team__linkedin"><a href="{{ $member['social_links']['linkedin'] }}" target="_blank" onclick="event.stopPropagation();"><i class="fa-brands fa-linkedin"></i></a></li>
+                                                    @endif
+                                                    @if($member['social_links']['instagram'] !== 'javascript:void(0);')
+                                                    <li class="about-team__instagram"><a href="{{ $member['social_links']['instagram'] }}" target="_blank" onclick="event.stopPropagation();"><i class="fa-brands fa-instagram"></i></a></li>
+                                                    @endif
                                                 </ul>
                                             </div>
                                         </li>

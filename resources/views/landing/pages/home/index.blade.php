@@ -34,7 +34,7 @@
             </p>
         </div>
         <div class="modal-footer">
-            <button class="modal-btn-close" id="welcome-close">Mengerti</button>
+            <button class="modal-btn-close" id="welcome-close">Tutup</button>
         </div>
     </div>
 </div>

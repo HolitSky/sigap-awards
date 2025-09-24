@@ -258,11 +258,11 @@
 
                 // Set URL based on form type
                 if (formType === 'bpkh') {
-                    currentFormUrl = 'https://tally.so/r/w5Ne2P';
-                    //currentFormUrl = 'https://form.sigap-award.site/bpkh';
+                    // currentFormUrl = 'https://tally.so/r/w5Ne2P';
+                    currentFormUrl = 'https://form.sigap-award.site/bpkh';
                 } else if (formType === 'produsen') {
-                    currentFormUrl = 'https://tally.so/r/nrX1al';
-                    // currentFormUrl = 'https://form.sigap-award.site/produsen';
+                    // currentFormUrl = 'https://tally.so/r/nrX1al';
+                    currentFormUrl = 'https://form.sigap-award.site/produsen';
                 }
             } else {
                 // Form not published - show coming soon message

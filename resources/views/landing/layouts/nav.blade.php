@@ -7,8 +7,8 @@
             </div>
             <div class="navigation__social-links">
                 <ul>
-                    <li><a href="javascript:void(0);"><i class="fa-brands fa-youtube"></i></a></li>
-                    <li><a href="javascript:void(0);"><i class="fa-brands fa-instagram"></i></a></li>
+                    <li><a href="https://www.youtube.com/@direktoratipsdh" target="_blank"><i class="fa-brands fa-youtube"></i></a></li>
+                    <li><a href="https://www.instagram.com/dit_ipsdh?igsh=MTllZzlyYmFkYWV5aw==" target="_blank"><i class="fa-brands fa-instagram"></i></a></li>
                 </ul>
      </div>
 </nav>
