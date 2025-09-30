@@ -143,5 +143,39 @@
             }
         });
     });
+
+    // Image Modal Functions
+    function openImageModal(imageSrc, imageName) {
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        const modalCaption = document.getElementById('modalCaption');
+        
+        modalImage.src = imageSrc;
+        modalImage.alt = imageName;
+        modalCaption.textContent = imageName;
+        
+        modal.style.display = 'flex';
+        setTimeout(() => {
+            modal.classList.add('show');
+        }, 10);
+    }
+
+    function closeImageModal() {
+        const modal = document.getElementById('imageModal');
+        modal.classList.remove('show');
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 300);
+    }
+
+    // Close image modal with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const imageModal = document.getElementById('imageModal');
+            if (imageModal && imageModal.style.display === 'flex') {
+                closeImageModal();
+            }
+        }
+    });
 </script>
 @endpush

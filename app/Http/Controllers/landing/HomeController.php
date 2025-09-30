@@ -24,4 +24,10 @@ class HomeController extends Controller
 
         return view('landing.pages.home.index', compact('launchStart', 'launchFinish', 'teamData', 'journalData'));
     }
+
+    public function voteMenu(Request $request)
+    {
+
+        return view('landing.pages.votes.index');
+    }
 }

@@ -1,3 +1,8 @@
+@push('styles')
+<!-- GLightbox CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
+@endpush
+
 <div class="box about-team">
                             <div class="about-team__content">
                                 <div class="about-team__info">
@@ -22,10 +27,14 @@
                                         @foreach($teamData['teams'] as $member)
                                         <li class="about-team__card">
                                             <div class="about-team__card-avatar">
-                                                <picture>
-                                                    <source srcset="{{ asset('sigap-assets/images/' . $member['avatar']) }}" type="image/webp">
-                                                    <img src="{{ asset('sigap-assets/images/' . $member['avatar']) }}" alt="{{ $member['name'] }}">
-                                                </picture>
+                                                <a href="{{ asset('sigap-assets/images/' . $member['avatar']) }}"
+                                                   data-fancybox="team-gallery"
+                                                   data-caption="{{ $member['name'] }} - {{ $member['position'] }}" onclick="event.stopPropagation();">
+                                                    <picture>
+                                                        <source srcset="{{ asset('sigap-assets/images/' . $member['avatar']) }}" type="image/webp">
+                                                        <img src="{{ asset('sigap-assets/images/' . $member['avatar']) }}" alt="{{ $member['name'] }}" style="cursor: pointer;">
+                                                    </picture>
+                                                </a>
                                             </div>
                                             <div class="about-team__card-details">
                                                 <div class="about-team__card-name">
@@ -52,3 +61,15 @@
                                 </div>
                             </div>
                         </div>
+
+
+                        @push('scripts')
+                         <!-- GLightbox JS -->
+                         <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+                         <script>
+                             // Initialize GLightbox on existing anchors
+                             const lightbox = GLightbox({
+                                 selector: '[data-fancybox="team-gallery"]'
+                             });
+                         </script>
+                         @endpush
