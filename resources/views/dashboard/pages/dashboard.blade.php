@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-
+@section('title', 'Dashboard')
 @section('content')
 <div class="page-content">
     <div class="container-fluid">
@@ -12,8 +12,8 @@
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
-                            <li class="breadcrumb-item"><a href="javascript: void(0);">Dashboards</a></li>
-                            <li class="breadcrumb-item active">Dashboard</li>
+                            <li class="breadcrumb-item"><a href="javascript: void(0);">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Beranda</li>
                         </ol>
                     </div>
 
