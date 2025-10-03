@@ -42,6 +42,7 @@
 <!-- Floating WhatsApp Button -->
 <a href="https://wa.me/6283199413424" class="whatsapp-float" target="_blank" rel="noopener" aria-label="Chat WhatsApp 6283199413424">
     <i class="fab fa-whatsapp" aria-hidden="true"></i>
+    <span class="whatsapp-label">Call Center</span>
 </a>
 
 @endsection
@@ -105,6 +106,23 @@
         font-size: 28px;
         line-height: 1;
     }
+    .whatsapp-label {
+        position: absolute;
+        left: 50%;
+        bottom: -24px;
+        transform: translateX(-50%);
+        background: #ffffff;
+        color: #25D366;
+        font-weight: 700;
+        font-size: 12px;
+        letter-spacing: 0.2px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(37, 211, 102, 0.35);
+        box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+        white-space: nowrap;
+        pointer-events: none; /* click will pass through to the button */
+    }
     /* Keep inner icon static and slightly higher */
     .whatsapp-float i { transform: translateY(-2px); }
     @keyframes waPulse {
@@ -117,10 +135,15 @@
         100% { transform: scale(1.9); opacity: 0; }
     }
     @media (max-width: 576px) {
-        .whatsapp-float { right: 12px; bottom: 12px; width: 52px; height: 52px; }
+        .whatsapp-float { right: 12px; bottom: 36px; width: 52px; height: 52px; }
         .whatsapp-float i { font-size: 26px; }
         .whatsapp-float::after { filter: blur(0.4px); }
         .whatsapp-float i { transform: translateY(-1px); }
+        .whatsapp-label { bottom: -20px; font-size: 11px; padding: 3px 8px; }
+    }
+
+    @media (max-width: 476px) {
+        .whatsapp-float { right: 20px !important; }
     }
 </style>
 @endpush
