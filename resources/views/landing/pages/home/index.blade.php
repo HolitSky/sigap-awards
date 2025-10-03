@@ -39,6 +39,11 @@
     </div>
 </div>
 
+<!-- Floating WhatsApp Button -->
+<a href="https://wa.me/6283199413424" class="whatsapp-float" target="_blank" rel="noopener" aria-label="Chat WhatsApp 6283199413424">
+    <i class="fab fa-whatsapp" aria-hidden="true"></i>
+</a>
+
 @endsection
 
 @push('styles')
@@ -55,6 +60,67 @@
 
     .category-option[data-form-type="bpkh"]:hover {
         border-color: rgba(102, 126, 234, 0.5) !important;
+    }
+
+    /* Floating WhatsApp Button */
+    .whatsapp-float {
+        position: fixed;
+        right: 18px;
+        bottom: 50px;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: #25D366;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        z-index: 9999;
+        text-decoration: none;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+        position: fixed;
+        isolation: isolate; /* ensure pseudo-element renders behind */
+        overflow: visible;
+    }
+    .whatsapp-float:hover {
+        background: #22c35e;
+        transform: translateY(-1px);
+        box-shadow: 0 10px 28px rgba(0,0,0,0.25);
+    }
+    .whatsapp-float::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: rgba(37, 211, 102, 0.35);
+        transform: scale(1);
+        opacity: 0.6;
+        pointer-events: none;
+        filter: blur(0.5px);
+        animation: waRipple 2.4s ease-out infinite;
+        z-index: -1;
+    }
+    .whatsapp-float i {
+        font-size: 28px;
+        line-height: 1;
+    }
+    /* Keep inner icon static and slightly higher */
+    .whatsapp-float i { transform: translateY(-2px); }
+    @keyframes waPulse {
+        0%, 100% { transform: scale(1); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+        50% { transform: scale(1.06); box-shadow: 0 10px 28px rgba(0,0,0,0.25); }
+    }
+    @keyframes waRipple {
+        0% { transform: scale(1); opacity: 0.6; }
+        70% { transform: scale(1.9); opacity: 0; }
+        100% { transform: scale(1.9); opacity: 0; }
+    }
+    @media (max-width: 576px) {
+        .whatsapp-float { right: 12px; bottom: 12px; width: 52px; height: 52px; }
+        .whatsapp-float i { font-size: 26px; }
+        .whatsapp-float::after { filter: blur(0.4px); }
+        .whatsapp-float i { transform: translateY(-1px); }
     }
 </style>
 @endpush
@@ -149,11 +215,11 @@
         const modal = document.getElementById('imageModal');
         const modalImage = document.getElementById('modalImage');
         const modalCaption = document.getElementById('modalCaption');
-        
+
         modalImage.src = imageSrc;
         modalImage.alt = imageName;
         modalCaption.textContent = imageName;
-        
+
         modal.style.display = 'flex';
         setTimeout(() => {
             modal.classList.add('show');
