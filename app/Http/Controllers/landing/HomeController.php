@@ -12,7 +12,7 @@ class HomeController extends Controller
     {
         // Konfigurasi launch date dari Controller
         $launchStart = Carbon::create(2025, 10, 3, 0, 0, 0);
-        $launchFinish = Carbon::create(2025, 10, 15, 0, 0, 0);
+        $launchFinish = Carbon::create(2025, 10, 16, 0, 0, 0);
 
         // Load team data dari JSON
         $teamDataPath = public_path('sigap-assets/static/team-data.json');
