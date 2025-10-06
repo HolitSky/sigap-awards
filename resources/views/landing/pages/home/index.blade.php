@@ -28,6 +28,10 @@
                     <strong>🏢 Balai Pemantapan Kawasan Hutan (BPKH)</strong><br>
                     <small style="color: #666;">Untuk instansi BPKH yang ingin berpartisipasi</small>
                 </div>
+                <div class="category-option" data-action="vote" style="padding: 10px; background: rgba(234, 84, 85, 0.08); border-radius: 8px; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;">
+                    <strong>🗳️ Voting Pengelola IGT 2025</strong><br>
+                    <small style="color: #666;">Menuju halaman voting 2025</small>
+                </div>
             </div>
             <p style="font-size: 0.9em; color: #888; margin-top: 15px;">
                 Klik pada kategori di atas atau kartu formulir untuk memulai pengisian.
@@ -61,6 +65,10 @@
 
     .category-option[data-form-type="bpkh"]:hover {
         border-color: rgba(102, 126, 234, 0.5) !important;
+    }
+
+    .category-option[data-action="vote"]:hover {
+        border-color: rgba(234, 84, 85, 0.5) !important;
     }
 
     /* Floating WhatsApp Button */
@@ -201,6 +209,19 @@
             }, 350); // Wait for welcome modal close animation
         }
 
+        // Function to trigger Voting confirmation/link
+        function triggerVoting() {
+            hideWelcomeModal();
+            setTimeout(() => {
+                const voteBtn = document.getElementById('openVoteConfirm');
+                if (voteBtn) {
+                    voteBtn.click();
+                } else {
+                    window.open('https://form.sigap-award.site/voting2025', '_blank');
+                }
+            }, 350);
+        }
+
         // Show modal after a short delay to ensure page is fully loaded
         setTimeout(() => {
             showWelcomeModal();
@@ -210,7 +231,14 @@
         categoryOptions.forEach(option => {
             option.addEventListener('click', function() {
                 const formType = this.getAttribute('data-form-type');
-                triggerFormModal(formType);
+                const action = this.getAttribute('data-action');
+                if (action === 'vote') {
+                    triggerVoting();
+                    return;
+                }
+                if (formType) {
+                    triggerFormModal(formType);
+                }
             });
         });
 
