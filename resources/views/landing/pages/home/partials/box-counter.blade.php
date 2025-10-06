@@ -5,6 +5,46 @@
     .vote-menu__desc { color: var(--sigap-color); opacity: 0.85; margin: 0 0 16px; }
     .vote-menu__btn { display: inline-block; background-color: var(--sigap-color); color: #fff; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; }
     .vote-menu__btn:hover { opacity: 0.9; }
+
+    /* Constrain modal to the card container (box counter) */
+    .box.counter { position: relative; }
+    .box.counter .modal-overlay {
+        position: absolute; /* keep inside card */
+        inset: 0; /* top/right/bottom/left: 0 */
+        display: none; /* toggled by JS */
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.35);
+        z-index: 5;
+        padding: 16px; /* breathing room on small screens */
+        border-radius: inherit; /* follow card rounding if any */
+    }
+    .box.counter .modal-overlay.show .modal-content { opacity: 1; transform: translateY(0); }
+    .box.counter .modal-content {
+        width: 100%;
+        max-width: 460px; /* desktop/tablet limit inside card */
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+        transform: translateY(8px);
+        opacity: 0;
+        transition: opacity .25s ease, transform .25s ease;
+        overflow: hidden;
+    }
+    .box.counter .modal-header,
+    .box.counter .modal-footer { padding: 12px 16px; background: #fff; }
+    .box.counter .modal-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #eee; }
+    .box.counter .modal-body { padding: 16px; background: #fff; }
+    .box.counter .modal-close { cursor: pointer; font-size: 20px; line-height: 1; }
+    .box.counter .modal-footer { display: flex; gap: 8px; justify-content: flex-end; border-top: 1px solid #eee; }
+    .box.counter .modal-btn-open { background: var(--sigap-color); color: #fff; border: 0; border-radius: 8px; padding: 10px 14px; font-weight: 600; }
+    .box.counter .modal-btn-close { background: #edf2f7; color: #111; border: 0; border-radius: 8px; padding: 10px 14px; font-weight: 600; }
+
+    /* Mobile-first fit: always keep content within the card width */
+    @media (max-width: 640px) {
+        .box.counter .modal-overlay { padding: 12px; }
+        .box.counter .modal-content { max-width: none; width: 100%; border-radius: 10px; }
+    }
 </style>
 @endpush
 
