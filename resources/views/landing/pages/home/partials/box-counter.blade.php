@@ -1,8 +1,8 @@
 @push('styles')
 <style>
     .vote-menu { text-align: center; padding: 12px 0; }
-    .vote-menu__title { color: var(--sigap-color); margin: 0 0 8px; font-size: 20px; }
-    .vote-menu__desc { color: var(--sigap-color); opacity: 0.85; margin: 0 0 16px; }
+    .vote-menu__title { color: var(--sigap-color); margin: 0 0 8px; font-size: 34px; }
+    .vote-menu__desc { color: var(--sigap-color); opacity: 0.85; margin: 0 0 20px; font-size: 20px; }
     .vote-menu__btn { display: inline-block; background-color: var(--sigap-color); color: #fff; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; }
     .vote-menu__btn:hover { opacity: 0.9; }
 
