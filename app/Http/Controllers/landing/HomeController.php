@@ -30,4 +30,13 @@ class HomeController extends Controller
 
         return view('landing.pages.votes.index');
     }
+
+
+    public function thanksForSubmit()
+    {
+         // Konfigurasi launch date dari Controller
+         $launchStart = Carbon::create(2025, 10, 3, 0, 0, 0);
+         $launchFinish = Carbon::create(2025, 10, 16, 0, 0, 0);
+        return view('landing.pages.home.thanks-for-submit', compact('launchStart', 'launchFinish'));
+    }
 }

@@ -7,6 +7,8 @@ use App\Http\Controllers\auth\AuthController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+Route::get('/thanks-for-submit', [HomeController::class, 'thanksForSubmit'])->name('thanks-for-submit');
+
 // Auth Routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
