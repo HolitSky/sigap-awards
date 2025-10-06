@@ -1,5 +1,16 @@
+@push('styles')
+<style>
+    .vote-menu { text-align: center; padding: 12px 0; }
+    .vote-menu__title { color: var(--sigap-color); margin: 0 0 8px; font-size: 20px; }
+    .vote-menu__desc { color: var(--sigap-color); opacity: 0.85; margin: 0 0 16px; }
+    .vote-menu__btn { display: inline-block; background-color: var(--sigap-color); color: #fff; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; }
+    .vote-menu__btn:hover { opacity: 0.9; }
+</style>
+@endpush
+
 <div class="box counter">
     <div class="counter__content">
+        {{--
                                 <!-- Calender component -->
                                 <ul class="counter__month"></ul>
 
@@ -28,6 +39,34 @@
                                     <progress id="progressBar" class="counter__progress" max="100" value="0"></progress>
                                     <div id="endTip"></div>
                                 </div>
+        --}}
+
+        <div class="vote-menu">
+            <h3 class="vote-menu__title">Vote Pengelola IGT Terbaik 2025</h3>
+            <p class="vote-menu__desc">Klik tombol di bawah untuk menuju halaman voting.</p>
+            <a href="javascript:void(0);" id="openVoteConfirm" class="vote-menu__btn" aria-controls="voteConfirmModal" aria-expanded="false">Buka Halaman Voting</a>
+        </div>
+
+    </div>
+
+    <!-- Vote Confirmation Modal -->
+    <div id="voteConfirmModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Konfirmasi</h3>
+                <span class="modal-close" aria-label="Tutup">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Apakah Anda ingin menuju halaman voting 2025?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn-close" type="button">Batal</button>
+                <button class="modal-btn-open" id="btnGoVote" type="button">Ya, lanjut</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @push('scripts')
 <script>
@@ -76,5 +115,40 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 @endpush
-    </div>
-</div>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var voteModal = document.getElementById('voteConfirmModal');
+    var openBtn = document.getElementById('openVoteConfirm');
+    var closeIcon = voteModal ? voteModal.querySelector('.modal-close') : null;
+    var closeBtn = voteModal ? voteModal.querySelector('.modal-btn-close') : null;
+    var goBtn = document.getElementById('btnGoVote');
+    var targetUrl = 'https://form.sigap-award.site/voting2025';
+
+    function showVoteModal() {
+        if (!voteModal) return;
+        voteModal.style.display = 'flex';
+        setTimeout(function () { voteModal.classList.add('show'); }, 10);
+        if (openBtn) openBtn.setAttribute('aria-expanded', 'true');
+    }
+
+    function hideVoteModal() {
+        if (!voteModal) return;
+        voteModal.classList.remove('show');
+        setTimeout(function () { voteModal.style.display = 'none'; }, 300);
+        if (openBtn) openBtn.setAttribute('aria-expanded', 'false');
+    }
+
+    if (openBtn) openBtn.addEventListener('click', function (e) { e.preventDefault(); showVoteModal(); });
+    if (closeIcon) closeIcon.addEventListener('click', hideVoteModal);
+    if (closeBtn) closeBtn.addEventListener('click', hideVoteModal);
+    if (voteModal) voteModal.addEventListener('click', function (e) { if (e.target === voteModal) hideVoteModal(); });
+    if (goBtn) goBtn.addEventListener('click', function () { window.open(targetUrl, '_blank'); hideVoteModal(); });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && voteModal && voteModal.classList.contains('show')) hideVoteModal();
+    });
+});
+</script>
+@endpush
