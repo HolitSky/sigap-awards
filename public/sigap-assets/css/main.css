@@ -25,6 +25,9 @@
     --footer-height: 60px;
     --nav-height: 80px;
     --wrapper-padding: 40px;
+
+    --red-deadline : #990000;
+    --red-deadline-border : #e50000;
 }
 *,
 ::after,
@@ -12036,7 +12039,7 @@ footer .copy {
     line-height: 6rem;
     font-weight: 800;
     margin: 6% 0;
-    color: var(--forest-green);
+    color: var(--white);
 }
 @media (min-width: 371px) {
     .launch-date__calendar-date {
@@ -12070,7 +12073,7 @@ footer .copy {
     font-size: 1rem;
     font-weight: 500;
     text-transform: uppercase;
-    color: var(--forest-green);
+    color: var(--white);
 }
 @media (min-width: 371px) {
     .launch-date__calendar-month {
@@ -12105,7 +12108,7 @@ footer .copy {
     left: 0;
     right: 0;
     bottom: 0;
-    border: 1px solid var(--forest-green);
+    border: 1px solid var(--red-deadline-border);
     border-radius: 24px;
     margin: 10px;
     z-index: 2;
@@ -12121,6 +12124,7 @@ footer .copy {
         margin: 18px;
     }
 }
+/* edit Holit */
 .launch-date__calendar-right-part {
     position: absolute;
     top: 0;
@@ -12128,7 +12132,7 @@ footer .copy {
     right: 0;
     width: calc(100% - 10px);
     border-radius: 0 30px 30px 0;
-    background-color: var(--lime-green);
+    background-color: var(--red-deadline);
 }
 .launch-date__calendar-left-part {
     position: absolute;
@@ -12136,9 +12140,10 @@ footer .copy {
     top: 10px;
     bottom: 10px;
     width: 12px;
-    background-color: var(--lime-green);
+    background-color: var(--red-deadline);
     border-left: 2px dashed var(--black-pure);
 }
+/* edit Holit */
 .launch-date__calendar-left-part::after {
     content: "";
     position: absolute;
@@ -12149,7 +12154,7 @@ footer .copy {
     right: 0;
     transform: translate(3px, 5px) rotate(45deg);
     border: 5px solid transparent;
-    border-right-color: var(--lime-green);
+    border-right-color: var(--red-deadline-border);
     border-radius: 100%;
     pointer-events: none;
     z-index: 0;
@@ -12163,7 +12168,7 @@ footer .copy {
     bottom: -30px;
     transform: translate(3px, -5px) rotate(45deg);
     border: 5px solid transparent;
-    border-top-color: var(--lime-green);
+    border-top-color: var(--red-deadline-border);
     border-radius: 100%;
     pointer-events: none;
     z-index: 0;
