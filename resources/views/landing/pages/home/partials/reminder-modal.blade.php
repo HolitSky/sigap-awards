@@ -46,7 +46,7 @@
         </div>
         <div class="modal-body">
             <img src="{{ asset('sigap-assets/images/image-info-for-poster.png') }}" class="reminder-image" alt="Informasi poster" loading="lazy">
-            <h1 id="reminderTitle" class="reminder-title">Hai #SobatIPSDH !</h1>
+            <h1 id="reminderTitle" class="reminder-title">Hai #SobatGeoSPESIAL !</h1>
             <h3 class="reminder-subtitle">Jangan lupa segera isi kuesioner dan data dukung serta desain poster juga ya!</h3>
         </div>
         <div class="modal-footer">
