@@ -43,6 +43,8 @@
     </div>
 </div>
 
+@include('landing.pages.home.partials.reminder-modal')
+
 <!-- Floating WhatsApp Button -->
 <a href="https://wa.me/6283199413424" class="whatsapp-float" target="_blank" rel="noopener" aria-label="Chat WhatsApp 6283199413424">
     <i class="fab fa-whatsapp" aria-hidden="true"></i>
@@ -176,6 +178,12 @@
             setTimeout(() => {
                 welcomeModal.classList.add('show');
             }, 10);
+            // schedule reminder 3s after welcome shown
+            setTimeout(() => {
+                if (typeof window.showReminderModal === 'function') {
+                    window.showReminderModal();
+                }
+            }, 3000);
         }
 
         // Function to hide welcome modal
@@ -225,7 +233,7 @@
         // Show modal after a short delay to ensure page is fully loaded
         setTimeout(() => {
             showWelcomeModal();
-        }, 7000); // 7 second delay
+        }, 3000); // 3 second delay to show welcome
 
         // Add click events to category options
         categoryOptions.forEach(option => {
