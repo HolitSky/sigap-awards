@@ -40,10 +40,16 @@ class BpkhSheetSyncService
                 continue;
             }
 
+            // Build meta as an ordered list of key/value pairs to preserve header order consistently across DB engines
+            $orderedMeta = [];
+            foreach ($header as $h) {
+                $orderedMeta[] = ['key' => $h, 'value' => $assoc[$h] ?? ''];
+            }
+
             $payload = [
                 'synced_at' => Carbon::now(),
                 'sheet_row_number' => $i + 2, // +2: header row + 1-indexed
-                'meta' => $assoc,
+                'meta' => $orderedMeta,
             ];
 
             foreach ($this->keyHeaders as $sheetHeader => $dbCol) {

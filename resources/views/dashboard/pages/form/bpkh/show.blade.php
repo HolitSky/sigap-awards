@@ -41,7 +41,19 @@
 
                         <h5 class="mt-4">Hasil Jawaban</h5>
                         <div class="border rounded-3">
-                            @foreach(($form->meta ?? []) as $key => $value)
+                            @php
+                                // Support both legacy associative array and new ordered array format
+                                $entries = [];
+                                if (is_array($form->meta)) {
+                                    $isOrdered = isset($form->meta[0]) && is_array($form->meta[0]) && array_key_exists('key', $form->meta[0]) && array_key_exists('value', $form->meta[0]);
+                                    if ($isOrdered) {
+                                        foreach ($form->meta as $item) { $entries[] = [$item['key'], $item['value']]; }
+                                    } else {
+                                        foreach ($form->meta as $k => $v) { $entries[] = [$k, $v]; }
+                                    }
+                                }
+                            @endphp
+                            @foreach($entries as [$key, $value])
                                 @php
                                     $isQuestion = preg_match('/^\s*(\d+)\s*\./', (string) $key, $m);
                                     $isAnswer = preg_match('/^\s*soal\s+([0-9]+(?:\.[0-9]+)*)/i', (string) $key, $am);
