@@ -311,10 +311,26 @@
                                             $isArray = is_array($value);
                                             $raw = $isArray ? json_encode($value) : (string) $value;
                                             $display = $raw === '' ? '-' : $raw;
-                                            $isUrl = !$isArray && preg_match('/^https?:\/\//i', $raw);
+                                            // Extract one or more URLs if present (handles multiple links in one string)
+                                            $links = [];
+                                            if ($isArray) {
+                                                foreach ((array) $value as $vv) {
+                                                    if (is_string($vv) && preg_match_all('/https?:\/\/\S+/i', $vv, $mAll)) {
+                                                        foreach ($mAll[0] as $u) { $links[] = $u; }
+                                                    }
+                                                }
+                                            } else {
+                                                if (preg_match_all('/https?:\/\/\S+/i', $raw, $mAll)) {
+                                                    $links = $mAll[0];
+                                                }
+                                            }
                                         @endphp
-                                        @if($isUrl)
-                                            <a href="{{ $raw }}" target="_blank" rel="noopener" class="{{ $isKonsep ? 'text-white' : '' }}">{{ $raw }}</a>
+                                        @if(count($links) > 1)
+                                            @foreach($links as $u)
+                                                <div><a href="{{ $u }}" target="_blank" rel="noopener" class="{{ $isKonsep ? 'text-white' : '' }}">{{ $u }}</a></div>
+                                            @endforeach
+                                        @elseif(count($links) === 1)
+                                            <a href="{{ $links[0] }}" target="_blank" rel="noopener" class="{{ $isKonsep ? 'text-white' : '' }}">{{ $links[0] }}</a>
                                         @else
                                             {{ $display }}
                                         @endif

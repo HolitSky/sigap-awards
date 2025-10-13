@@ -185,25 +185,36 @@
                                     @if($isAnswer)
                                         @php
                                             $nextEntry = $entries[$loop->index + 1] ?? null;
-                                            $attachmentUrl = null; $attachmentIsUrl = false;
+                                            $attachmentLinks = [];
+                                            $attRaw = null;
                                             if ($nextEntry && preg_match('/^\s*Lampiran/i', (string) ($nextEntry[0] ?? ''))) {
                                                 $attVal = $nextEntry[1] ?? '';
                                                 $isAttArray = is_array($attVal);
-                                                $attRaw = $isAttArray ? json_encode($attVal) : (string) $attVal;
-                                                $attachmentUrl = $attRaw;
-                                                $attachmentIsUrl = (!$isAttArray && preg_match('/^https?:\/\//i', $attRaw));
+                                                if ($isAttArray) {
+                                                    foreach ((array) $attVal as $vv) {
+                                                        if (is_string($vv)) {
+                                                            if (preg_match_all('/https?:\/\/\S+/i', $vv, $mAll)) {
+                                                                foreach ($mAll[0] as $u) { $attachmentLinks[] = $u; }
+                                                            }
+                                                        }
+                                                    }
+                                                    $attRaw = json_encode($attVal);
+                                                } else {
+                                                    $attRaw = (string) $attVal;
+                                                    if (preg_match_all('/https?:\/\/\S+/i', $attRaw, $mAll)) {
+                                                        $attachmentLinks = $mAll[0];
+                                                    }
+                                                }
                                             }
                                         @endphp
                                         <div class="row gx-3 align-items-center py-2 px-3 border-bottom">
                                             <div class="col-12 col-md-6 text-muted">
                                                 <button type="button" class="btn btn-link p-0 js-question-popover" data-code="{{ $am[1] }}" data-bs-toggle="popover" data-bs-placement="top" data-bs-trigger="focus" data-bs-html="true">Jawaban soal {{ $am[1] }}</button>
-                                                @if($attachmentUrl)
+                                                @if(!empty($attachmentLinks))
                                                     <div class="mt-1 small">
-                                                        @if($attachmentIsUrl)
-                                                            <a href="{{ $attachmentUrl }}" target="_blank" rel="noopener">Lampiran</a>
-                                                        @else
-                                                            Lampiran: {{ $attachmentUrl }}
-                                                        @endif
+                                                        @foreach($attachmentLinks as $u)
+                                                            <div><a href="{{ $u }}" target="_blank" rel="noopener">Lampiran</a></div>
+                                                        @endforeach
                                                     </div>
                                                 @endif
                                             </div>
