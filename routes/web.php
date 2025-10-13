@@ -6,6 +6,7 @@ use App\Http\Controllers\dashboard\DashboardController;
 use App\Http\Controllers\auth\AuthController;
 use App\Http\Controllers\dashboard\BpkhFormController;
 use App\Http\Controllers\dashboard\UserProfileController;
+use App\Http\Controllers\dashboard\ProdusenFormController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -25,13 +26,19 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/profile', [UserProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile/delete-image', [UserProfileController::class, 'deleteImage'])->name('profile.delete-image');
 
+
+
+    // Detail & Nilai BPKH
     Route::get('/form-bpkh', [BpkhFormController::class, 'index'])->name('dashboard.form.bpkh.index');
-    Route::get('/form-produsen-dg', [DashboardController::class, 'produsenDg'])->name('dashboard.form.produsen-dg.index');
+    Route::get('/form-bpkh/{respondentId}', [BpkhFormController::class, 'show'])->name('dashboard.form.bpkh.show');
+    Route::get('/form-bpkh/{respondentId}/nilai', [BpkhFormController::class, 'editScore'])->name('dashboard.form.bpkh.score.edit');
+    Route::post('/form-bpkh/{respondentId}/nilai', [BpkhFormController::class, 'updateScore'])->name('dashboard.form.bpkh.score.update');
 
 
-     // Detail & Nilai
-  Route::get('/form-bpkh/{respondentId}', [BpkhFormController::class, 'show'])->name('dashboard.form.bpkh.show');
-  Route::get('/form-bpkh/{respondentId}/nilai', [BpkhFormController::class, 'editScore'])->name('dashboard.form.bpkh.score.edit');
-  Route::post('/form-bpkh/{respondentId}/nilai', [BpkhFormController::class, 'updateScore'])->name('dashboard.form.bpkh.score.update');
+    // Detail & Nilai Produsen DG
+    Route::get('/form-produsen-dg', [ProdusenFormController::class, 'index'])->name('dashboard.form.produsen-dg.index');
+    Route::get('/form-produsen-dg/{respondentId}', [ProdusenFormController::class, 'show'])->name('dashboard.form.produsen-dg.show');
+    Route::get('/form-produsen-dg/{respondentId}/nilai', [ProdusenFormController::class, 'editScore'])->name('dashboard.form.produsen-dg.score.edit');
+    Route::post('/form-produsen-dg/{respondentId}/nilai', [ProdusenFormController::class, 'updateScore'])->name('dashboard.form.produsen-dg.score.update');
 
 });

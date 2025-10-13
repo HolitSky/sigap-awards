@@ -4,13 +4,29 @@ namespace App\Http\Controllers\dashboard;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\BpkhForm;
+use App\Models\ProdusenForm;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
     public function index()
     {
         $title = 'Beranda';
-        return view('dashboard.pages.dashboard', compact('title'));
+        $countBpkh = BpkhForm::count();
+        $countProdusen = ProdusenForm::count();
+        $lastSyncBpkh = BpkhForm::max('synced_at');
+        $lastSyncProdusen = ProdusenForm::max('synced_at');
+        $lastSyncBpkhText = $lastSyncBpkh ? Carbon::parse($lastSyncBpkh)->format('d M Y H:i') : null;
+        $lastSyncProdusenText = $lastSyncProdusen ? Carbon::parse($lastSyncProdusen)->format('d M Y H:i') : null;
+
+        return view('dashboard.pages.dashboard', compact(
+            'title',
+            'countBpkh',
+            'countProdusen',
+            'lastSyncBpkhText',
+            'lastSyncProdusenText'
+        ));
     }
 
     public function bpkh()

@@ -24,15 +24,15 @@
 
                  <li>
                     <a href="{{ route('dashboard.form.bpkh.index') }}" class="waves-effect">
-                        <i class="bx bxs-eraser"></i>
+                        <i class="bx bx-spreadsheet"></i>
                         {{-- <span class="badge rounded-pill bg-danger float-end">10</span> --}}
                         <span key="t-forms">BPKH</span>
                     </a>
                 </li>
 
                 <li>
-                    <a href="javascript: void(0);" class="waves-effect">
-                        <i class="bx bxs-eraser"></i>
+                    <a href="{{ route('dashboard.form.produsen-dg.index') }}" class="waves-effect">
+                        <i class="bx bx-file"></i>
                         {{-- <span class="badge rounded-pill bg-danger float-end">10</span> --}}
                         <span key="t-forms">Produsen DG</span>
                     </a>
@@ -44,7 +44,7 @@
                     <a href="javascript: void(0);" class="waves-effect">
                         <i class="bx bxs-eraser"></i>
                         {{-- <span class="badge rounded-pill bg-danger float-end">10</span> --}}
-                        <span key="t-forms">Hasil Form Admin</span>
+                        <span key="t-forms">Menu Test</span>
                     </a>
                 </li>
                 @endcan

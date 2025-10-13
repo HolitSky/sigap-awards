@@ -49,8 +49,8 @@
            <div class="modal-body p-4 pb-2">
                <div class="text-center">
                    <img src="{{ asset('sigap-assets/images/image-info-for-poster.png') }}" class="img-fluid mb-4" style="max-width: 100%; height: auto; max-height: 350px; object-fit: contain;" alt="Informasi poster" loading="lazy">
-                   <h1 class="reminder-title">Hai #SobatGeoSPESIAL !</h1>
-                   <h3 class="reminder-subtitle">Jangan lupa segera isi kuesioner dan data dukung serta desain poster juga ya!</h3>
+                   <h1 class="reminder-title">Selamat datang, Juri/Admin Sigap Award!</h1>
+                   <h3 class="reminder-subtitle">Silakan melanjutkan penilaian form yang masuk dan verifikasi data pendukung.</h3>
                </div>
            </div>
            <div class="modal-footer border-top-0 justify-content-center pb-4">
