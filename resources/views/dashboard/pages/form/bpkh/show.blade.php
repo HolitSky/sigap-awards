@@ -39,18 +39,23 @@
                             <a href="{{ route('dashboard.form.bpkh.score.edit', $form->respondent_id) }}" class="btn btn-primary">Nilai Form</a>
                         </div>
 
-                        <h5 class="mt-4">Semua Jawaban</h5>
+                        <h5 class="mt-4">Hasil Jawaban</h5>
                         <div class="border rounded-3">
                             @foreach(($form->meta ?? []) as $key => $value)
                                 <div class="row gx-3 align-items-start py-2 px-3{{ !$loop->last ? ' border-bottom' : '' }}">
                                     <div class="col-12 col-md-5 fs-6 {{ preg_match('/^\s*(\d+)\s*\./', $key) ? 'fw-bold text-dark' : 'fw-semibold text-muted' }}">
                                         @php
-                                            $label = (string) $key;
-                                            if (preg_match('/^\s*(\d+)\s*\./', $label, $m)) {
-                                                $label = 'SP ' . $m[1] . ' - ' . $label;
-                                            }
+                                            $isQuestion = preg_match('/^\s*(\d+)\s*\./', (string) $key, $m);
+                                            $isAnswer = preg_match('/^\s*soal\s+([0-9]+(?:\.[0-9]+)*)/i', (string) $key, $am);
                                         @endphp
-                                        {{ $label }}
+                                        @if($isQuestion)
+                                            <div>SP {{ $m[1] }} :</div>
+                                            <div class="mt-1">{{ $key }}</div>
+                                        @elseif($isAnswer)
+                                            <div>Jawaban soal {{ $am[1] }}</div>
+                                        @else
+                                            {{ $key }}
+                                        @endif
                                     </div>
                                     <div class="col-12 col-md-7 fw-semibold text-break">
                                         @php
