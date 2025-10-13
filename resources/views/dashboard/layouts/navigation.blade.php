@@ -10,7 +10,7 @@
 
                 <!-- Hanya menu Beranda -->
                 <li>
-                    <a href="javascript: void(0);" class="waves-effect">
+                    <a href="{{ route('dashboard.index') }}" class="waves-effect">
                         <i class="bx bx-home-circle"></i>
                         <span key="t-dashboards">Beranda</span>
                     </a>
@@ -21,19 +21,20 @@
              <ul class="metismenu list-unstyled" id="side-menu">
                 <li class="menu-title" key="t-menu">Penilaian Form</li>
 
+
+                 <li>
+                    <a href="{{ route('dashboard.form.bpkh.index') }}" class="waves-effect">
+                        <i class="bx bxs-eraser"></i>
+                        {{-- <span class="badge rounded-pill bg-danger float-end">10</span> --}}
+                        <span key="t-forms">BPKH</span>
+                    </a>
+                </li>
+
                 <li>
                     <a href="javascript: void(0);" class="waves-effect">
                         <i class="bx bxs-eraser"></i>
                         {{-- <span class="badge rounded-pill bg-danger float-end">10</span> --}}
                         <span key="t-forms">Produsen DG</span>
-                    </a>
-                </li>
-
-                 <li>
-                    <a href="javascript: void(0);" class="waves-effect">
-                        <i class="bx bxs-eraser"></i>
-                        {{-- <span class="badge rounded-pill bg-danger float-end">10</span> --}}
-                        <span key="t-forms">BPKH</span>
                     </a>
                 </li>
 
