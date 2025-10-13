@@ -40,12 +40,26 @@
                         </div>
 
                         <h5 class="mt-4">Semua Jawaban</h5>
-                        <dl class="row">
+                        <div class="border rounded-3">
                             @foreach(($form->meta ?? []) as $key => $value)
-                                <dt class="col-sm-4">{{ $key }}</dt>
-                                <dd class="col-sm-8">{{ is_array($value) ? json_encode($value) : ($value === '' ? '-' : $value) }}</dd>
+                                <div class="row gx-3 align-items-start py-2 px-3{{ !$loop->last ? ' border-bottom' : '' }}">
+                                    <div class="col-12 col-md-5 text-muted small">{{ $key }}</div>
+                                    <div class="col-12 col-md-7 fw-semibold text-break">
+                                        @php
+                                            $isArray = is_array($value);
+                                            $raw = $isArray ? json_encode($value) : (string) $value;
+                                            $display = $raw === '' ? '-' : $raw;
+                                            $isUrl = !$isArray && preg_match('/^https?:\/\//i', $raw);
+                                        @endphp
+                                        @if($isUrl)
+                                            <a href="{{ $raw }}" target="_blank" rel="noopener">{{ $raw }}</a>
+                                        @else
+                                            {{ $display }}
+                                        @endif
+                                    </div>
+                                </div>
                             @endforeach
-                        </dl>
+                        </div>
 
                     </div>
                 </div>
