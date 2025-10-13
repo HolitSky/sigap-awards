@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\BpkhForm;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 
 class BpkhFormController extends Controller
@@ -46,9 +47,44 @@ class BpkhFormController extends Controller
           'status_nilai'=>['required',Rule::in(['pending','in_review','scored'])],
           'total_score'=>['nullable','integer','min:0','max:100'],
           'notes'=>['nullable','string','max:5000'],
+          'answers'=>['array'],
+          'answers.*'=>['nullable','numeric','min:0','max:100'],
         ]);
         $form=BpkhForm::where('respondent_id',$respondentId)->firstOrFail();
-        $form->update($data);
+        // Update meta answers (support both formats)
+        $meta = $form->meta ?? [];
+        if (!empty($data['answers'])) {
+            if (is_array($meta) && isset($meta[0]) && is_array($meta[0]) && array_key_exists('key',$meta[0])) {
+                // ordered format
+                foreach ($meta as &$item) {
+                    if (preg_match('/^\s*soal\s+([0-9]+(?:\.[0-9]+)*)/i', (string) ($item['key'] ?? ''), $m)) {
+                        $code = $m[1];
+                        if (array_key_exists($code, $data['answers'])) {
+                            $item['value'] = (string) ($data['answers'][$code] ?? '');
+                        }
+                    }
+                }
+                unset($item);
+            } elseif (is_array($meta)) {
+                // associative format
+                foreach ($data['answers'] as $code => $val) {
+                    $key = 'soal '.$code;
+                    if (array_key_exists($key, $meta)) {
+                        $meta[$key] = (string) $val;
+                    }
+                }
+            }
+        }
+
+        $updatePayload = [
+            'status_nilai' => $data['status_nilai'],
+            'total_score' => $data['total_score'] ?? null,
+            'notes' => $data['notes'] ?? null,
+            'juri_penilai' => Auth::user()->name ?? null,
+            'meta' => $meta,
+        ];
+
+        $form->update($updatePayload);
         return redirect()->route('dashboard.form.bpkh.index')->with('success','Status & nilai tersimpan.');
       }
 }

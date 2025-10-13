@@ -18,6 +18,7 @@ class BpkhForm extends Model
         'sheet_row_number',
         'meta',
         'synced_at',
+        'juri_penilai',
     ];
 
     protected $casts = [
