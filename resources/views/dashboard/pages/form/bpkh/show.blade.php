@@ -14,7 +14,14 @@
 
                         <div class="d-flex align-items-center justify-content-between mb-3">
                             <div>
-                                <h4 class="mb-0">{{ $form->respondent_id }} — {{ $form->nama_bpkh }}</h4>
+                                <h4 class="mb-0">Responden Id :{{ $form->respondent_id }} <br> {{ $form->nama_bpkh }}</h4>
+                                @if(!empty($form->juri_penilai))
+                                    <div class="mt-2">
+                                        <span class="badge rounded-pill text-white" style="background-color:#D26607;padding:.5rem .75rem;font-size:.9rem;">
+                                            Juri Penilai: {{ $form->juri_penilai }}
+                                        </span>
+                                    </div>
+                                @endif
                             </div>
                             <div>
                                 @php
@@ -57,21 +64,33 @@
                                 @php
                                     $isQuestion = preg_match('/^\s*(\d+)\s*\./', (string) $key, $m);
                                     $isAnswer = preg_match('/^\s*soal\s+([0-9]+(?:\.[0-9]+)*)/i', (string) $key, $am);
+                                    $isKonsep = preg_match('/^\s*Konsep\s+Paparan/i', (string) $key);
                                     $rowStyle = 'color:#2B2929;';
-                                    if ($isAnswer) { $rowStyle .= 'background-color:#F8F6FF;'; }
+                                    if ($isKonsep) {
+                                        $rowStyle = 'color:#FFFFFF;background-color:#E03737;';
+                                    } elseif ($isQuestion) {
+                                        $rowStyle .= 'background-color:#E2FFF4;';
+                                    } elseif ($isAnswer) {
+                                        $rowStyle .= 'background-color:#F8F6FF;';
+                                    }
                                 @endphp
                                 <div class="row gx-3 align-items-start py-2 px-3{{ !$loop->last ? ' border-bottom' : '' }}" style="{{ $rowStyle }}">
-                                    <div class="col-12 col-md-5 fs-6 {{ $isQuestion ? 'fw-bold' : 'fw-semibold' }}">
+                                    <div class="col-12 col-md-5 fs-6 {{ $isQuestion ? 'fw-bold' : 'fw-semibold' }} {{ $isKonsep ? 'text-white' : '' }}">
+                                        @php $isAttachment = !$isQuestion && !$isAnswer && preg_match('/^\s*Lampiran/i', (string) $key); @endphp
                                         @if($isQuestion)
                                             <div>SP {{ $m[1] }} :</div>
                                             <div class="mt-1">{{ $key }}</div>
                                         @elseif($isAnswer)
                                             <div>Jawaban soal {{ $am[1] }}</div>
                                         @else
-                                            {{ $key }}
+                                            @if($isAttachment)
+                                                <i class="mdi mdi-file-document-outline me-1"></i>{{ $key }}
+                                            @else
+                                                {{ $key }}
+                                            @endif
                                         @endif
                                     </div>
-                                    <div class="col-12 col-md-7 fw-semibold text-break">
+                                    <div class="col-12 col-md-7 fw-semibold text-break {{ $isKonsep ? 'text-white' : '' }}">
                                         @php
                                             $isArray = is_array($value);
                                             $raw = $isArray ? json_encode($value) : (string) $value;
@@ -79,7 +98,7 @@
                                             $isUrl = !$isArray && preg_match('/^https?:\/\//i', $raw);
                                         @endphp
                                         @if($isUrl)
-                                            <a href="{{ $raw }}" target="_blank" rel="noopener">{{ $raw }}</a>
+                                            <a href="{{ $raw }}" target="_blank" rel="noopener" class="{{ $isKonsep ? 'text-white' : '' }}">{{ $raw }}</a>
                                         @else
                                             {{ $display }}
                                         @endif
