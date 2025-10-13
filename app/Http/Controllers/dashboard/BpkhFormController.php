@@ -46,7 +46,7 @@ class BpkhFormController extends Controller
 
 
       public function editScore(string $respondentId){
-        $title='Nilai Form BPKH'; $pageTitle=$title;
+        $title='Nilai Ulang Form BPKH'; $pageTitle=$title;
         $breadcrumbs=[['name'=>'Form','url'=>route('dashboard.form.bpkh.index')],['name'=>'BPKH','url'=>route('dashboard.form.bpkh.index')],['name'=>'Nilai','url'=>null,'active'=>true]];
         $form=BpkhForm::where('respondent_id',$respondentId)->firstOrFail();
         return view('dashboard.pages.form.bpkh.score', compact('title','pageTitle','breadcrumbs','form'));

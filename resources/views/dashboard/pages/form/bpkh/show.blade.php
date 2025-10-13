@@ -12,6 +12,12 @@
                 <div class="card">
                     <div class="card-body">
 
+                        <div class="mb-3">
+                            <a href="{{ route('dashboard.form.bpkh.index') }}" class="btn btn-light">
+                                <i class="mdi mdi-arrow-left me-1"></i> Kembali
+                            </a>
+                        </div>
+
                         <div class="d-flex align-items-center justify-content-between mb-3">
                             <div>
                                 <h4 class="mb-0">Responden Id :{{ $form->respondent_id }} <br> {{ $form->nama_bpkh }}</h4>
@@ -102,7 +108,7 @@
                                         <td>
                                             @php $items = $spItems[$sp] ?? []; @endphp
                                             <span class="fw-semibold">total = {{ $sum+0 }}</span>
-                                            <a href="#" class="ms-2" data-bs-toggle="collapse" data-bs-target="#sp-details-{{ $sp }}" aria-expanded="false" aria-controls="sp-details-{{ $sp }}">
+                                            <a href="#sp-details-{{ $sp }}" class="ms-2" data-bs-toggle="collapse" data-bs-target="#sp-details-{{ $sp }}" aria-expanded="false" aria-controls="sp-details-{{ $sp }}" onclick="event.preventDefault();">
                                                 <i class="mdi mdi-eye-outline"></i>
                                             </a>
                                         </td>
@@ -144,28 +150,114 @@
                         @endphp
 
                         <div class="my-4">
-                            <h5 class="mb-3">Radar Nilai per SP</h5>
-                            <div id="spRadarChart" style="width:100%;height:560px;"></div>
+                            <h5 class="mb-3">Grafik Radar Nilai per SP</h5>
+                            <canvas id="spRadarChart" style="width:100%;max-width:720px;aspect-ratio:1/1;margin:0 auto;display:block;"></canvas>
+                            <div class="mt-2 d-flex gap-2 justify-content-center">
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="exportRadarPng">Download PNG</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" id="exportRadarJpg">Download JPEG</button>
+                            </div>
                         </div>
 
                         @push('scripts')
+                        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
                         <script>
                         document.addEventListener('DOMContentLoaded', function () {
-                            var categories = @json($__spCats);
-                            var seriesData = @json($__spData);
-                            var el = document.querySelector('#spRadarChart');
-                            if (!el || typeof ApexCharts === 'undefined') return;
-                            var options = {
-                                chart: { type: 'radar', height: 560, toolbar: { show: false } },
-                                series: [{ name: 'Nilai', data: seriesData }],
-                                xaxis: { categories: categories, labels: { style: { colors: '#6c757d' } } },
-                                yaxis: { min: 0, max: 100, tickAmount: 4, labels: { style: { colors: '#6c757d' } } },
-                                stroke: { width: 2 },
-                                fill: { opacity: 0.2 },
-                                markers: { size: 3 },
-                                dataLabels: { enabled: false }
+                            var labels = @json($__spCats);
+                            var values = @json($__spData);
+                            var chartTitle = 'Nama Responden: ' + @json($form->nama_bpkh);
+                            var canvas = document.getElementById('spRadarChart');
+                            if (!canvas) return;
+                            var ctx = canvas.getContext('2d');
+
+                            var data = {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Nilai',
+                                    data: values,
+                                    fill: true,
+                                    backgroundColor: 'rgba(30, 136, 229, 0.20)',
+                                    borderColor: '#1E88E5',
+                                    pointBackgroundColor: '#1E88E5',
+                                    pointBorderColor: '#FFFFFF',
+                                    pointHoverBackgroundColor: '#FFFFFF',
+                                    pointHoverBorderColor: '#1E88E5',
+                                    borderWidth: 2
+                                }]
                             };
-                            new ApexCharts(el, options).render();
+
+                            var options = {
+                                responsive: true,
+                                maintainAspectRatio: true,
+                                aspectRatio: 1,
+                                scales: {
+                                    r: {
+                                        min: 0,
+                                        max: 100,
+                                        ticks: { stepSize: 25, color: '#6c757d' },
+                                        pointLabels: { color: '#6c757d' }
+                                    }
+                                },
+                                elements: {
+                                    point: { radius: 3, hitRadius: 4, hoverRadius: 5 },
+                                    line: { borderWidth: 2 }
+                                },
+                                interaction: { mode: 'nearest', intersect: true },
+                                plugins: {
+                                    legend: { display: false },
+                                    title: {
+                                        display: true,
+                                        text: chartTitle,
+                                        color: '#2B2929',
+                                        align: 'center',
+                                        padding: { top: 4, bottom: 4 },
+                                        font: { size: 14, weight: '600' }
+                                    },
+                                    tooltip: {
+                                        enabled: true,
+                                        callbacks: {
+                                            label: function (ctx) {
+                                                var v = (ctx.parsed && ctx.parsed.r != null) ? ctx.parsed.r : ctx.raw;
+                                                return 'Nilai: ' + Math.round(v);
+                                            }
+                                        }
+                                    }
+                                }
+                            };
+
+                            if (canvas._chartInstance) { canvas._chartInstance.destroy(); }
+                            canvas._chartInstance = new Chart(ctx, { type: 'radar', data: data, options: options });
+
+                            var download = function (dataUrl, filename) {
+                                var a = document.createElement('a');
+                                a.href = dataUrl;
+                                a.download = filename;
+                                document.body.appendChild(a);
+                                a.click();
+                                document.body.removeChild(a);
+                            };
+
+                            var exportPngBtn = document.getElementById('exportRadarPng');
+                            var exportJpgBtn = document.getElementById('exportRadarJpg');
+                            if (exportPngBtn) {
+                                exportPngBtn.addEventListener('click', function () {
+                                    var url = canvas.toDataURL('image/png', 1.0);
+                                    download(url, 'grafik-radar.png');
+                                });
+                            }
+                            if (exportJpgBtn) {
+                                exportJpgBtn.addEventListener('click', function () {
+                                    // Create white background for JPEG to avoid black transparency
+                                    var bgCanvas = document.createElement('canvas');
+                                    bgCanvas.width = canvas.width;
+                                    bgCanvas.height = canvas.height;
+                                    var bgCtx = bgCanvas.getContext('2d');
+                                    bgCtx.fillStyle = '#FFFFFF';
+                                    bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+                                    bgCtx.drawImage(canvas, 0, 0);
+                                    var url = bgCanvas.toDataURL('image/jpeg', 0.95);
+                                    download(url, 'grafik-radar.jpg');
+                                });
+                            }
                         });
                         </script>
                         @endpush

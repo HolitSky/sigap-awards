@@ -38,12 +38,12 @@
                                         <thead>
                                         <tr>
                                             <th>No</th>
-                                            <th>Respondent ID</th>
                                             <th>Nama BPKH</th>
                                             <th>Petugas BPKH</th>
                                             <th>Nomor Telepon / Nomor WhatsApp Aktif</th>
-                                            <th>Situs Website</th>
                                             <th>Status Nilai</th>
+                                            <th>Nilai Final</th>
+                                            <th>Catatan</th>
                                             <th>Action</th>
                                         </tr>
                                         </thead>
@@ -51,15 +51,11 @@
                                             @forelse(($forms ?? []) as $form)
                                                 <tr>
                                                     <td>{{ $forms->firstItem() + $loop->index }}</td>
-                                                    <td>{{ $form->respondent_id }}</td>
                                                     <td>{{ $form->nama_bpkh }}</td>
                                                     <td>{{ $form->petugas_bpkh }}</td>
                                                     <td>{{ $form->phone }}</td>
-                                                    <td>
-                                                        @if(!empty($form->website))
-                                                            <a href="{{ str_starts_with($form->website, 'http') ? $form->website : 'https://'.$form->website }}" target="_blank">{{ $form->website }}</a>
-                                                        @endif
-                                                    </td>
+
+
                                                     <td>
                                                         @php
                                                             $badgeClass = match($form->status_nilai) {
@@ -71,10 +67,12 @@
                                                         @endphp
                                                         <span class="badge {{ $badgeClass }}">{{ $form->status_nilai }}</span>
                                                     </td>
+                                                    <td>{{ $form->total_score !== null && $form->total_score !== '' ? $form->total_score : 'Belum Ada' }}</td>
+                                                    <td>{{ ($form->notes ?? '') !== '' ? $form->notes : '-' }}</td>
                                                     <td>
                                                         <div class="btn-group">
                                                             <a class="btn btn-sm btn-outline-primary" href="{{ route('dashboard.form.bpkh.show', $form->respondent_id) }}">Lihat Detail</a>
-                                                            <a class="btn btn-sm btn-primary" href="{{ route('dashboard.form.bpkh.score.edit', $form->respondent_id) }}">Nilai Form</a>
+                                                            <a class="btn btn-sm btn-primary" href="{{ route('dashboard.form.bpkh.score.edit', $form->respondent_id) }}">Nilai Ulang Form</a>
                                                         </div>
                                                     </td>
                                                 </tr>
