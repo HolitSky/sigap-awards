@@ -43,7 +43,15 @@
                         <div class="border rounded-3">
                             @foreach(($form->meta ?? []) as $key => $value)
                                 <div class="row gx-3 align-items-start py-2 px-3{{ !$loop->last ? ' border-bottom' : '' }}">
-                                    <div class="col-12 col-md-5 text-muted small">{{ $key }}</div>
+                                    <div class="col-12 col-md-5 fs-6 {{ preg_match('/^\s*(\d+)\s*\./', $key) ? 'fw-bold text-dark' : 'fw-semibold text-muted' }}">
+                                        @php
+                                            $label = (string) $key;
+                                            if (preg_match('/^\s*(\d+)\s*\./', $label, $m)) {
+                                                $label = 'SP ' . $m[1] . ' - ' . $label;
+                                            }
+                                        @endphp
+                                        {{ $label }}
+                                    </div>
                                     <div class="col-12 col-md-7 fw-semibold text-break">
                                         @php
                                             $isArray = is_array($value);
