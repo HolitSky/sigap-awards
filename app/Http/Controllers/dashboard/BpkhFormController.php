@@ -29,7 +29,18 @@ class BpkhFormController extends Controller
         $title='Detail Respon BPKH'; $pageTitle=$title;
         $breadcrumbs=[['name'=>'Form','url'=>route('dashboard.form.bpkh.index')],['name'=>'BPKH','url'=>route('dashboard.form.bpkh.index')],['name'=>'Detail','url'=>null,'active'=>true]];
         $form=BpkhForm::where('respondent_id',$respondentId)->firstOrFail();
-        return view('dashboard.pages.form.bpkh.show', compact('title','pageTitle','breadcrumbs','form'));
+        $spLabels = [
+            1 => 'Tata Kelola dan Institusi',
+            2 => 'Kebijakan dan Hukum',
+            3 => 'Finansial',
+            4 => 'Data',
+            5 => 'Inovasi',
+            6 => 'Standard',
+            7 => 'Kemitraan',
+            8 => 'Kapasitas & Pendidikan',
+            9 => 'Komunikasi & Keterlibatan',
+        ];
+        return view('dashboard.pages.form.bpkh.show', compact('title','pageTitle','breadcrumbs','form','spLabels'));
       }
 
 
@@ -85,6 +96,6 @@ class BpkhFormController extends Controller
         ];
 
         $form->update($updatePayload);
-        return redirect()->route('dashboard.form.bpkh.index')->with('success','Status & nilai tersimpan.');
+        return redirect()->route('dashboard.form.bpkh.show', $respondentId)->with('success','Status & nilai tersimpan.');
       }
 }
