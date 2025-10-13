@@ -42,12 +42,14 @@
                         <h5 class="mt-4">Hasil Jawaban</h5>
                         <div class="border rounded-3">
                             @foreach(($form->meta ?? []) as $key => $value)
-                                <div class="row gx-3 align-items-start py-2 px-3{{ !$loop->last ? ' border-bottom' : '' }}">
-                                    <div class="col-12 col-md-5 fs-6 {{ preg_match('/^\s*(\d+)\s*\./', $key) ? 'fw-bold text-dark' : 'fw-semibold text-muted' }}">
-                                        @php
-                                            $isQuestion = preg_match('/^\s*(\d+)\s*\./', (string) $key, $m);
-                                            $isAnswer = preg_match('/^\s*soal\s+([0-9]+(?:\.[0-9]+)*)/i', (string) $key, $am);
-                                        @endphp
+                                @php
+                                    $isQuestion = preg_match('/^\s*(\d+)\s*\./', (string) $key, $m);
+                                    $isAnswer = preg_match('/^\s*soal\s+([0-9]+(?:\.[0-9]+)*)/i', (string) $key, $am);
+                                    $rowStyle = 'color:#2B2929;';
+                                    if ($isAnswer) { $rowStyle .= 'background-color:#F8F6FF;'; }
+                                @endphp
+                                <div class="row gx-3 align-items-start py-2 px-3{{ !$loop->last ? ' border-bottom' : '' }}" style="{{ $rowStyle }}">
+                                    <div class="col-12 col-md-5 fs-6 {{ $isQuestion ? 'fw-bold' : 'fw-semibold' }}">
                                         @if($isQuestion)
                                             <div>SP {{ $m[1] }} :</div>
                                             <div class="mt-1">{{ $key }}</div>
