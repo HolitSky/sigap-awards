@@ -18,7 +18,7 @@ class BpkhSheetSyncService
 
     public function sync(): int
     {
-        $spreadsheetId = config('google.sheets.spreadsheet_id');
+        $spreadsheetId = config('google.sheets.spreadsheet_id_bpkh');
         $range = config('google.sheets.range');
 
         $rows = Sheets::spreadsheet($spreadsheetId)->range($range)->get();
