@@ -46,6 +46,11 @@ Proyek ini dibangun menggunakan teknologi modern:
   - Terintegrasi dengan platform Tally.so untuk pengisian form penilaian
   - Sistem penilaian yang transparan dan terukur
 
+- 🔄 **Integrasi Google Sheets**
+  - Sinkronisasi otomatis data form dari Google Sheets
+  - Pengelolaan data responden yang real-time
+  - Penyimpanan metadata lengkap dari setiap submission
+
 ## 🚀 Instalasi
 
 ```bash
@@ -63,8 +68,16 @@ npm install
 cp .env.example .env
 php artisan key:generate
 
+# Konfigurasi Google Sheets (tambahkan ke .env)
+GOOGLE_SHEETS_ID=your_spreadsheet_id
+GOOGLE_SHEETS_RANGE=Sheet1!A:ZZ
+GOOGLE_API_KEY=your_api_key
+
 # Jalankan migrasi database
 php artisan migrate
+
+# Sinkronisasi data bpkh dan produsen dari Google Sheets
+php artisan bpkh:sync-sheets
 
 # Compile assets
 npm run dev
@@ -72,6 +85,20 @@ npm run dev
 # Jalankan server
 php artisan serve
 ```
+
+### 📥 Sinkronisasi Data
+
+Untuk memperbarui data dari Google Sheets, jalankan:
+
+```bash
+php artisan bpkh:sync-sheets
+```
+
+Command ini akan:
+- Mengambil data terbaru dari Google Sheets
+- Memperbarui atau menambahkan record baru ke database
+- Menyimpan metadata lengkap sesuai urutan kolom di spreadsheet
+- Mencatat waktu sinkronisasi terakhir
 
 ## 🤝 Kontribusi
 
