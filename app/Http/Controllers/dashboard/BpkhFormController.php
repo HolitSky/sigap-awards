@@ -14,7 +14,12 @@ class BpkhFormController extends Controller
         $title='Hasil Form BPKH'; $pageTitle=$title;
        $breadcrumbs=[['name'=>'Form','url'=>null],['name'=>'BPKH','url'=>null,'active'=>true]];
         $term=$request->string('q')->toString();
-        $forms=BpkhForm::query()->search($term)->orderBy('created_at','desc')->paginate(15)->withQueryString();
+        $forms=BpkhForm::query()
+            ->search($term)
+            ->orderBy('sheet_row_number','asc')
+            ->orderBy('respondent_id','asc')
+            ->paginate(15)
+            ->withQueryString();
         return view('dashboard.pages.form.bpkh.index', compact('title','pageTitle','breadcrumbs','forms','term'));
       }
 
