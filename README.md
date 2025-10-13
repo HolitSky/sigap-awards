@@ -78,6 +78,7 @@ php artisan migrate
 
 # Sinkronisasi data bpkh dan produsen dari Google Sheets
 php artisan bpkh:sync-sheets
+php artisan produsen:sync-sheets
 
 # Compile assets
 npm run dev
