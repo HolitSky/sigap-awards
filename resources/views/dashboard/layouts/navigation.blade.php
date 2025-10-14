@@ -59,7 +59,7 @@
                 </li>
 
                 <li>
-                    <a href="javascript: void(0);" class="waves-effect">
+                    <a href="{{ route('sync-form.index') }}" class="waves-effect">
                         <i class="mdi mdi-cloud-sync"></i>
                         {{-- <span class="badge rounded-pill bg-danger float-end">10</span> --}}
                         <span key="t-forms">Synchronize Form</span>

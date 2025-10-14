@@ -8,6 +8,7 @@ use App\Http\Controllers\dashboard\BpkhFormController;
 use App\Http\Controllers\dashboard\UserProfileController;
 use App\Http\Controllers\dashboard\ProdusenFormController;
 use App\Http\Controllers\dashboard\UserManagementController;
+use App\Http\Controllers\dashboard\SyncFormController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -51,6 +52,13 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/user-management', [UserManagementController::class, 'store'])->name('dashboard.user-management.store');
         Route::put('/user-management/{id}', [UserManagementController::class, 'update'])->name('dashboard.user-management.update');
         Route::delete('/user-management/{id}', [UserManagementController::class, 'destroy'])->name('dashboard.user-management.destroy');
+    });
+
+    // Sync Form Routes (Superadmin only)
+    Route::middleware(['role:superadmin'])->group(function () {
+        Route::get('/sync-form', [SyncFormController::class, 'index'])->name('sync-form.index');
+        Route::post('/sync-form/bpkh', [SyncFormController::class, 'syncFormBpkh'])->name('sync-form.bpkh');
+        Route::post('/sync-form/produsen', [SyncFormController::class, 'syncFormProdusen'])->name('sync-form.produsen');
     });
 
 });
