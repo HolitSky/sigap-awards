@@ -104,8 +104,8 @@
                                         </div>
 
                                         <div class="flex-shrink-0 align-self-center ">
-                                            <div class="avatar-sm rounded-circle bg-primary mini-stat-icon">
-                                                <span class="avatar-title rounded-circle bg-primary">
+                                            <div class="avatar-sm rounded-circle bg-success mini-stat-icon">
+                                                <span class="avatar-title rounded-circle bg-success">
                                                     <i class="bx bx-archive-in font-size-24"></i>
                                                 </span>
                                             </div>

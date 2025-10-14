@@ -12,7 +12,7 @@ class ProdusenFormController extends Controller
 {
     public function index(Request $request){
         $title='Hasil Form Produsen'; $pageTitle=$title;
-       $breadcrumbs=[["name"=>"Form","url"=>null],["name"=>"Produsen","url"=>null,"active"=>true]];
+       $breadcrumbs=[["name"=>"Penilaian Form","url"=>null],["name"=>"Produsen","url"=>null,"active"=>true]];
         $term=$request->string('q')->toString();
         $forms=ProdusenForm::query()
             ->search($term)
@@ -35,7 +35,7 @@ class ProdusenFormController extends Controller
 
       public function show(string $respondentId){
         $title='Detail Respon Produsen'; $pageTitle=$title;
-        $breadcrumbs=[["name"=>"Form","url"=>route('dashboard.form.produsen-dg.index')],["name"=>"Produsen","url"=>route('dashboard.form.produsen-dg.index')],["name"=>"Detail","url"=>null,"active"=>true]];
+        $breadcrumbs=[["name"=>"Penilaian Form","url"=>route('dashboard.form.produsen-dg.index')],["name"=>"Produsen","url"=>route('dashboard.form.produsen-dg.index')],["name"=>"Detail","url"=>null,"active"=>true]];
         $form=ProdusenForm::where('respondent_id',$respondentId)->firstOrFail();
         $statusLabels = [
             'pending'   => 'Pending',
@@ -61,7 +61,7 @@ class ProdusenFormController extends Controller
 
       public function editScore(string $respondentId){
         $title='Nilai Ulang Form Produsen'; $pageTitle=$title;
-        $breadcrumbs=[["name"=>"Form","url"=>route('dashboard.form.produsen-dg.index')],["name"=>"Produsen","url"=>route('dashboard.form.produsen-dg.index')],["name"=>"Nilai","url"=>null,"active"=>true]];
+        $breadcrumbs=[["name"=>"Penilaian Form","url"=>route('dashboard.form.produsen-dg.index')],["name"=>"Produsen","url"=>route('dashboard.form.produsen-dg.index')],["name"=>"Nilai Ulang Form","url"=>null,"active"=>true]];
         $form=ProdusenForm::where('respondent_id',$respondentId)->firstOrFail();
         $statusLabels = [
             'pending'   => 'Pending',

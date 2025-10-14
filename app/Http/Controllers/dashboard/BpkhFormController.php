@@ -13,7 +13,7 @@ class BpkhFormController extends Controller
 {
     public function index(Request $request){
         $title='Hasil Form BPKH'; $pageTitle=$title;
-       $breadcrumbs=[['name'=>'Form','url'=>null],['name'=>'BPKH','url'=>null,'active'=>true]];
+       $breadcrumbs=[['name'=>'Penilaian Form','url'=>null],['name'=>'BPKH','url'=>null,'active'=>true]];
         $term=$request->string('q')->toString();
         $forms=BpkhForm::query()
             ->search($term)
@@ -36,7 +36,7 @@ class BpkhFormController extends Controller
 
       public function show(string $respondentId){
         $title='Detail Respon BPKH'; $pageTitle=$title;
-        $breadcrumbs=[['name'=>'Form','url'=>route('dashboard.form.bpkh.index')],['name'=>'BPKH','url'=>route('dashboard.form.bpkh.index')],['name'=>'Detail','url'=>null,'active'=>true]];
+        $breadcrumbs=[['name'=>'Penilaian Form','url'=>route('dashboard.form.bpkh.index')],['name'=>'BPKH','url'=>route('dashboard.form.bpkh.index')],['name'=>'Detail','url'=>null,'active'=>true]];
         $form=BpkhForm::where('respondent_id',$respondentId)->firstOrFail();
         $statusLabels = [
             'pending'   => 'Pending',
@@ -62,7 +62,7 @@ class BpkhFormController extends Controller
 
       public function editScore(string $respondentId){
         $title='Nilai Ulang Form BPKH'; $pageTitle=$title;
-        $breadcrumbs=[['name'=>'Form','url'=>route('dashboard.form.bpkh.index')],['name'=>'BPKH','url'=>route('dashboard.form.bpkh.index')],['name'=>'Nilai','url'=>null,'active'=>true]];
+        $breadcrumbs=[['name'=>'Penilaian Form','url'=>route('dashboard.form.bpkh.index')],['name'=>'BPKH','url'=>route('dashboard.form.bpkh.index')],['name'=>'Nilai Ulang Form','url'=>null,'active'=>true]];
         $form=BpkhForm::where('respondent_id',$respondentId)->firstOrFail();
         $statusLabels = [
             'pending'   => 'Pending',
