@@ -240,8 +240,8 @@
                     <div class="mb-3">
                         <label for="editRole" class="form-label">Role <span class="text-danger">*</span></label>
                         <select class="form-select" id="editRole" required>
-
-                            <option value="panitia">Panitia</option>
+                            {{-- <option value="peserta">Peserta</option> --}}
+                            <option value="panitia">Juri</option>
                             @if(auth()->user()->role === 'superadmin')
                             <option value="admin">Admin</option>
                             <option value="superadmin">Superadmin</option>
@@ -300,8 +300,8 @@
                     <div class="mb-3">
                         <label for="addRole" class="form-label">Role <span class="text-danger">*</span></label>
                         <select class="form-select" id="addRole" required>
-
-                            <option value="panitia">Panitia</option>
+                            {{-- <option value="peserta">Peserta</option> --}}
+                            <option value="panitia">Juri</option>
                             @if(auth()->user()->role === 'superadmin')
                             <option value="admin">Admin</option>
                             <option value="superadmin">Superadmin</option>
@@ -336,6 +336,17 @@ $(document).ready(function() {
     const userRole = '{{ auth()->user()->role }}';
     const isSuperAdmin = userRole === 'superadmin';
 
+    // Role display mapping (same as in controller)
+    function getRoleDisplay(role) {
+        const roleMap = {
+            'panitia': 'Juri',
+            'peserta': 'Peserta',
+            'admin': 'Admin',
+            'superadmin': 'Superadmin'
+        };
+        return roleMap[role] || role.charAt(0).toUpperCase() + role.slice(1);
+    }
+
     // Initialize DataTable
     const table = $('#usersTable').DataTable({
         processing: true,
@@ -368,14 +379,15 @@ $(document).ready(function() {
             { data: 'email' },
             {
                 data: 'role',
-                render: function(data) {
+                render: function(data, type, row) {
                     const colors = {
                         'superadmin': 'danger',
                         'admin': 'warning',
                         'panitia': 'info',
                         'peserta': 'success'
                     };
-                    return `<span class="badge bg-${colors[data] || 'secondary'}">${data.toUpperCase()}</span>`;
+                    const displayText = row.role_display || data.toUpperCase();
+                    return `<span class="badge bg-${colors[data] || 'secondary'}">${displayText}</span>`;
                 }
             },
             {
@@ -395,7 +407,7 @@ $(document).ready(function() {
                 render: function(data, type, row) {
                     // Check if user is protected (from backend)
                     const isProtected = row.is_protected === true || row.is_protected === 1;
-                    
+
                     const editButton = isProtected ? '' : `
                         <li>
                             <a class="dropdown-item edit-user" href="javascript:void(0);" data-id="${data}">
@@ -403,7 +415,7 @@ $(document).ready(function() {
                             </a>
                         </li>
                     `;
-                    
+
                     const deleteButton = isProtected ? '' : `
                         <li><hr class="dropdown-divider"></li>
                         <li>
@@ -412,7 +424,7 @@ $(document).ready(function() {
                             </a>
                         </li>
                     `;
-                    
+
                     return `
                         <div class="btn-group">
                             <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -465,7 +477,10 @@ $(document).ready(function() {
                 $('#detailId').text(response.id);
                 $('#detailName').text(response.name);
                 $('#detailEmail').text(response.email);
-                $('#detailRole').text(response.role.toUpperCase());
+
+                // Use role_display if available, otherwise map manually
+                const roleDisplay = getRoleDisplay(response.role);
+                $('#detailRole').text(roleDisplay);
 
                 if (isSuperAdmin && response.password) {
                     $('#detailPassword').val(response.password);

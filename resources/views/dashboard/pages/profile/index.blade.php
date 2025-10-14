@@ -51,7 +51,7 @@
                                     <h5 class="font-size-15 mb-1">{{ $user->name }}</h5>
                                     <p class="text-muted mb-0">
                                         <span class="badge badge-soft-primary font-size-12">
-                                            {{ ucfirst($user->role) }}
+                                            {{ $user->role_display }}
                                         </span>
                                     </p>
                                 </div>
@@ -116,7 +116,7 @@
 
                                     <div class="mb-3">
                                         <label class="form-label">Role</label>
-                                        <input type="text" class="form-control" value="{{ ucfirst($user->role) }}" disabled>
+                                        <input type="text" class="form-control" value="{{ $user->role_display }}" disabled>
                                     </div>
 
                                     <div class="mt-4">

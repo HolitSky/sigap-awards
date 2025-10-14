@@ -27,6 +27,20 @@ class UserManagementController extends Controller
     {
         return in_array($email, self::$protectedEmails);
     }
+
+    /**
+     * Get display name for role
+     */
+    protected function getRoleDisplay($role)
+    {
+        return match ($role) {
+            UserModel::ROLE_PANITIA => 'Juri',
+            UserModel::ROLE_PESERTA => 'Peserta',
+            UserModel::ROLE_ADMIN => 'Admin',
+            UserModel::ROLE_SUPERADMIN => 'Superadmin',
+            default => ucfirst($role),
+        };
+    }
     // GET /api/admin/users
     public function index(Request $request)
     {
@@ -67,9 +81,10 @@ class UserManagementController extends Controller
             $length = $request->length ?? 15;
             $users = $query->skip($start)->take($length)->get();
             
-            // Add is_protected flag to each user
+            // Add is_protected flag and role_display to each user
             $users = $users->map(function($user) {
                 $user->is_protected = $this->isProtectedEmail($user->email);
+                $user->role_display = $this->getRoleDisplay($user->role);
                 return $user;
             });
             

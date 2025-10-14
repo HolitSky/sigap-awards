@@ -4,6 +4,7 @@ namespace App\Http\Controllers\dashboard;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\BpkhForm;
 use App\Models\ProdusenForm;
 use Carbon\Carbon;
@@ -20,13 +21,32 @@ class DashboardController extends Controller
         $lastSyncBpkhText = $lastSyncBpkh ? Carbon::parse($lastSyncBpkh)->format('d M Y H:i') : null;
         $lastSyncProdusenText = $lastSyncProdusen ? Carbon::parse($lastSyncProdusen)->format('d M Y H:i') : null;
 
+        // Add role display
+        $user = Auth::user();
+        $roleDisplay = $this->getRoleDisplay($user->role);
+
         return view('dashboard.pages.dashboard', compact(
             'title',
             'countBpkh',
             'countProdusen',
             'lastSyncBpkhText',
-            'lastSyncProdusenText'
+            'lastSyncProdusenText',
+            'roleDisplay'
         ));
+    }
+
+    /**
+     * Get display name for role
+     */
+    protected function getRoleDisplay($role)
+    {
+        return match ($role) {
+            'panitia' => 'Juri',
+            'peserta' => 'Peserta',
+            'admin' => 'Admin',
+            'superadmin' => 'Superadmin',
+            default => ucfirst($role),
+        };
     }
 
     public function bpkh()

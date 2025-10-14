@@ -16,7 +16,22 @@ class UserProfileController extends Controller
     {
         $title = 'Profile';
         $user = Auth::user();
+        $user->role_display = $this->getRoleDisplay($user->role);
         return view('dashboard.pages.profile.index', compact('user', 'title'));
+    }
+
+    /**
+     * Get display name for role
+     */
+    protected function getRoleDisplay($role)
+    {
+        return match ($role) {
+            'panitia' => 'Juri',
+            'peserta' => 'Peserta',
+            'admin' => 'Admin',
+            'superadmin' => 'Superadmin',
+            default => ucfirst($role),
+        };
     }
 
     /**

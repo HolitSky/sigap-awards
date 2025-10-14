@@ -51,7 +51,7 @@
                                     <img src="{{ $profileImage }}" alt="" class="img-thumbnail rounded-circle">
                                 </div>
                                 <h5 class="font-size-15">{{ $user?->name }}</h5>
-                                <p class="text-muted mb-0 text-truncate">{{ strtoupper($user?->role ?? '') }}</p>
+                                <p class="text-muted mb-0 badge badge-soft-primary p-2 font-size-12 mt-2"><i class="mdi mdi-account"></i> {{ strtoupper($roleDisplay ?? '') }}</p>
                             </div>
 
                             <div class="col-sm-8">
