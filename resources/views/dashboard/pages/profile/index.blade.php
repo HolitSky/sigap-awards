@@ -1,5 +1,22 @@
 @extends('dashboard.layouts.app')
 @section('title', 'Profile')
+
+@push('styles')
+<!-- GLightbox CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
+
+<style>
+    .avatar-xl {
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+    
+    .avatar-xl:hover {
+        transform: scale(1.05);
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="page-content">
     <div class="container-fluid">
@@ -38,15 +55,16 @@
                             <div class="col-lg-4">
                                 <div class="text-center">
                                     <div class="mb-4">
-                                        @if($user->profile_image)
-                                            <img src="{{ asset('storage/' . $user->profile_image) }}"
-                                                 alt="Profile Image"
+                                        @php
+                                            $profileImageUrl = $user->profile_image 
+                                                ? asset('storage/' . $user->profile_image) 
+                                                : asset('dashboard-assets/images/users/user-dummy-img.jpg');
+                                        @endphp
+                                        <a href="{{ $profileImageUrl }}" class="glightbox" data-glightbox="title: {{ $user->name }}; description: {{ $user->email }}">
+                                            <img src="{{ $profileImageUrl }}"
+                                                 alt="{{ $user->name }}"
                                                  class="avatar-xl rounded-circle img-thumbnail">
-                                        @else
-                                            <img src="{{ asset('dashboard-assets/images/users/user-dummy-img.jpg') }}"
-                                                 alt="Default Avatar"
-                                                 class="avatar-xl rounded-circle img-thumbnail">
-                                        @endif
+                                        </a>
                                     </div>
                                     <h5 class="font-size-15 mb-1">{{ $user->name }}</h5>
                                     <p class="text-muted mb-0">
@@ -226,6 +244,22 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// Initialize GLightbox
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof GLightbox !== 'undefined') {
+        GLightbox({
+            selector: '.glightbox',
+            touchNavigation: true,
+            loop: true,
+            autoplayVideos: true
+        });
+    }
+});
 </script>
+
+<!-- GLightbox JS -->
+<script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+
 @endpush
 

@@ -2,11 +2,20 @@
 @section('title', 'User Management')
 
 @push('styles')
+<!-- GLightbox CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
+
 <style>
     .avatar-sm {
         width: 40px;
         height: 40px;
         object-fit: cover;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+    
+    .avatar-sm:hover {
+        transform: scale(1.1);
     }
 
     .avatar-lg {
@@ -148,7 +157,9 @@
             </div>
             <div class="modal-body">
                 <div class="text-center mb-4">
-                    <img id="detailProfileImage" src="" alt="Profile" class="avatar-lg rounded-circle img-thumbnail">
+                    <a href="" id="detailProfileImageLink" class="glightbox" data-glightbox="title: User Profile">
+                        <img id="detailProfileImage" src="" alt="Profile" class="avatar-lg rounded-circle img-thumbnail" style="cursor: pointer;">
+                    </a>
                 </div>
 
                 <table class="table table-borderless mb-0">
@@ -372,7 +383,9 @@ $(document).ready(function() {
                     const imgUrl = data
                         ? '{{ asset("storage") }}/' + data
                         : '{{ asset("dashboard-assets/images/users/user-dummy-img.jpg") }}';
-                    return `<img src="${imgUrl}" alt="${row.name}" class="avatar-sm rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">`;
+                    return `<a href="${imgUrl}" class="glightbox" data-glightbox="title: ${row.name}; description: ${row.email}">
+                                <img src="${imgUrl}" alt="${row.name}" class="avatar-sm rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                            </a>`;
                 }
             },
             { data: 'name' },
@@ -474,6 +487,8 @@ $(document).ready(function() {
                     : '{{ asset("dashboard-assets/images/users/user-dummy-img.jpg") }}';
 
                 $('#detailProfileImage').attr('src', imgUrl);
+                $('#detailProfileImageLink').attr('href', imgUrl);
+                $('#detailProfileImageLink').attr('data-glightbox', `title: ${response.name}; description: ${response.email}`);
                 $('#detailId').text(response.id);
                 $('#detailName').text(response.name);
                 $('#detailEmail').text(response.email);
@@ -497,6 +512,11 @@ $(document).ready(function() {
                 $('#detailCreatedAt').text(createdAt);
 
                 $('#detailModal').modal('show');
+                
+                // Reinitialize GLightbox for modal
+                setTimeout(function() {
+                    initGLightbox();
+                }, 300);
             },
             error: function(xhr) {
                 Swal.fire({
@@ -736,7 +756,31 @@ $(document).ready(function() {
             }
         });
     });
+
+    // Initialize GLightbox after DataTable loaded
+    table.on('draw', function() {
+        initGLightbox();
+    });
+
+    // Initialize GLightbox function
+    function initGLightbox() {
+        if (typeof GLightbox !== 'undefined') {
+            GLightbox({
+                selector: '.glightbox',
+                touchNavigation: true,
+                loop: true,
+                autoplayVideos: true
+            });
+        }
+    }
+
+    // Initial load
+    initGLightbox();
 });
 </script>
+
+<!-- GLightbox JS -->
+<script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+
 @endpush
 

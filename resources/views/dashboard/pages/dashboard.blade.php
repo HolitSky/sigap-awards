@@ -1,5 +1,22 @@
 @extends('dashboard.layouts.app')
 @section('title', 'Dashboard')
+
+@push('styles')
+<!-- GLightbox CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
+
+<style>
+    .profile-user-wid img {
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+    
+    .profile-user-wid img:hover {
+        transform: scale(1.05);
+    }
+</style>
+@endpush
+
 @section('content')
 <div class="page-content">
     <div class="container-fluid">
@@ -48,8 +65,10 @@
                                             ? asset('storage/'.$user->profile_image)
                                             : asset('dashboard-assets/images/users/user-dummy-img.jpg');
                                     @endphp
-                                    <img src="{{ $profileImage }}" alt="" class="img-thumbnail rounded-circle"
-                                         style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                                    <a href="{{ $profileImage }}" class="glightbox" data-glightbox="title: {{ $user?->name }}; description: Dashboard Profile">
+                                        <img src="{{ $profileImage }}" alt="{{ $user?->name }}" class="img-thumbnail rounded-circle"
+                                             style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                                    </a>
                                 </div>
                                 <h5 class="font-size-15">{{ $user?->name }}</h5>
                                 <p class="text-muted mb-0 badge badge-soft-primary p-2 font-size-12 mt-2"><i class="mdi mdi-account"></i> {{ strtoupper($roleDisplay ?? '') }}</p>
@@ -128,4 +147,23 @@
 
 @include('dashboard.layouts.components.info_modal')
 @endsection
+
+@push('scripts')
+<script>
+// Initialize GLightbox
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof GLightbox !== 'undefined') {
+        GLightbox({
+            selector: '.glightbox',
+            touchNavigation: true,
+            loop: true,
+            autoplayVideos: true
+        });
+    }
+});
+</script>
+
+<!-- GLightbox JS -->
+<script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+@endpush
 
