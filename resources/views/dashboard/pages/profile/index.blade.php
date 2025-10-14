@@ -58,10 +58,10 @@
 
                                 @if($user->profile_image)
                                     <div class="mt-4 text-center">
-                                        <form action="{{ route('profile.delete-image') }}" method="POST" onsubmit="return confirm('Are you sure you want to delete your profile image?');">
+                                        <form action="{{ route('profile.delete-image') }}" method="POST" id="deleteImageForm">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm">
+                                            <button type="button" class="btn btn-danger btn-sm" id="deleteImageBtn">
                                                 <i class="mdi mdi-delete"></i> Delete Image
                                             </button>
                                         </form>
@@ -107,11 +107,22 @@
                                                class="form-control @error('profile_image') is-invalid @enderror"
                                                id="profile_image"
                                                name="profile_image"
-                                               accept="image/*">
-                                        <small class="text-muted">Max file size: 2MB. Allowed formats: jpeg, png, jpg, gif</small>
+                                               accept="image/*"
+                                               onchange="previewImage(event)">
+                                        <small class="text-muted">Max file size: 2MB. Allowed formats: jpeg, png, jpg</small>
                                         @error('profile_image')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
+
+                                        <!-- Image Preview -->
+                                        <div id="imagePreviewContainer" class="mt-3" style="display: none;">
+                                            <label class="form-label text-muted">Preview:</label>
+                                            <div>
+                                                <img id="imagePreview" src="" alt="Preview"
+                                                     class="img-thumbnail rounded-circle"
+                                                     style="width: 150px; height: 150px; object-fit: cover;">
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div class="mb-3">
@@ -138,4 +149,83 @@
 <!-- End Page-content -->
 
 @endsection
+
+@push('scripts')
+<script>
+function previewImage(event) {
+    const input = event.target;
+    const previewContainer = document.getElementById('imagePreviewContainer');
+    const previewImg = document.getElementById('imagePreview');
+
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+
+        // Validate file size (2MB)
+        if (file.size > 2 * 1024 * 1024) {
+            Swal.fire({
+                icon: 'error',
+                title: 'File Too Large',
+                text: 'File size exceeds 2MB. Please choose a smaller file.',
+                confirmButtonColor: '#f46a6a'
+            });
+            input.value = '';
+            previewContainer.style.display = 'none';
+            return;
+        }
+
+        // Validate file type
+        const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+        if (!validTypes.includes(file.type)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid File Type',
+                text: 'Please choose jpeg, png, jpg, or gif format.',
+                confirmButtonColor: '#f46a6a'
+            });
+            input.value = '';
+            previewContainer.style.display = 'none';
+            return;
+        }
+
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            previewContainer.style.display = 'block';
+        }
+        reader.readAsDataURL(file);
+    } else {
+        previewContainer.style.display = 'none';
+    }
+}
+
+// Delete Image Confirmation
+document.addEventListener('DOMContentLoaded', function() {
+    const deleteBtn = document.getElementById('deleteImageBtn');
+
+    if (deleteBtn) {
+        deleteBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Delete Profile Image?',
+                html: '<p class="text-danger"><i class="mdi mdi-alert"></i> <strong>Warning!</strong></p>' +
+                      '<p>Are you sure you want to delete your profile image?</p>' +
+                      '<p class="text-muted">This action cannot be undone.</p>',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#f46a6a',
+                cancelButtonColor: '#74788d',
+                confirmButtonText: '<i class="mdi mdi-delete"></i> Yes, Delete It!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('deleteImageForm').submit();
+                }
+            });
+        });
+    }
+});
+</script>
+@endpush
 
