@@ -50,11 +50,13 @@
                     @if(Auth::user()->profile_image)
                         <img class="rounded-circle header-profile-user"
                              src="{{ asset('storage/' . Auth::user()->profile_image) }}"
-                             alt="{{ Auth::user()->name }}">
+                             alt="{{ Auth::user()->name }}"
+                             style="width: 36px; height: 36px; object-fit: cover;">
                     @else
                         <img class="rounded-circle header-profile-user"
                              src="{{ asset('dashboard-assets/images/users/user-dummy-img.jpg') }}"
-                             alt="{{ Auth::user()->name }}">
+                             alt="{{ Auth::user()->name }}"
+                             style="width: 36px; height: 36px; object-fit: cover;">
                     @endif
                     <span class="d-none d-xl-inline-block ms-1" key="t-henry">{{ Auth::user()->name }}</span>
                     <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>

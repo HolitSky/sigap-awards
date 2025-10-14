@@ -63,7 +63,8 @@
                                         <a href="{{ $profileImageUrl }}" class="glightbox" data-glightbox="title: {{ $user->name }}; description: {{ $user->email }}">
                                             <img src="{{ $profileImageUrl }}"
                                                  alt="{{ $user->name }}"
-                                                 class="avatar-xl rounded-circle img-thumbnail">
+                                                 class="avatar-xl rounded-circle img-thumbnail"
+                                                 style="width: 96px; height: 96px; object-fit: cover;">
                                         </a>
                                     </div>
                                     <h5 class="font-size-15 mb-1">{{ $user->name }}</h5>
