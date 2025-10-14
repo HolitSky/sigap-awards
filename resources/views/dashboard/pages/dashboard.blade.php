@@ -41,14 +41,15 @@
                     <div class="card-body pt-0">
                         <div class="row">
                             <div class="col-sm-4">
-                                <div class="avatar-md profile-user-wid mb-4">
+                                <div class="avatar-md profile-user-wid mb-4" style="width: 100px; height: 100px;">
                                     @php
                                         $user = Auth::user();
                                         $profileImage = $user?->profile_image
                                             ? asset('storage/'.$user->profile_image)
                                             : asset('dashboard-assets/images/users/user-dummy-img.jpg');
                                     @endphp
-                                    <img src="{{ $profileImage }}" alt="" class="img-thumbnail rounded-circle">
+                                    <img src="{{ $profileImage }}" alt="" class="img-thumbnail rounded-circle"
+                                         style="width: 100%; height: 100%; object-fit: cover; display: block;">
                                 </div>
                                 <h5 class="font-size-15">{{ $user?->name }}</h5>
                                 <p class="text-muted mb-0 badge badge-soft-primary p-2 font-size-12 mt-2"><i class="mdi mdi-account"></i> {{ strtoupper($roleDisplay ?? '') }}</p>
