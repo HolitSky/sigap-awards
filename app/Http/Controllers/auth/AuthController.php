@@ -53,6 +53,18 @@ class AuthController extends Controller
                 'password' => $data['password']
             ];
         } else {
+            // For web requests, validate CAPTCHA first
+            $captchaAnswer = session('captcha_answer');
+            $userCaptcha = $request->input('captcha');
+
+            if (!$captchaAnswer || $userCaptcha != $captchaAnswer) {
+                // Regenerate captcha on error
+                $this->generateCaptcha();
+                return back()->withErrors([
+                    'captcha' => 'CAPTCHA salah. Silakan coba lagi.',
+                ])->withInput($request->only('email'));
+            }
+
             // For web requests, use basic validation
             $credentials = $request->validate([
                 'email' => 'required|email',
@@ -68,6 +80,8 @@ class AuthController extends Controller
                 return response()->json(['message' => 'Invalid credentials'], 401);
             }
             
+            // Regenerate captcha on failed login
+            $this->generateCaptcha();
             return back()->withErrors([
                 'email' => 'Email atau password yang Anda masukkan salah.',
             ])->onlyInput('email');
@@ -79,6 +93,7 @@ class AuthController extends Controller
             $token = $user->createToken('api', $abilities)->plainTextToken;
 
             return response()->json([
+                'message' => 'Login successful',
                 'access_token' => $token,
                 'token_type' => 'bearer',
                 'user' => $user,
@@ -87,11 +102,13 @@ class AuthController extends Controller
             // Web Login - Create session
             Auth::login($user);
             $request->session()->regenerate();
-
-            return redirect()->intended('/dashboard')->with([
-                'success' => 'Selamat datang, ' . $user->name . '!',
-                'auth_action' => 'login',
-            ]);
+            
+            // Clear captcha after successful login
+            session()->forget(['captcha_answer', 'captcha_image']);
+            
+            return redirect()->intended(route('dashboard.index'))
+                ->with('success', 'Anda berhasil login!')
+                ->with('auth_action', 'login');
         }
     }
 
@@ -137,11 +154,73 @@ class AuthController extends Controller
     }
 
     /**
-     * Show login form (Web only)
+     * Show login form
      */
     public function showLoginForm()
     {
+        // Generate captcha on page load
+        $this->generateCaptcha();
         return view('auth.login');
+    }
+
+    /**
+     * Generate CAPTCHA image
+     */
+    private function generateCaptcha()
+    {
+        // Generate random numbers and operation
+        $num1 = rand(10, 20);
+        $num2 = rand(1, 10);
+        $operation = rand(0, 1) ? '+' : '-';
+
+        // Calculate the result
+        $result = ($operation == '+') ? $num1 + $num2 : $num1 - $num2;
+
+        // Create the CAPTCHA text
+        $captcha_text = "$num1 $operation $num2 = ?";
+
+        // Create image
+        $image = imagecreatetruecolor(200, 60);
+        $bg = imagecolorallocate($image, 40, 40, 40);
+        $fg = imagecolorallocate($image, 255, 255, 255);
+        $line = imagecolorallocate($image, 100, 100, 100);
+        imagefill($image, 0, 0, $bg);
+
+        // Add noise lines
+        for ($i = 0; $i < 3; $i++) {
+            imageline($image, rand(0, 200), rand(0, 60), rand(0, 200), rand(0, 60), $line);
+        }
+
+        // Add text
+        imagestring($image, 5, 40, 20, $captcha_text, $fg);
+        
+        // Add noise pixels
+        for ($i = 0; $i < 150; $i++) {
+            imagesetpixel($image, rand(0, 200), rand(0, 60), $fg);
+        }
+
+        // Output image
+        ob_start();
+        imagepng($image);
+        $imageData = ob_get_clean();
+        imagedestroy($image);
+
+        $base64 = 'data:image/png;base64,' . base64_encode($imageData);
+
+        // Store CAPTCHA result in session
+        session(['captcha_answer' => strval($result)]);
+        session(['captcha_image' => $base64]);
+
+        return $base64;
+    }
+
+    /**
+     * Refresh CAPTCHA (AJAX)
+     */
+    public function refreshCaptcha()
+    {
+        $newCaptcha = $this->generateCaptcha();
+        return response()->json(['captcha' => $newCaptcha]);
     }
 
     /**

@@ -20,7 +20,7 @@
 
                         <div class="d-flex align-items-center justify-content-between mb-3">
                             <div>
-                                <h4 class="mb-0">Responden Id :{{ $form->respondent_id }} <br> {{ $form->nama_instansi }}</h4>
+                                <h4 class="mb-0">Nama Instansi/Direktorat Produsen DG : {{ $form->nama_instansi }}</h4>
                                 @if(!empty($form->juri_penilai))
                                     <div class="mt-2">
                                         <span class="badge rounded-pill text-white" style="background-color:#D26607;padding:.5rem .75rem;font-size:.9rem;">
@@ -29,7 +29,7 @@
                                     </div>
                                 @endif
                             </div>
-<div>
+                            <div>
                                 @php
                                     $badgeClass = match($form->status_nilai) {
                                         'pending' => 'bg-secondary',
@@ -38,7 +38,7 @@
                                         default => 'bg-secondary',
                                     };
                                 @endphp
-                                <span class="badge {{ $badgeClass }}">{{ $form->status_nilai }}</span>
+                                <span class="badge {{ $badgeClass }} rounded-pill" style="padding:.5rem .75rem;font-size:.95rem;">{{ $form->status_label ?? $form->status_nilai }}</span>
                             </div>
                         </div>
 

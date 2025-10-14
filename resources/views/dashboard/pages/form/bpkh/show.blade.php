@@ -38,7 +38,7 @@
                                         default => 'bg-secondary',
                                     };
                                 @endphp
-                                <span class="badge {{ $badgeClass }}">{{ $form->status_nilai }}</span>
+                                <span class="badge {{ $badgeClass }} rounded-pill" style="padding:.5rem .75rem;font-size:.95rem;">{{ $form->status_label ?? $form->status_nilai }}</span>
                             </div>
                         </div>
 

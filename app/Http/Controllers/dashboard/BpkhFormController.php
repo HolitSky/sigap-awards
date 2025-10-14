@@ -21,6 +21,15 @@ class BpkhFormController extends Controller
             ->orderBy('respondent_id','asc')
             ->paginate(15)
             ->withQueryString();
+        $statusLabels = [
+            'pending'   => 'Pending',
+            'in_review' => 'Dalam Review',
+            'scored'    => 'Sudah Final',
+        ];
+        $forms->getCollection()->transform(function ($form) use ($statusLabels) {
+            $form->status_label = $statusLabels[$form->status_nilai] ?? $form->status_nilai;
+            return $form;
+        });
         return view('dashboard.pages.form.bpkh.index', compact('title','pageTitle','breadcrumbs','forms','term'));
       }
 
@@ -29,6 +38,12 @@ class BpkhFormController extends Controller
         $title='Detail Respon BPKH'; $pageTitle=$title;
         $breadcrumbs=[['name'=>'Form','url'=>route('dashboard.form.bpkh.index')],['name'=>'BPKH','url'=>route('dashboard.form.bpkh.index')],['name'=>'Detail','url'=>null,'active'=>true]];
         $form=BpkhForm::where('respondent_id',$respondentId)->firstOrFail();
+        $statusLabels = [
+            'pending'   => 'Pending',
+            'in_review' => 'Dalam Review',
+            'scored'    => 'Sudah Final',
+        ];
+        $form->status_label = $statusLabels[$form->status_nilai] ?? $form->status_nilai;
         $spLabels = [
             1 => 'Tata Kelola dan Institusi',
             2 => 'Kebijakan dan Hukum',
@@ -49,7 +64,12 @@ class BpkhFormController extends Controller
         $title='Nilai Ulang Form BPKH'; $pageTitle=$title;
         $breadcrumbs=[['name'=>'Form','url'=>route('dashboard.form.bpkh.index')],['name'=>'BPKH','url'=>route('dashboard.form.bpkh.index')],['name'=>'Nilai','url'=>null,'active'=>true]];
         $form=BpkhForm::where('respondent_id',$respondentId)->firstOrFail();
-        return view('dashboard.pages.form.bpkh.score', compact('title','pageTitle','breadcrumbs','form'));
+        $statusLabels = [
+            'pending'   => 'Pending',
+            'in_review' => 'Dalam Review',
+            'scored'    => 'Sudah Final',
+        ];
+        return view('dashboard.pages.form.bpkh.score', compact('title','pageTitle','breadcrumbs','form','statusLabels'));
       }
 
 

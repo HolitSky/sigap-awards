@@ -24,7 +24,7 @@
 
                  <li>
                     <a href="{{ route('dashboard.form.bpkh.index') }}" class="waves-effect">
-                        <i class="bx bx-spreadsheet"></i>
+                        <i class="mdi mdi-book-sync"></i>
                         {{-- <span class="badge rounded-pill bg-danger float-end">10</span> --}}
                         <span key="t-forms">BPKH</span>
                     </a>
@@ -32,23 +32,42 @@
 
                 <li>
                     <a href="{{ route('dashboard.form.produsen-dg.index') }}" class="waves-effect">
-                        <i class="bx bx-file"></i>
+                        <i class="mdi mdi-book-sync-outline"></i>
                         {{-- <span class="badge rounded-pill bg-danger float-end">10</span> --}}
                         <span key="t-forms">Produsen DG</span>
                     </a>
                 </li>
 
-                @can('see-admin-menus')
+
+            </ul>
+
+
+
+            @can('see-admin-menus')
+            <ul class="metismenu list-unstyled" id="side-menu">
+                <li class="menu-title" key="t-menu">Settings</li>
+
                 {{-- menu khusus superadmin --}}
+
+
                 <li>
-                    <a href="javascript: void(0);" class="waves-effect">
-                        <i class="bx bxs-eraser"></i>
+                    <a href="{{ route('dashboard.user-management.index') }}" class="waves-effect">
+                        <i class="mdi mdi-account-cog"></i>
                         {{-- <span class="badge rounded-pill bg-danger float-end">10</span> --}}
-                        <span key="t-forms">Menu Test</span>
+                        <span key="t-forms">User Management</span>
                     </a>
                 </li>
-                @endcan
+
+                <li>
+                    <a href="javascript: void(0);" class="waves-effect">
+                        <i class="mdi mdi-cloud-sync"></i>
+                        {{-- <span class="badge rounded-pill bg-danger float-end">10</span> --}}
+                        <span key="t-forms">Synchronize Form</span>
+                    </a>
+                </li>
+
             </ul>
+            @endcan
 
 
         </div>

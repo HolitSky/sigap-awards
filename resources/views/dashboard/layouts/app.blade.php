@@ -31,6 +31,8 @@
         <!-- App js -->
         <script src="{{ asset('/dashboard-assets/js/plugin.js') }}"></script>
 
+        <script src="{{ asset('/dashboard-assets/js/pages/materialdesign.init.js') }}"></script>
+
         @stack('styles')
     </head>
 

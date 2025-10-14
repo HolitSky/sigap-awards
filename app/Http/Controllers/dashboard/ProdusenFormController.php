@@ -20,6 +20,15 @@ class ProdusenFormController extends Controller
             ->orderBy('respondent_id','asc')
             ->paginate(15)
             ->withQueryString();
+        $statusLabels = [
+            'pending'   => 'Pending',
+            'in_review' => 'Dalam Review',
+            'scored'    => 'Sudah Final',
+        ];
+        $forms->getCollection()->transform(function ($form) use ($statusLabels) {
+            $form->status_label = $statusLabels[$form->status_nilai] ?? $form->status_nilai;
+            return $form;
+        });
         return view('dashboard.pages.form.produsen.index', compact('title','pageTitle','breadcrumbs','forms','term'));
       }
 
@@ -28,6 +37,12 @@ class ProdusenFormController extends Controller
         $title='Detail Respon Produsen'; $pageTitle=$title;
         $breadcrumbs=[["name"=>"Form","url"=>route('dashboard.form.produsen-dg.index')],["name"=>"Produsen","url"=>route('dashboard.form.produsen-dg.index')],["name"=>"Detail","url"=>null,"active"=>true]];
         $form=ProdusenForm::where('respondent_id',$respondentId)->firstOrFail();
+        $statusLabels = [
+            'pending'   => 'Pending',
+            'in_review' => 'Dalam Review',
+            'scored'    => 'Sudah Final',
+        ];
+        $form->status_label = $statusLabels[$form->status_nilai] ?? $form->status_nilai;
         $spLabels = [
             1 => 'Tata Kelola dan Institusi',
             2 => 'Kebijakan dan Hukum',
@@ -48,7 +63,12 @@ class ProdusenFormController extends Controller
         $title='Nilai Ulang Form Produsen'; $pageTitle=$title;
         $breadcrumbs=[["name"=>"Form","url"=>route('dashboard.form.produsen-dg.index')],["name"=>"Produsen","url"=>route('dashboard.form.produsen-dg.index')],["name"=>"Nilai","url"=>null,"active"=>true]];
         $form=ProdusenForm::where('respondent_id',$respondentId)->firstOrFail();
-        return view('dashboard.pages.form.produsen.score', compact('title','pageTitle','breadcrumbs','form'));
+        $statusLabels = [
+            'pending'   => 'Pending',
+            'in_review' => 'Dalam Review',
+            'scored'    => 'Sudah Final',
+        ];
+        return view('dashboard.pages.form.produsen.score', compact('title','pageTitle','breadcrumbs','form','statusLabels'));
       }
 
 

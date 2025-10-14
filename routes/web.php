@@ -7,6 +7,7 @@ use App\Http\Controllers\auth\AuthController;
 use App\Http\Controllers\dashboard\BpkhFormController;
 use App\Http\Controllers\dashboard\UserProfileController;
 use App\Http\Controllers\dashboard\ProdusenFormController;
+use App\Http\Controllers\dashboard\UserManagementController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -16,6 +17,7 @@ Route::get('/thanks-for-submit', [HomeController::class, 'thanksForSubmit'])->na
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/refresh-captcha', [AuthController::class, 'refreshCaptcha'])->name('refresh.captcha');
 
 // Dashboard Routes (Protected)
 Route::middleware(['auth'])->group(function () {
@@ -40,5 +42,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/form-produsen-dg/{respondentId}', [ProdusenFormController::class, 'show'])->name('dashboard.form.produsen-dg.show');
     Route::get('/form-produsen-dg/{respondentId}/nilai', [ProdusenFormController::class, 'editScore'])->name('dashboard.form.produsen-dg.score.edit');
     Route::post('/form-produsen-dg/{respondentId}/nilai', [ProdusenFormController::class, 'updateScore'])->name('dashboard.form.produsen-dg.score.update');
+
+
+    // User Management Routes (Admin & Superadmin only)
+    Route::middleware(['role:admin,superadmin'])->group(function () {
+        Route::get('/user-management', [UserManagementController::class, 'index'])->name('dashboard.user-management.index');
+        Route::get('/user-management/{id}', [UserManagementController::class, 'show'])->name('dashboard.user-management.show');
+        Route::post('/user-management', [UserManagementController::class, 'store'])->name('dashboard.user-management.store');
+        Route::put('/user-management/{id}', [UserManagementController::class, 'update'])->name('dashboard.user-management.update');
+        Route::delete('/user-management/{id}', [UserManagementController::class, 'destroy'])->name('dashboard.user-management.destroy');
+    });
 
 });

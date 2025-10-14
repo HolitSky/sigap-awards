@@ -65,7 +65,7 @@
                                                                 default => 'bg-secondary',
                                                             };
                                                         @endphp
-                                                        <span class="badge {{ $badgeClass }}">{{ $form->status_nilai }}</span>
+                                                        <span class="badge {{ $badgeClass }}">{{ $form->status_label ?? $form->status_nilai }}</span>
                                                     </td>
                                                     <td>{{ $form->total_score !== null && $form->total_score !== '' ? $form->total_score : 'Belum Ada' }}</td>
                                                     <td>{{ ($form->notes ?? '') !== '' ? $form->notes : '-' }}</td>

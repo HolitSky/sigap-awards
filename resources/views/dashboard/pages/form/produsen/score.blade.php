@@ -29,9 +29,9 @@
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Status Nilai</label>
                                 <select name="status_nilai" class="form-select" required>
-                                    <option value="pending" {{ $form->status_nilai==='pending'?'selected':'' }}>pending</option>
-                                    <option value="in_review" {{ $form->status_nilai==='in_review'?'selected':'' }}>in_review</option>
-                                    <option value="scored" {{ $form->status_nilai==='scored'?'selected':'' }}>scored</option>
+                                    @foreach(($statusLabels ?? []) as $val => $label)
+                                        <option value="{{ $val }}" {{ $form->status_nilai===$val?'selected':'' }}>{{ $label }}</option>
+                                    @endforeach
                                 </select>
                             </div>
 
