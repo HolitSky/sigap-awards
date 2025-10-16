@@ -19,14 +19,13 @@ class BpkhFormController extends Controller
             ->search($term)
             ->orderBy('sheet_row_number','asc')
             ->orderBy('respondent_id','asc')
-            ->paginate(15)
-            ->withQueryString();
+            ->get();
         $statusLabels = [
             'pending'   => 'Pending',
             'in_review' => 'Dalam Review',
             'scored'    => 'Sudah Final',
         ];
-        $forms->getCollection()->transform(function ($form) use ($statusLabels) {
+        $forms->transform(function ($form) use ($statusLabels) {
             $form->status_label = $statusLabels[$form->status_nilai] ?? $form->status_nilai;
             return $form;
         });

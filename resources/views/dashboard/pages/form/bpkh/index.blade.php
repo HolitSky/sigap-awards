@@ -50,7 +50,7 @@
                                         <tbody>
                                             @forelse(($forms ?? []) as $form)
                                                 <tr>
-                                                    <td>{{ $forms->firstItem() + $loop->index }}</td>
+                                                    <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $form->nama_bpkh }}</td>
                                                     <td>{{ $form->petugas_bpkh }}</td>
                                                     <td>{{ $form->phone }}</td>
@@ -81,10 +81,6 @@
                                         </tbody>
                                     </table>
 
-                                    @if(isset($forms))
-                                        {{ $forms->links() }}
-                                    @endif
-
                                 </div>
                             </div>
                         </div> <!-- end col -->
@@ -102,3 +98,104 @@
 
 
 @endsection
+
+@push('styles')
+<style>
+    #datatable {
+        table-layout: fixed;
+        width: 100% !important;
+    }
+    
+    #datatable th:nth-child(1),
+    #datatable td:nth-child(1) {
+        width: 50px !important;
+        max-width: 50px !important;
+    }
+    
+    #datatable th:nth-child(2),
+    #datatable td:nth-child(2) {
+        width: 200px !important;
+        max-width: 200px !important;
+        word-wrap: break-word;
+        white-space: normal;
+    }
+    
+    #datatable th:nth-child(3),
+    #datatable td:nth-child(3) {
+        width: 150px !important;
+        max-width: 150px !important;
+        word-wrap: break-word;
+        white-space: normal;
+    }
+    
+    #datatable th:nth-child(4),
+    #datatable td:nth-child(4) {
+        width: 130px !important;
+        max-width: 130px !important;
+        word-wrap: break-word;
+        white-space: normal;
+    }
+    
+    #datatable th:nth-child(5),
+    #datatable td:nth-child(5) {
+        width: 100px !important;
+        max-width: 100px !important;
+        text-align: center;
+    }
+    
+    #datatable th:nth-child(6),
+    #datatable td:nth-child(6) {
+        width: 80px !important;
+        max-width: 80px !important;
+        text-align: center;
+    }
+    
+    #datatable th:nth-child(7),
+    #datatable td:nth-child(7) {
+        width: 150px !important;
+        max-width: 150px !important;
+        word-wrap: break-word;
+        white-space: normal;
+    }
+    
+    #datatable th:nth-child(8),
+    #datatable td:nth-child(8) {
+        width: 180px !important;
+        max-width: 180px !important;
+    }
+    
+    #datatable td {
+        vertical-align: middle;
+    }
+</style>
+@endpush
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    // Destroy default DataTable if exists
+    if ($.fn.DataTable.isDataTable('#datatable')) {
+        $('#datatable').DataTable().destroy();
+    }
+    
+    // Re-initialize with custom options
+    $('#datatable').DataTable({
+        lengthMenu: [[10, 15, 25, 50, -1], [10, 15, 25, 50, "All"]],
+        pageLength: 15,
+        responsive: true,
+        order: [[0, 'asc']],
+        columnDefs: [
+            { width: "5%", targets: 0 },   // No
+            { width: "20%", targets: 1 },  // Nama BPKH
+            { width: "15%", targets: 2 },  // Petugas BPKH
+            { width: "12%", targets: 3 },  // Nomor Telepon
+            { width: "10%", targets: 4 },  // Status Nilai
+            { width: "8%", targets: 5 },   // Nilai Final
+            { width: "15%", targets: 6 },  // Catatan
+            { width: "15%", targets: 7 }   // Action
+        ],
+        autoWidth: false
+    });
+});
+</script>
+@endpush
