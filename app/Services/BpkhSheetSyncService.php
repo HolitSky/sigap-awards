@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\BpkhForm;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Revolution\Google\Sheets\Facades\Sheets;
 
 class BpkhSheetSyncService
@@ -28,22 +29,53 @@ class BpkhSheetSyncService
         }
 
         $header = collect($rows->pull(0))->map(fn ($h) => trim((string) $h))->toArray();
+        
+        // Handle duplicate column names by appending suffix
+        $headerCounts = [];
+        $uniqueHeader = [];
+        foreach ($header as $h) {
+            if (!isset($headerCounts[$h])) {
+                $headerCounts[$h] = 0;
+                $uniqueHeader[] = $h;
+            } else {
+                $headerCounts[$h]++;
+                $uniqueHeader[] = $h . ' (' . $headerCounts[$h] . ')';
+            }
+        }
 
         $count = 0;
 
         foreach ($rows as $i => $row) {
             $rowArr = collect($row)->map(fn ($v) => trim((string) ($v ?? '')))->toArray();
-            $assoc = array_combine($header, array_pad($rowArr, count($header), ''));
+            $assoc = array_combine($uniqueHeader, array_pad($rowArr, count($uniqueHeader), ''));
 
             $respondentId = $assoc['Respondent ID'] ?? null;
             if (!$respondentId) {
                 continue;
             }
 
+            // Debug logging for attachment columns
+            foreach ($uniqueHeader as $idx => $uh) {
+                $originalHeader = $header[$idx];
+                if (stripos($originalHeader, 'Lampiran') !== false) {
+                    $rawValue = $row[$idx] ?? null;
+                    $processedValue = $assoc[$uh] ?? '';
+                    Log::info("BPKH Sync Debug - Row " . ($i + 2), [
+                        'respondent_id' => $respondentId,
+                        'column' => $originalHeader,
+                        'unique_column' => $uh,
+                        'raw_value' => $rawValue,
+                        'processed_value' => $processedValue,
+                        'is_empty' => empty($processedValue)
+                    ]);
+                }
+            }
+
             // Build meta as an ordered list of key/value pairs to preserve header order consistently across DB engines
             $orderedMeta = [];
-            foreach ($header as $h) {
-                $orderedMeta[] = ['key' => $h, 'value' => $assoc[$h] ?? ''];
+            foreach ($uniqueHeader as $idx => $uh) {
+                $originalHeader = $header[$idx];
+                $orderedMeta[] = ['key' => $originalHeader, 'value' => $assoc[$uh] ?? ''];
             }
 
             $payload = [
