@@ -240,6 +240,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         // Configuration
         const formPublish = true; // Set to false to show "coming soon" modal
+        const deadline = true; // Set to true to show "deadline passed" message
 
         const modal = document.getElementById('formModal');
         const formCards = document.querySelectorAll('.glass-card a');
@@ -251,7 +252,13 @@
 
         // Function to show modal (make it global)
         window.showModal = function(formType) {
-            if (formPublish) {
+            if (deadline) {
+                // Deadline has passed - show thank you message
+                let kategori = formType === 'bpkh' ? 'Balai Pemantapan Kawasan Hutan (BPKH)' : 'Produsen Data Geospasial';
+                modalMessage.textContent = `Form ditutup. Terima kasih telah berpartisipasi dalam pengisian form penilaian SIGAP Award 2025 kategori ${kategori} 🙏🏻😁`;
+                openBtn.style.display = 'none';
+                currentFormUrl = '';
+            } else if (formPublish) {
                 // Form is published - show with open button
                 modalMessage.textContent = 'Formulir sudah dibuka';
                 openBtn.style.display = 'inline-block';

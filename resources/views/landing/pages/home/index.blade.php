@@ -17,14 +17,14 @@
             <span class="modal-close">&times;</span>
         </div>
         <div class="modal-body">
-            <p>Pilih formulir sesuai dengan kategori Anda:</p>
+            <p id="welcome-intro-text">Pilih formulir sesuai dengan kategori Anda:</p>
             <div style="margin: 20px 0; text-align: left;">
-                <div class="category-option" data-form-type="produsen" style="padding: 10px; background: rgba(40, 167, 69, 0.1); border-radius: 8px; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;">
+                <div class="category-option form-option" data-form-type="produsen" style="padding: 10px; background: rgba(40, 167, 69, 0.1); border-radius: 8px; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;">
                     <strong>📊 Produsen Data Geospasial</strong><br>
                     <small style="color: #666;">Untuk perusahaan/organisasi produsen data geospasial</small>
                 </div>
-                <br>
-                <div class="category-option" data-form-type="bpkh" style="margin-bottom: 15px; padding: 10px; background: rgba(102, 126, 234, 0.1); border-radius: 8px; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;">
+                <br class="form-option">
+                <div class="category-option form-option" data-form-type="bpkh" style="margin-bottom: 15px; padding: 10px; background: rgba(102, 126, 234, 0.1); border-radius: 8px; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;">
                     <strong>🏢 Balai Pemantapan Kawasan Hutan (BPKH)</strong><br>
                     <small style="color: #666;">Untuk instansi BPKH yang ingin berpartisipasi</small>
                 </div>
@@ -33,7 +33,7 @@
                     <small style="color: #666;">Menuju halaman voting 2025</small>
                 </div>
             </div>
-            <p style="font-size: 0.9em; color: #888; margin-top: 15px;">
+            <p id="welcome-footer-text" style="font-size: 0.9em; color: #888; margin-top: 15px;">
                 Klik pada kategori di atas atau kartu formulir untuk memulai pengisian.
             </p>
         </div>
@@ -167,13 +167,40 @@
 
     // Welcome Modal Auto Show
     document.addEventListener('DOMContentLoaded', function() {
+        // Configuration
+        const form_close = true; // Set to true when forms are closed
+
         const welcomeModal = document.getElementById('welcomeModal');
         const welcomeCloseBtn = document.getElementById('welcome-close');
         const welcomeModalClose = welcomeModal.querySelector('.modal-close');
         const categoryOptions = document.querySelectorAll('.category-option');
+        const introText = document.getElementById('welcome-intro-text');
+        const footerText = document.getElementById('welcome-footer-text');
+        const formOptions = document.querySelectorAll('.form-option');
 
         // Function to show welcome modal
         function showWelcomeModal() {
+            // Update modal content based on form_close status
+            if (form_close) {
+                // Forms are closed - focus on voting
+                introText.textContent = 'Terima kasih atas partisipasi Anda dalam pengisian form penilaian SIGAP Award 2025! 🙏🏻';
+                footerText.innerHTML = '<strong style="color: #ea5455;">Silahkan melakukan voting untuk memilih Pengelola IGT terbaik tahun 2025! 🗳️✨</strong>';
+                
+                // Hide form options
+                formOptions.forEach(option => {
+                    option.style.display = 'none';
+                });
+            } else {
+                // Forms are open - show all options
+                introText.textContent = 'Pilih formulir sesuai dengan kategori Anda:';
+                footerText.textContent = 'Klik pada kategori di atas atau kartu formulir untuk memulai pengisian.';
+                
+                // Show form options
+                formOptions.forEach(option => {
+                    option.style.display = '';
+                });
+            }
+
             welcomeModal.style.display = 'flex';
             setTimeout(() => {
                 welcomeModal.classList.add('show');

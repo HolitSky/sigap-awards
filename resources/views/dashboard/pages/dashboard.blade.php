@@ -10,7 +10,7 @@
         cursor: pointer;
         transition: transform 0.2s;
     }
-    
+
     .profile-user-wid img:hover {
         transform: scale(1.05);
     }
@@ -25,7 +25,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                    <h4 class="mb-sm-0 font-size-18">Dashboard</h4>
+                    <h4 class="mb-sm-0 font-size-18">Sigap Award Dashboard</h4>
 
                     <div class="page-title-right">
                         <ol class="breadcrumb m-0">
@@ -41,13 +41,19 @@
 
         <div class="row">
             <div class="col-xl-4">
+                  @php
+                        $user = Auth::user();
+                        $profileImage = $user?->profile_image
+                        ? asset('storage/'.$user->profile_image)
+                        : asset('dashboard-assets/images/users/user-dummy-img.jpg');
+                    @endphp
                 <div class="card overflow-hidden">
                     <div class="bg-primary-subtle">
                         <div class="row">
                             <div class="col-7">
                                 <div class="text-primary p-3">
                                     <h5 class="text-primary">Welcome Back !</h5>
-                                    <p>Sigap Award Dashboard</p>
+                                    <p>{{ $user?->name }}</p>
                                 </div>
                             </div>
                             <div class="col-5 align-self-end">
@@ -57,28 +63,17 @@
                     </div>
                     <div class="card-body pt-0">
                         <div class="row">
-                            <div class="col-sm-4">
-                                <div class="avatar-md profile-user-wid mb-4" style="width: 100px; height: 100px;">
-                                    @php
-                                        $user = Auth::user();
-                                        $profileImage = $user?->profile_image
-                                            ? asset('storage/'.$user->profile_image)
-                                            : asset('dashboard-assets/images/users/user-dummy-img.jpg');
-                                    @endphp
+                            <div class="col-sm-12">
+                                <div class="avatar-md profile-user-wid mb-4 mx-auto" style="width: 100px; height: 100px;">
+
                                     <a href="{{ $profileImage }}" class="glightbox" data-glightbox="title: {{ $user?->name }}; description: Dashboard Profile">
                                         <img src="{{ $profileImage }}" alt="{{ $user?->name }}" class="img-thumbnail rounded-circle"
                                              style="width: 100%; height: 100%; object-fit: cover; display: block;">
                                     </a>
                                 </div>
-                                <h5 class="font-size-15">{{ $user?->name }}</h5>
-                                <p class="text-muted mb-0 badge badge-soft-primary p-2 font-size-12 mt-2"><i class="mdi mdi-account"></i> {{ strtoupper($roleDisplay ?? '') }}</p>
-                            </div>
-
-                            <div class="col-sm-8">
-                                <div class="pt-4">
-                                    <div class="mt-4">
-                                        <a href="{{ route('profile.index') }}" class="btn btn-primary waves-effect waves-light btn-sm">Update Profile <i class="mdi mdi-arrow-right ms-1"></i></a>
-                                    </div>
+                                <div class="d-flex justify-content-center align-items-center gap-3 flex-wrap">
+                                    <p class="text-muted mb-0 badge badge-soft-primary p-2 font-size-12"><i class="mdi mdi-account"></i> {{ strtoupper($roleDisplay ?? '') }}</p>
+                                    <a href="{{ route('profile.index') }}" class="btn btn-primary waves-effect waves-light btn-sm">Update Profile <i class="mdi mdi-arrow-right ms-1"></i></a>
                                 </div>
                             </div>
                         </div>
