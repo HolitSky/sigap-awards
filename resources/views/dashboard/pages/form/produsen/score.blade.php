@@ -187,7 +187,9 @@
                                             $nextEntry = $entries[$loop->index + 1] ?? null;
                                             $attachmentLinks = [];
                                             $attRaw = null;
+                                            $hasLampiranEntry = false;
                                             if ($nextEntry && preg_match('/^\s*Lampiran/i', (string) ($nextEntry[0] ?? ''))) {
+                                                $hasLampiranEntry = true;
                                                 $attVal = $nextEntry[1] ?? '';
                                                 $isAttArray = is_array($attVal);
                                                 if ($isAttArray) {
@@ -211,10 +213,15 @@
                                             <div class="col-12 col-md-6 text-muted">
                                                 <button type="button" class="btn btn-link p-0 js-question-popover" data-code="{{ $am[1] }}" data-bs-toggle="popover" data-bs-placement="top" data-bs-trigger="focus" data-bs-html="true">Jawaban soal {{ $am[1] }}</button>
                                                 @if(!empty($attachmentLinks))
-                                                    <div class="mt-1 small">
+                                                    <div class="mt-1 small text-success">
+                                                        <i class="fas fa-check-circle"></i> Ada upload Lampiran ✅
                                                         @foreach($attachmentLinks as $u)
-                                                            <div><a href="{{ $u }}" target="_blank" rel="noopener">Lampiran</a></div>
+                                                            <div><a href="{{ $u }}" target="_blank" rel="noopener" class="text-primary"><i class="fas fa-link"></i> Lihat Lampiran</a></div>
                                                         @endforeach
+                                                    </div>
+                                                @elseif($hasLampiranEntry)
+                                                    <div class="mt-1 small text-warning">
+                                                        <i class="fas fa-exclamation-triangle"></i> Tidak mengupload Lampiran
                                                     </div>
                                                 @endif
                                             </div>
