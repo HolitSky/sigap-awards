@@ -5,6 +5,7 @@ namespace App\Http\Controllers\dashboard;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\BpkhForm;
+use App\Models\RecordUserAssesment;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 
@@ -54,7 +55,13 @@ class BpkhFormController extends Controller
             8 => 'Kapasitas & Pendidikan',
             9 => 'Komunikasi & Keterlibatan',
         ];
-        return view('dashboard.pages.form.bpkh.show', compact('title','pageTitle','breadcrumbs','form','spLabels'));
+        
+        // Get latest assessor from record table
+        $latestAssessment = RecordUserAssesment::byForm('bpkh', $respondentId)
+            ->latest()
+            ->first();
+        
+        return view('dashboard.pages.form.bpkh.show', compact('title','pageTitle','breadcrumbs','form','spLabels','latestAssessment'));
       }
 
 
@@ -114,7 +121,70 @@ class BpkhFormController extends Controller
             'meta' => $meta,
         ];
 
+        // Track meta changes (jawaban soal yang di-edit)
+        $metaChanges = [];
+        if (!empty($data['answers'])) {
+            $oldMeta = $form->meta ?? [];
+            foreach ($data['answers'] as $code => $newValue) {
+                $oldValue = null;
+                
+                // Get old value from meta
+                if (is_array($oldMeta) && isset($oldMeta[0]) && is_array($oldMeta[0]) && array_key_exists('key', $oldMeta[0])) {
+                    // Ordered format
+                    foreach ($oldMeta as $item) {
+                        if (preg_match('/^\s*soal\s+([0-9]+(?:\.[0-9]+)*)/i', (string) ($item['key'] ?? ''), $m)) {
+                            if ($m[1] == $code) {
+                                $oldValue = $item['value'] ?? '';
+                                break;
+                            }
+                        }
+                    }
+                } elseif (is_array($oldMeta)) {
+                    // Associative format
+                    $key = 'soal '.$code;
+                    $oldValue = $oldMeta[$key] ?? '';
+                }
+                
+                // Track if changed
+                if ((string)$oldValue !== (string)$newValue) {
+                    $metaChanges[$code] = [
+                        'old' => $oldValue,
+                        'new' => $newValue
+                    ];
+                }
+            }
+        }
+        
         $form->update($updatePayload);
-        return redirect()->route('dashboard.form.bpkh.show', $respondentId)->with('success','Status & nilai tersimpan.');
+        
+        // Create assessment record with total_score and meta_changes
+        RecordUserAssesment::create([
+            'user_id' => Auth::id(),
+            'user_name' => Auth::user()->name,
+            'user_email' => Auth::user()->email,
+            'user_role' => Auth::user()->role ?? 'juri',
+            'form_type' => 'bpkh',
+            'respondent_id' => $respondentId,
+            'form_name' => $form->nama_bpkh,
+            'action_type' => 'scoring',
+            'total_score' => $data['total_score'] ?? null,
+            'meta_changes' => !empty($metaChanges) ? $metaChanges : null,
+            'notes' => $data['notes'] ?? null,
+        ]);
+        
+        return redirect()->route('dashboard.form.bpkh.show', $respondentId)->with('success','✅ Penilaian berhasil disimpan! Status dan nilai telah diperbarui.');
+      }
+      
+      // Get assessment history
+      public function getAssessmentHistory(string $respondentId)
+      {
+          $records = RecordUserAssesment::byForm('bpkh', $respondentId)
+              ->latest()
+              ->get();
+          
+          return response()->json([
+              'success' => true,
+              'data' => $records
+          ]);
       }
 }

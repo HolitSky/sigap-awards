@@ -36,6 +36,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/form-bpkh/{respondentId}', [BpkhFormController::class, 'show'])->name('dashboard.form.bpkh.show');
     Route::get('/form-bpkh/{respondentId}/nilai', [BpkhFormController::class, 'editScore'])->name('dashboard.form.bpkh.score.edit');
     Route::post('/form-bpkh/{respondentId}/nilai', [BpkhFormController::class, 'updateScore'])->name('dashboard.form.bpkh.score.update');
+    Route::get('/form-bpkh/{respondentId}/history', [BpkhFormController::class, 'getAssessmentHistory'])->name('dashboard.form.bpkh.history');
 
 
     // Detail & Nilai Produsen DG
@@ -43,6 +44,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/form-produsen-dg/{respondentId}', [ProdusenFormController::class, 'show'])->name('dashboard.form.produsen-dg.show');
     Route::get('/form-produsen-dg/{respondentId}/nilai', [ProdusenFormController::class, 'editScore'])->name('dashboard.form.produsen-dg.score.edit');
     Route::post('/form-produsen-dg/{respondentId}/nilai', [ProdusenFormController::class, 'updateScore'])->name('dashboard.form.produsen-dg.score.update');
+    Route::get('/form-produsen-dg/{respondentId}/history', [ProdusenFormController::class, 'getAssessmentHistory'])->name('dashboard.form.produsen-dg.history');
 
 
     // User Management Routes (Admin & Superadmin only)

@@ -21,11 +21,16 @@
                         <div class="d-flex align-items-center justify-content-between mb-3">
                             <div>
                                 <h4 class="mb-0">Responden Id :{{ $form->respondent_id }} <br> {{ $form->nama_bpkh }}</h4>
-                                @if(!empty($form->juri_penilai))
-                                    <div class="mt-2">
+                                @if($latestAssessment)
+                                    <div class="mt-2 d-flex align-items-center gap-2">
                                         <span class="badge rounded-pill text-white" style="background-color:#D26607;padding:.5rem .75rem;font-size:.9rem;">
-                                            User Penilai Terakhir: {{ $form->juri_penilai }}
+                                            <i class="mdi mdi-account me-1"></i>
+                                            User Penilai Terakhir: {{ $latestAssessment->user_name }}
+                                            <small class="ms-2">({{ $latestAssessment->created_at->format('d M Y, H:i') }})</small>
                                         </span>
+                                        <button type="button" class="btn btn-sm btn-info" onclick="showHistoryModal()">
+                                            <i class="mdi mdi-history"></i> History
+                                        </button>
                                     </div>
                                 @endif
                             </div>
@@ -347,4 +352,113 @@
     </div>
 </div>
 
+<!-- History Modal -->
+<div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="historyModalLabel">
+                    <i class="mdi mdi-history"></i> Riwayat Penilaian
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="historyContent">
+                    <div class="text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
+
+@push('scripts')
+<script>
+    function showHistoryModal() {
+        const modal = new bootstrap.Modal(document.getElementById('historyModal'));
+        modal.show();
+
+        // Fetch history data
+        fetch('{{ route('dashboard.form.bpkh.history', $form->respondent_id) }}')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.data.length > 0) {
+                    let html = '<div class="timeline">';
+
+                    data.data.forEach((record, index) => {
+                        const date = new Date(record.created_at);
+                        const formattedDate = date.toLocaleDateString('id-ID', {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+
+                        // Build meta changes HTML
+                        let metaChangesHtml = '';
+                        if (record.meta_changes && Object.keys(record.meta_changes).length > 0) {
+                            metaChangesHtml = '<div class="mt-3"><strong style="font-size: 1rem;">Jawaban yang dinilai ulang:</strong><ul class="mb-0" style="font-size: 0.95rem;">';
+                            for (const [code, change] of Object.entries(record.meta_changes)) {
+                                metaChangesHtml += `<li class="mb-1">Soal ${code}: <span class="text-danger fw-bold">${change.old || 'kosong'}</span> → <span class="text-success fw-bold">${change.new}</span></li>`;
+                            }
+                            metaChangesHtml += '</ul></div>';
+                        }
+
+                        html += `
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-2">
+                                                <i class="mdi mdi-account-circle text-primary"></i>
+                                                ${record.user_name}
+                                            </h6>
+                                            <p class="text-muted mb-2">
+                                                <small>
+                                                    <i class="mdi mdi-email-outline"></i> ${record.user_email} |
+                                                    <i class="mdi mdi-shield-account"></i> ${record.user_role}
+                                                </small>
+                                            </p>
+                                            ${record.total_score !== null ? `<p class="mb-2" style="font-size: 1rem;"><strong>Nilai Final:</strong> <span class="badge bg-primary" style="font-size: 1.1rem; padding: 0.5rem 0.75rem;">${record.total_score}</span></p>` : ''}
+                                            ${metaChangesHtml}
+                                            ${record.notes ? `<p class="mb-0 mt-3" style="font-size: 0.95rem;"><strong>Catatan:</strong><br><span class="text-dark">${record.notes}</span></p>` : ''}
+                                        </div>
+                                        <div class="text-end ms-3">
+                                            <span class="badge bg-info">${record.action_type}</span>
+                                            <p class="text-muted mb-0 mt-1">
+                                                <small><i class="mdi mdi-clock-outline"></i> ${formattedDate}</small>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    html += '</div>';
+                    document.getElementById('historyContent').innerHTML = html;
+                } else {
+                    document.getElementById('historyContent').innerHTML = `
+                        <div class="alert alert-info">
+                            <i class="mdi mdi-information"></i> Belum ada riwayat penilaian.
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('historyContent').innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="mdi mdi-alert"></i> Terjadi kesalahan saat mengambil data.
+                    </div>
+                `;
+            });
+    }
+</script>
+@endpush
