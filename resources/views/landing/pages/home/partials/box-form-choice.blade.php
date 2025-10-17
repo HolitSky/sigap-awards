@@ -255,7 +255,7 @@
             if (deadline) {
                 // Deadline has passed - show thank you message
                 let kategori = formType === 'bpkh' ? 'Balai Pemantapan Kawasan Hutan (BPKH)' : 'Produsen Data Geospasial';
-                modalMessage.textContent = `Form ditutup. Terima kasih telah berpartisipasi dalam pengisian form penilaian SIGAP Award 2025 kategori ${kategori} 🙏🏻😁`;
+                modalMessage.textContent = `Kategori Form ${kategori} ditutup. Terima kasih telah berpartisipasi dalam pengisian form penilaian SIGAP Award 2025 , Nantikan pengumuman resmi dari kami. Sampai jumpa di Bali!🙏🏻😁`;
                 openBtn.style.display = 'none';
                 currentFormUrl = '';
             } else if (formPublish) {
