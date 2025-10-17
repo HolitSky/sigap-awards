@@ -4,7 +4,7 @@
 <div class="wrapper">
     @include('landing.pages.home.partials.box-form-choice')
     @include('landing.pages.home.partials.team-info')
-    @include('landing.pages.home.partials.launch-date')
+    @include('landing.pages.home.partials.launch-date', compact('rangeDate', 'rangeDateStart', 'rangeDateEnd', 'launchFinish'))
     @include('landing.pages.home.partials.box-counter')
     @include('landing.pages.home.partials.box-journal')
 </div>
@@ -162,8 +162,66 @@
 <script>
     window.LAUNCH_DATES = {
         startDate: @json(optional($launchStart)->locale('en')->isoFormat('MMMM D, YYYY 00:00:00')) ?? 'October 1, 2025 00:00:00',
-        finishDate: @json(optional($launchFinish)->locale('en')->isoFormat('MMMM D, YYYY 00:00:00')) ?? 'October 10, 2025 00:00:00'
+        finishDate: @json(optional($launchFinish)->locale('en')->isoFormat('MMMM D, YYYY 00:00:00')) ?? 'October 10, 2025 00:00:00',
+        rangeDate: {{ isset($rangeDate) && $rangeDate ? 'true' : 'false' }},
+        rangeDateStart: @json(optional($rangeDateStart)->locale('en')->isoFormat('MMMM D, YYYY 00:00:00')) ?? 'October 22, 2025 00:00:00',
+        rangeDateEnd: @json(optional($rangeDateEnd)->locale('en')->isoFormat('MMMM D, YYYY 00:00:00')) ?? 'October 24, 2025 00:00:00'
     };
+    
+    console.log('LAUNCH_DATES config:', window.LAUNCH_DATES);
+    
+    // Override calendar display for range date mode - CONTINUOUS FORCE
+    document.addEventListener('DOMContentLoaded', function() {
+        if (window.LAUNCH_DATES.rangeDate) {
+            function forceCalendarDisplay() {
+                const calendarDate = document.querySelector('.launch-date__calendar-date');
+                const calendarMonth = document.querySelector('.launch-date__calendar-month');
+                const calendarLabel = document.querySelector('.launch-date__calendar-label');
+                
+                if (calendarDate && calendarMonth && calendarLabel) {
+                    // Only update if current value is wrong
+                    if (calendarDate.textContent !== '22-24') {
+                        calendarLabel.textContent = 'Tahap Presentasi';
+                        calendarDate.textContent = '22-24';
+                        calendarMonth.textContent = 'Oktober';
+                        calendarDate.setAttribute('datetime', '2025-10-22');
+                        
+                        // Stop any GSAP animations on these elements
+                        if (window.gsap) {
+                            gsap.killTweensOf(calendarDate);
+                            gsap.killTweensOf(calendarMonth);
+                        }
+                    }
+                }
+            }
+            
+            // Force immediately and continuously
+            forceCalendarDisplay();
+            
+            // Keep forcing every 100ms to override any animations
+            const intervalId = setInterval(forceCalendarDisplay, 100);
+            
+            // Also use MutationObserver to catch any changes
+            setTimeout(function() {
+                const calendarDate = document.querySelector('.launch-date__calendar-date');
+                if (calendarDate) {
+                    const observer = new MutationObserver(function(mutations) {
+                        mutations.forEach(function(mutation) {
+                            if (mutation.type === 'childList' || mutation.type === 'characterData') {
+                                forceCalendarDisplay();
+                            }
+                        });
+                    });
+                    
+                    observer.observe(calendarDate, {
+                        childList: true,
+                        characterData: true,
+                        subtree: true
+                    });
+                }
+            }, 500);
+        }
+    });
 
     // Welcome Modal Auto Show
     document.addEventListener('DOMContentLoaded', function() {

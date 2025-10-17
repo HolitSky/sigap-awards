@@ -12035,7 +12035,7 @@ footer .copy {
     }
 }
 .launch-date__calendar-date {
-    font-size: 7rem;
+    font-size: 4rem;
     line-height: 6rem;
     font-weight: 800;
     margin: 6% 0;
@@ -12043,18 +12043,18 @@ footer .copy {
 }
 @media (min-width: 371px) {
     .launch-date__calendar-date {
-        font-size: 8rem;
-        line-height: 8rem;
+        font-size: 2rem;
+        line-height: 3rem;
     }
 }
 @media (min-width: 1100px) and (min-height: 680px) {
     .launch-date__calendar-date {
-        font-size: 8rem;
+        font-size: 3rem;
     }
 }
 @media (min-width: 1280px) {
     .launch-date__calendar-date {
-        font-size: 10rem;
+        font-size: 3rem;
     }
 }
 @media (min-width: 1920px) and (min-height: 1000px) {
@@ -12065,7 +12065,7 @@ footer .copy {
 }
 @media (min-width: 2560px) {
     .launch-date__calendar-date {
-        font-size: 24rem;
+        font-size: 10rem;
         line-height: 22rem;
     }
 }

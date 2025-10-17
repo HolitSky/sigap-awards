@@ -12,7 +12,12 @@ class HomeController extends Controller
     {
         // Konfigurasi launch date dari Controller
         $launchStart = Carbon::create(2025, 10, 3, 0, 0, 0);
-        $launchFinish = Carbon::create(2025, 10, 16, 0, 0, 0);
+        $launchFinish = Carbon::create(2025, 10, 17, 0, 0, 0);
+
+        // Konfigurasi range date untuk Tahap Presentasi
+        $rangeDate = true; // Set true untuk menampilkan range tanggal
+        $rangeDateStart = Carbon::create(2025, 10, 22, 0, 0, 0); // Tanggal mulai presentasi
+        $rangeDateEnd = Carbon::create(2025, 10, 24, 0, 0, 0);   // Tanggal selesai presentasi
 
         // Load team data dari JSON
         $teamDataPath = public_path('sigap-assets/static/team-data.json');
@@ -22,7 +27,7 @@ class HomeController extends Controller
         $journalDataPath = public_path('sigap-assets/static/journal-data.json');
         $journalData = json_decode(file_get_contents($journalDataPath), true);
 
-        return view('landing.pages.home.index', compact('launchStart', 'launchFinish', 'teamData', 'journalData'));
+        return view('landing.pages.home.index', compact('launchStart', 'launchFinish', 'teamData', 'journalData', 'rangeDate', 'rangeDateStart', 'rangeDateEnd'));
     }
 
     public function voteMenu(Request $request)

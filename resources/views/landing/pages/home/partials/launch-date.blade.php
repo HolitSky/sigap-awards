@@ -5,6 +5,16 @@
     color: var(--sigap-color) !important;
 }
 
+/* FORCE CALENDAR DISPLAY - NUCLEAR OPTION */
+.launch-date__calendar-label::after {
+    content: '' !important;
+}
+.launch-date__calendar-date::after {
+    content: '' !important;
+}
+.launch-date__calendar-month::after {
+    content: '' !important;
+}
 
 </style>
 
@@ -37,10 +47,12 @@
                                 </div>
                                 <div class="launch-date__calendar">
                                     <div class="launch-date__calendar-content">
-                                        {{-- Batas Pengumpulan 16 Oktober 2025 --}}
-                                        <span class="launch-date__calendar-label">Batas Pengumpulan</span>
-                                        <time class="launch-date__calendar-date" datetime="{{ optional($launchFinish)->format('Y-m-d') ?? '2025-10-10' }}">{{ optional($launchFinish)->format('d') ?? '10' }}</time>
-                                        <p class="launch-date__calendar-month">{{ optional($launchFinish)->translatedFormat('F') ?? 'Oktober' }}</p>
+                                        {{-- RANGE DATE MODE AKTIF --}}
+                                        <span class="launch-date__calendar-label">Tahap Presentasi</span>
+                                        <time class="launch-date__calendar-date" datetime="2025-10-22">
+                                            22-24
+                                        </time>
+                                        <p class="launch-date__calendar-month">Oktober</p>
                                     </div>
                                     <div class="launch-date__calendar-left-part"></div>
                                     <div class="launch-date__calendar-right-part"></div>
