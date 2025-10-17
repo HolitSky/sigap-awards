@@ -12054,7 +12054,7 @@ footer .copy {
 }
 @media (min-width: 1280px) {
     .launch-date__calendar-date {
-        font-size: 3rem;
+        font-size: 3rem !important;
     }
 }
 @media (min-width: 1920px) and (min-height: 1000px) {
