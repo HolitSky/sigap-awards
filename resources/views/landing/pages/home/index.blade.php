@@ -179,12 +179,21 @@
                 const calendarLabel = document.querySelector('.launch-date__calendar-label');
                 
                 if (calendarDate && calendarMonth && calendarLabel) {
+                    // Get dates dynamically from LAUNCH_DATES
+                    const startDate = new Date(window.LAUNCH_DATES.rangeDateStart);
+                    const endDate = new Date(window.LAUNCH_DATES.rangeDateEnd);
+                    const startDay = startDate.getDate();
+                    const endDay = endDate.getDate();
+                    const displayDate = startDay + '-' + endDay;
+                    const monthName = startDate.toLocaleString('id-ID', { month: 'long' });
+                    const isoDate = startDate.toISOString().split('T')[0];
+                    
                     // Only update if current value is wrong
-                    if (calendarDate.textContent !== '22-24') {
+                    if (calendarDate.textContent.trim() !== displayDate) {
                         calendarLabel.textContent = 'Tahap Presentasi';
-                        calendarDate.textContent = '22-24';
-                        calendarMonth.textContent = 'Oktober';
-                        calendarDate.setAttribute('datetime', '2025-10-22');
+                        calendarDate.textContent = displayDate;
+                        calendarMonth.textContent = monthName.charAt(0).toUpperCase() + monthName.slice(1);
+                        calendarDate.setAttribute('datetime', isoDate);
                         
                         // Stop any GSAP animations on these elements
                         if (window.gsap) {

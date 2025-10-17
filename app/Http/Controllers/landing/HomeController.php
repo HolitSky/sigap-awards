@@ -16,7 +16,7 @@ class HomeController extends Controller
 
         // Konfigurasi range date untuk Tahap Presentasi
         $rangeDate = true; // Set true untuk menampilkan range tanggal
-        $rangeDateStart = Carbon::create(2025, 10, 22, 0, 0, 0); // Tanggal mulai presentasi
+        $rangeDateStart = Carbon::create(2025, 10, 23, 0, 0, 0); // Tanggal mulai presentasi
         $rangeDateEnd = Carbon::create(2025, 10, 24, 0, 0, 0);   // Tanggal selesai presentasi
 
         // Load team data dari JSON

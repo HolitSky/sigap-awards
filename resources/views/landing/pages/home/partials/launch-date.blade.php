@@ -49,8 +49,8 @@
                                     <div class="launch-date__calendar-content">
                                         {{-- RANGE DATE MODE AKTIF --}}
                                         <span class="launch-date__calendar-label">Tahap Presentasi</span>
-                                        <time class="launch-date__calendar-date" datetime="2025-10-22">
-                                            22-24
+                                        <time class="launch-date__calendar-date" datetime="2025-10-23">
+                                            23-24
                                         </time>
                                         <p class="launch-date__calendar-month">Oktober</p>
                                     </div>
