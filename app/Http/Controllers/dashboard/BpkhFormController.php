@@ -113,9 +113,17 @@ class BpkhFormController extends Controller
             }
         }
 
+        // Calculate nilai_bobot_total
+        $bobot = $form->bobot ?? 45;
+        $nilaiBobot = null;
+        if (isset($data['total_score']) && $data['total_score'] !== null) {
+            $nilaiBobot = ($data['total_score'] * $bobot) / 100;
+        }
+
         $updatePayload = [
             'status_nilai' => $data['status_nilai'],
             'total_score' => $data['total_score'] ?? null,
+            'nilai_bobot_total' => $nilaiBobot,
             'notes' => $data['notes'] ?? null,
             'juri_penilai' => Auth::user()->name ?? null,
             'meta' => $meta,

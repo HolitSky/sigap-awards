@@ -43,6 +43,7 @@
                                             <th>Nomor Telepon / Nomor WhatsApp Aktif</th>
                                             <th>Status Nilai</th>
                                             <th>Nilai Final</th>
+                                            <th>Nilai dengan Bobot</th>
                                             <th>Catatan</th>
                                             <th>Action</th>
                                         </tr>
@@ -68,6 +69,7 @@
                                                         <span class="badge {{ $badgeClass }}">{{ $form->status_label ?? $form->status_nilai }}</span>
                                                     </td>
                                                     <td>{{ $form->total_score !== null && $form->total_score !== '' ? $form->total_score : 'Belum Ada' }}</td>
+                                                    <td>{{ $form->nilai_bobot_total !== null ? number_format($form->nilai_bobot_total, 2) : 'Belum Ada' }}</td>
                                                     <td>{{ ($form->notes ?? '') !== '' ? $form->notes : '-' }}</td>
                                                     <td>
                                                         <div class="btn-group">
@@ -152,14 +154,21 @@
     
     #datatable th:nth-child(7),
     #datatable td:nth-child(7) {
+        width: 90px !important;
+        max-width: 90px !important;
+        text-align: center;
+    }
+    
+    #datatable th:nth-child(8),
+    #datatable td:nth-child(8) {
         width: 150px !important;
         max-width: 150px !important;
         word-wrap: break-word;
         white-space: normal;
     }
     
-    #datatable th:nth-child(8),
-    #datatable td:nth-child(8) {
+    #datatable th:nth-child(9),
+    #datatable td:nth-child(9) {
         width: 180px !important;
         max-width: 180px !important;
     }
@@ -186,13 +195,14 @@ $(document).ready(function() {
         order: [[0, 'asc']],
         columnDefs: [
             { width: "5%", targets: 0 },   // No
-            { width: "20%", targets: 1 },  // Nama BPKH
-            { width: "15%", targets: 2 },  // Petugas BPKH
-            { width: "12%", targets: 3 },  // Nomor Telepon
-            { width: "10%", targets: 4 },  // Status Nilai
-            { width: "8%", targets: 5 },   // Nilai Final
-            { width: "15%", targets: 6 },  // Catatan
-            { width: "15%", targets: 7 }   // Action
+            { width: "18%", targets: 1 },  // Nama BPKH
+            { width: "13%", targets: 2 },  // Petugas BPKH
+            { width: "10%", targets: 3 },  // Nomor Telepon
+            { width: "9%", targets: 4 },   // Status Nilai
+            { width: "7%", targets: 5 },   // Nilai Final
+            { width: "8%", targets: 6 },   // Nilai dengan Bobot
+            { width: "13%", targets: 7 },  // Catatan
+            { width: "17%", targets: 8 }   // Action
         ],
         autoWidth: false
     });

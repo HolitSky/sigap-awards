@@ -14,6 +14,8 @@ class BpkhForm extends Model
         'website',
         'status_nilai',
         'total_score',
+        'bobot',
+        'nilai_bobot_total',
         'notes',
         'sheet_row_number',
         'meta',
