@@ -135,9 +135,9 @@
                                 <div class="card-body">
                                     <div class="d-flex">
                                         <div class="flex-grow-1">
-                                            <p class="text-muted fw-medium">Total Penilaian BPKH yang Sudah Dinilai</p>
+                                            <p class="text-muted fw-medium">Total Penilaian Presentasi BPKH yang Sudah Dinilai</p>
                                             <h4 class="mb-0">{{ $countPresentasiBpkh ?? 0 }}</h4>
-                                            <small class="text-muted">Presentasi yang sudah mendapat penilaian</small>
+                                            <small class="text-muted">Presentasi BPKH yang sudah mendapat penilaian</small>
                                         </div>
 
                                         <div class="flex-shrink-0 align-self-center ">
@@ -158,9 +158,9 @@
                                 <div class="card-body">
                                     <div class="d-flex">
                                         <div class="flex-grow-1">
-                                            <p class="text-muted fw-medium">Total Penilaian Produsen yang Sudah Dinilai</p>
+                                            <p class="text-muted fw-medium">Total Penilaian Presentasi Produsen yang Sudah Dinilai</p>
                                             <h4 class="mb-0">{{ $countPresentasiProdusen ?? 0 }}</h4>
-                                            <small class="text-muted">Presentasi yang sudah mendapat penilaian</small>
+                                            <small class="text-muted">Presentasi Produsen yang sudah mendapat penilaian</small>
                                         </div>
 
                                         <div class="flex-shrink-0 align-self-center ">
