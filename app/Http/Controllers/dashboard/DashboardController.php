@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\BpkhForm;
 use App\Models\ProdusenForm;
+use App\Models\BpkhPresentationAssesment;
+use App\Models\ProdusenPresentationAssesment;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -21,6 +23,35 @@ class DashboardController extends Controller
         $lastSyncBpkhText = $lastSyncBpkh ? Carbon::parse($lastSyncBpkh)->format('d M Y H:i') : null;
         $lastSyncProdusenText = $lastSyncProdusen ? Carbon::parse($lastSyncProdusen)->format('d M Y H:i') : null;
 
+        // Count presentasi yang sudah dinilai (nilai_final_dengan_bobot tidak null)
+        $countPresentasiBpkh = BpkhPresentationAssesment::whereNotNull('nilai_final_dengan_bobot')->count();
+        $countPresentasiProdusen = ProdusenPresentationAssesment::whereNotNull('nilai_final_dengan_bobot')->count();
+
+        // Get chart data - Top forms by nilai_bobot_total
+        $chartBpkh = BpkhForm::whereNotNull('nilai_bobot_total')
+            ->orderBy('nilai_bobot_total', 'desc')
+            ->get()
+            ->map(function ($form) {
+                return [
+                    'label' => $form->nama_bpkh,
+                    'value' => $form->nilai_bobot_total ?? 0
+                ];
+            });
+
+        $chartProdusen = ProdusenForm::whereNotNull('nilai_bobot_total')
+            ->orderBy('nilai_bobot_total', 'desc')
+            ->get()
+            ->map(function ($form) {
+                return [
+                    'label' => $form->nama_instansi,
+                    'value' => $form->nilai_bobot_total ?? 0
+                ];
+            });
+
+        // Get bobot percentage for chart labels
+        $bobotBpkh = BpkhForm::whereNotNull('bobot')->value('bobot') ?? 45;
+        $bobotProdusen = ProdusenForm::whereNotNull('bobot')->value('bobot') ?? 45;
+
         // Add role display
         $user = Auth::user();
         $roleDisplay = $this->getRoleDisplay($user->role);
@@ -31,6 +62,12 @@ class DashboardController extends Controller
             'countProdusen',
             'lastSyncBpkhText',
             'lastSyncProdusenText',
+            'countPresentasiBpkh',
+            'countPresentasiProdusen',
+            'chartBpkh',
+            'chartProdusen',
+            'bobotBpkh',
+            'bobotProdusen',
             'roleDisplay'
         ));
     }
