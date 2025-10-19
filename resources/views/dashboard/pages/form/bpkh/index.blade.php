@@ -43,7 +43,7 @@
                                             <th>Nomor Telepon / Nomor WhatsApp Aktif</th>
                                             <th>Status Nilai</th>
                                             <th>Nilai Final</th>
-                                            <th>Nilai dengan Bobot</th>
+                                            <th>Nilai Bobot <br> Akhir {{ ($forms->first()->bobot ?? 45) }}%</th>
                                             <th>Catatan</th>
                                             <th>Action</th>
                                         </tr>
@@ -107,13 +107,13 @@
         table-layout: fixed;
         width: 100% !important;
     }
-    
+
     #datatable th:nth-child(1),
     #datatable td:nth-child(1) {
         width: 50px !important;
         max-width: 50px !important;
     }
-    
+
     #datatable th:nth-child(2),
     #datatable td:nth-child(2) {
         width: 200px !important;
@@ -121,7 +121,7 @@
         word-wrap: break-word;
         white-space: normal;
     }
-    
+
     #datatable th:nth-child(3),
     #datatable td:nth-child(3) {
         width: 150px !important;
@@ -129,7 +129,7 @@
         word-wrap: break-word;
         white-space: normal;
     }
-    
+
     #datatable th:nth-child(4),
     #datatable td:nth-child(4) {
         width: 130px !important;
@@ -137,28 +137,28 @@
         word-wrap: break-word;
         white-space: normal;
     }
-    
+
     #datatable th:nth-child(5),
     #datatable td:nth-child(5) {
         width: 100px !important;
         max-width: 100px !important;
         text-align: center;
     }
-    
+
     #datatable th:nth-child(6),
     #datatable td:nth-child(6) {
         width: 80px !important;
         max-width: 80px !important;
         text-align: center;
     }
-    
+
     #datatable th:nth-child(7),
     #datatable td:nth-child(7) {
         width: 90px !important;
         max-width: 90px !important;
         text-align: center;
     }
-    
+
     #datatable th:nth-child(8),
     #datatable td:nth-child(8) {
         width: 150px !important;
@@ -166,13 +166,13 @@
         word-wrap: break-word;
         white-space: normal;
     }
-    
+
     #datatable th:nth-child(9),
     #datatable td:nth-child(9) {
         width: 180px !important;
         max-width: 180px !important;
     }
-    
+
     #datatable td {
         vertical-align: middle;
     }
@@ -186,7 +186,7 @@ $(document).ready(function() {
     if ($.fn.DataTable.isDataTable('#datatable')) {
         $('#datatable').DataTable().destroy();
     }
-    
+
     // Re-initialize with custom options
     $('#datatable').DataTable({
         lengthMenu: [[10, 15, 25, 50, -1], [10, 15, 25, 50, "All"]],
@@ -200,8 +200,8 @@ $(document).ready(function() {
             { width: "10%", targets: 3 },  // Nomor Telepon
             { width: "9%", targets: 4 },   // Status Nilai
             { width: "7%", targets: 5 },   // Nilai Final
-            { width: "8%", targets: 6 },   // Nilai dengan Bobot
-            { width: "13%", targets: 7 },  // Catatan
+            { width: "13%", targets: 6 },   // Nilai dengan Bobot
+            { width: "8%", targets: 7 },  // Catatan
             { width: "17%", targets: 8 }   // Action
         ],
         autoWidth: false
