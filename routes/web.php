@@ -18,11 +18,15 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/thanks-for-submit', [HomeController::class, 'thanksForSubmit'])->name('thanks-for-submit');
 
-// Auth Routes
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-Route::get('/refresh-captcha', [AuthController::class, 'refreshCaptcha'])->name('refresh.captcha');
+// Auth Routes (Guest only - redirect to dashboard if already logged in)
+Route::middleware(['guest'])->group(function () {
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/refresh-captcha', [AuthController::class, 'refreshCaptcha'])->name('refresh.captcha');
+});
+
+// Logout route (authenticated users only)
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
 // Dashboard Routes (Protected)
 Route::middleware(['auth'])->group(function () {

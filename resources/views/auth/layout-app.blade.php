@@ -6,8 +6,8 @@
         <meta charset="utf-8" />
         <title>Login | SIGAP Award 2025</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
-        <meta content="Themesbrand" name="author" />
+        <meta content="Form Penilaian SIGAP Award 2025 - Alat analisis metodologi untuk implementasi IIG (Infrastruktur Informasi Geospasial) Kehutanan menggunakan Kerangka Kerja Informasi Geospasial Terintegrasi (IGIF)" name="description" />
+        <meta content="SIGAP Award 2025" name="author" />
         <!-- App favicon -->
         <link rel="shortcut icon" href="{{ asset('sigap-assets/images/favicon.ico') }}">
 

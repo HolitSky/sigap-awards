@@ -158,6 +158,12 @@ class AuthController extends Controller
      */
     public function showLoginForm()
     {
+        // Redirect to dashboard if user is already authenticated
+        if (Auth::check()) {
+            return redirect()->route('dashboard.index')
+                ->with('info', 'Anda sudah login.');
+        }
+        
         // Generate captcha on page load
         $this->generateCaptcha();
         return view('auth.login');
