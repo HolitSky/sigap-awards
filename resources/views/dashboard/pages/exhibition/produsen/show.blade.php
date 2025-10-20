@@ -90,8 +90,8 @@
                                                     <strong>{{ number_format($penilaian['nilai_akhir_user'] ?? 0, 2) }}</strong>
                                                 </td>
                                                 <td>{{ $penilaian['rekomendasi'] ?? '-' }}</td>
-                                                <td>{{ $penilaian['catatan_juri'] ?? '-' }}</td>
-                                                <td>{{ isset($penilaian['created_at']) ? \Carbon\Carbon::parse($penilaian['created_at'])->format('d/m/Y H:i') : '-' }}</td>
+                                                <td>{{ $penilaian['catatan'] ?? $penilaian['catatan_juri'] ?? '-' }}</td>
+                                                <td>{{ isset($penilaian['assessed_at']) ? \Carbon\Carbon::parse($penilaian['assessed_at'])->format('d/m/Y H:i') : (isset($penilaian['created_at']) ? \Carbon\Carbon::parse($penilaian['created_at'])->format('d/m/Y H:i') : '-') }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>

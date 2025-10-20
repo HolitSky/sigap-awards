@@ -77,12 +77,16 @@ Route::middleware(['auth'])->group(function () {
 
     // Penilaian Exhibition/Poster BPKH
     Route::get('/exhibition-bpkh', [BpkhExhibitionController::class, 'index'])->name('dashboard.exhibition.bpkh.index');
+    Route::get('/exhibition-bpkh/bulk-score', [BpkhExhibitionController::class, 'bulkScoreForm'])->name('dashboard.exhibition.bpkh.bulk-score');
+    Route::post('/exhibition-bpkh/bulk-score', [BpkhExhibitionController::class, 'bulkScoreStore'])->name('dashboard.exhibition.bpkh.bulk-score.store');
     Route::get('/exhibition-bpkh/{respondentId}', [BpkhExhibitionController::class, 'show'])->name('dashboard.exhibition.bpkh.show');
     Route::get('/exhibition-bpkh/{respondentId}/nilai', [BpkhExhibitionController::class, 'edit'])->name('dashboard.exhibition.bpkh.edit');
     Route::post('/exhibition-bpkh/{respondentId}/nilai', [BpkhExhibitionController::class, 'update'])->name('dashboard.exhibition.bpkh.update');
 
     // Penilaian Exhibition/Poster Produsen DG
     Route::get('/exhibition-produsen-dg', [ProdusenExhibitionController::class, 'index'])->name('dashboard.exhibition.produsen.index');
+    Route::get('/exhibition-produsen-dg/bulk-score', [ProdusenExhibitionController::class, 'bulkScoreForm'])->name('dashboard.exhibition.produsen.bulk-score');
+    Route::post('/exhibition-produsen-dg/bulk-score', [ProdusenExhibitionController::class, 'bulkScoreStore'])->name('dashboard.exhibition.produsen.bulk-score.store');
     Route::get('/exhibition-produsen-dg/{respondentId}', [ProdusenExhibitionController::class, 'show'])->name('dashboard.exhibition.produsen.show');
     Route::get('/exhibition-produsen-dg/{respondentId}/nilai', [ProdusenExhibitionController::class, 'edit'])->name('dashboard.exhibition.produsen.edit');
     Route::post('/exhibition-produsen-dg/{respondentId}/nilai', [ProdusenExhibitionController::class, 'update'])->name('dashboard.exhibition.produsen.update');

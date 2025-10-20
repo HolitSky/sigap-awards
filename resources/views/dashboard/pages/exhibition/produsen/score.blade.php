@@ -114,7 +114,7 @@
                                         <textarea name="catatan_juri" 
                                                   class="form-control" 
                                                   rows="4" 
-                                                  placeholder="Tuliskan apresiasi, keunggulan utama, serta rekomendasi perbaikan yang dapat memperkuat implementasi ke depan">{{ old('catatan_juri', $userAssessment['catatan_juri'] ?? '') }}</textarea>
+                                                  placeholder="Tuliskan apresiasi, keunggulan utama, serta rekomendasi perbaikan yang dapat memperkuat implementasi ke depan">{{ old('catatan_juri', $userAssessment['catatan'] ?? $userAssessment['catatan_juri'] ?? '') }}</textarea>
                                     </div>
 
                                     <!-- Rekomendasi -->
@@ -166,3 +166,43 @@
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    // Form validation and confirmation before submit
+    $('#score-form').on('submit', function(e) {
+        e.preventDefault();
+        
+        // Confirm before submit with SweetAlert
+        Swal.fire({
+            icon: 'question',
+            title: 'Konfirmasi Penyimpanan',
+            html: `Apakah Anda yakin ingin menyimpan penilaian untuk <strong>{{ $form->nama_instansi }}</strong>?<br><small class="text-muted">Data yang sudah disimpan dapat diubah kembali.</small>`,
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, Simpan!',
+            cancelButtonText: 'Batal',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Show loading
+                Swal.fire({
+                    title: 'Menyimpan...',
+                    html: 'Mohon tunggu, sedang memproses penilaian.',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+                
+                // Submit the form
+                e.target.submit();
+            }
+        });
+    });
+});
+</script>
+@endpush
