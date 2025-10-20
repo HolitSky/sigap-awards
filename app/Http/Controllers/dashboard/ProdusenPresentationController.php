@@ -34,7 +34,21 @@ class ProdusenPresentationController extends Controller
             }
         }
         
-        return view('dashboard.pages.presentation.produsen.index', compact('title', 'pageTitle', 'breadcrumbs', 'forms', 'term'));
+        // Define presentation sessions
+        $sessions = [
+            'Sesi 2' => [
+                'Direktorat Penggunaan Kawasan Hutan',
+                'Direktorat Perencanaan dan Evaluasi Pengelolaan Daerah Aliran Sungai',
+                'Direktorat Pengendalian Kebakaran Hutan'
+            ],
+            'Sesi 4' => [
+                'Direktorat Bina Usaha Pemanfaatan Hutan',
+                'Direktorat Rehabilitasi Mangrove',
+                'Direktorat Penyiapan Kawasan Perhutanan Sosial'
+            ]
+        ];
+        
+        return view('dashboard.pages.presentation.produsen.index', compact('title', 'pageTitle', 'breadcrumbs', 'forms', 'term', 'sessions'));
     }
     
     public function show(string $respondentId)

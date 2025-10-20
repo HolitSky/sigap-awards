@@ -34,7 +34,29 @@ class BpkhPresentationController extends Controller
             }
         }
         
-        return view('dashboard.pages.presentation.bpkh.index', compact('title', 'pageTitle', 'breadcrumbs', 'forms', 'term'));
+        // Define presentation sessions
+        $sessions = [
+            'Sesi 1' => [
+                'BPKH Wilayah III Pontianak',
+                'BPKH Wilayah VII Makassar',
+                'BPKH Wilayah XII Tanjung Pinang',
+                'BPKH Wilayah XX Bandar Lampung'
+            ],
+            'Sesi 3' => [
+                'BPKH Wilayah V Banjarbaru',
+                'BPKH Wilayah IX Ambon',
+                'BPKH Wilayah XVII Manokwari',
+                'BPKH Wilayah XXI Palangkaraya'
+            ],
+            'Sesi 5' => [
+                'BPKH Wilayah I Medan',
+                'BPKH Wilayah VIII Denpasar',
+                'BPKH Wilayah XI Yogyakarta',
+                'BPKH Wilayah XVIII Banda Aceh'
+            ]
+        ];
+        
+        return view('dashboard.pages.presentation.bpkh.index', compact('title', 'pageTitle', 'breadcrumbs', 'forms', 'term', 'sessions'));
     }
     
     public function show(string $respondentId)

@@ -35,11 +35,20 @@
                                             <h4 class="card-title mb-1">Penilaian Presentasi BPKH</h4>
                                             <p class="card-title-desc mb-0">Daftar penilaian presentasi untuk BPKH yang sudah masuk nominasi dan dalam tahap presentasi.</p>
                                         </div>
-                                        <div id="bulk-action-container" style="display: none;">
-                                            <button type="button" id="btn-bulk-score" class="btn btn-primary">
-                                                <i class="mdi mdi-clipboard-check-multiple-outline me-1"></i>
-                                                Penilaian Kolektif (<span id="selected-count">0</span>)
-                                            </button>
+                                        <div class="d-flex gap-2 align-items-center">
+                                            <div class="btn-group" role="group">
+                                                @foreach($sessions as $sessionName => $participants)
+                                                    <button type="button" class="btn btn-outline-secondary btn-sm session-select" data-session="{{ $sessionName }}">
+                                                        <i class="mdi mdi-checkbox-multiple-marked-outline me-1"></i>{{ $sessionName }}
+                                                    </button>
+                                                @endforeach
+                                            </div>
+                                            <div id="bulk-action-container" style="display: none;">
+                                                <button type="button" id="btn-bulk-score" class="btn btn-primary">
+                                                    <i class="mdi mdi-clipboard-check-multiple-outline me-1"></i>
+                                                    Penilaian Kolektif (<span id="selected-count">0</span>)
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -201,6 +210,13 @@
     #datatable td {
         vertical-align: middle;
     }
+
+    /* Session button active state */
+    .session-select.active {
+        background-color: #556ee6 !important;
+        color: #fff !important;
+        border-color: #556ee6 !important;
+    }
 </style>
 @endpush
 
@@ -232,15 +248,46 @@ $(document).ready(function() {
         autoWidth: false
     });
 
+    // Session data from controller
+    const sessions = @json($sessions);
+
+    // Handle session selection buttons
+    $('.session-select').on('click', function() {
+        const sessionName = $(this).data('session');
+        const participants = sessions[sessionName];
+        
+        // Uncheck all first
+        $('.participant-checkbox').prop('checked', false);
+        $('#select-all').prop('checked', false);
+        
+        // Check checkboxes for participants in this session
+        participants.forEach(function(participantName) {
+            $('.participant-checkbox').each(function() {
+                const checkboxName = $(this).data('name');
+                if (checkboxName === participantName) {
+                    $(this).prop('checked', true);
+                }
+            });
+        });
+        
+        updateBulkButton();
+        
+        // Visual feedback
+        $('.session-select').removeClass('active');
+        $(this).addClass('active');
+    });
+
     // Handle select all checkbox
     $('#select-all').on('change', function() {
         $('.participant-checkbox').prop('checked', $(this).prop('checked'));
+        $('.session-select').removeClass('active');
         updateBulkButton();
     });
 
     // Handle individual checkbox
     $('.participant-checkbox').on('change', function() {
         updateBulkButton();
+        $('.session-select').removeClass('active');
         // Update select-all if all checkboxes are checked
         const allChecked = $('.participant-checkbox').length === $('.participant-checkbox:checked').length;
         $('#select-all').prop('checked', allChecked);
