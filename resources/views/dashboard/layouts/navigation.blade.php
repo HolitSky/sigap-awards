@@ -66,6 +66,31 @@
 
 
 
+             <ul class="metismenu list-unstyled" id="side-menu">
+                <li class="menu-title" key="t-menu">Penilaian Exhibition / Poster</li>
+
+
+                 <li>
+                    <a href="{{ route('dashboard.exhibition.bpkh.index') }}" class="waves-effect">
+                        <i class="mdi mdi-image-multiple"></i>
+                        {{-- <span class="badge rounded-pill bg-danger float-end">10</span> --}}
+                        <span key="t-forms">BPKH</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ route('dashboard.exhibition.produsen.index') }}" class="waves-effect">
+                        <i class="mdi mdi-image-album"></i>
+                        {{-- <span class="badge rounded-pill bg-danger float-end">10</span> --}}
+                        <span key="t-forms">Produsen DG</span>
+                    </a>
+                </li>
+
+
+            </ul>
+
+
+
             @can('see-admin-menus')
             <ul class="metismenu list-unstyled" id="side-menu">
                 <li class="menu-title" key="t-menu">Settings</li>

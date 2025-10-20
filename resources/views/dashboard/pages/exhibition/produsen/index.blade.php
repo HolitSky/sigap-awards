@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title', 'Penilaian Presentasi Produsen DG')
+@section('title', 'Penilaian Exhibition/Poster Produsen DG')
 @section('content')
 
  <!-- ============================================================== -->
@@ -21,7 +21,7 @@
                                         </div>
                                     @endif
 
-                                    <form method="get" action="{{ route('dashboard.presentation.produsen.index') }}" class="row g-2 align-items-center mb-3">
+                                    <form method="get" action="{{ route('dashboard.exhibition.produsen.index') }}" class="row g-2 align-items-center mb-3">
                                         <div class="col-sm-8 col-md-6 col-lg-4">
                                             <input type="text" name="q" value="{{ $term ?? request('q') }}" class="form-control" placeholder="Cari Respondent, Nama Instansi, Petugas" />
                                         </div>
@@ -30,10 +30,10 @@
                                         </div>
                                     </form>
 
-                                    <h4 class="card-title">Penilaian Presentasi Produsen DG</h4>
-                                    <p class="card-title-desc">Daftar penilaian presentasi untuk Produsen DG yang sudah masuk tahap presentasi.</p>
+                                    <h4 class="card-title">Penilaian Exhibition/Poster Produsen DG</h4>
+                                    <p class="card-title-desc">Daftar penilaian exhibition/poster untuk Produsen DG.</p>
 
-                                    <table id="datatable" class="table table-bordered dt-responsive nowrap w-100">
+                                    <table id="datatable-exhibition-produsen" class="table table-bordered dt-responsive nowrap w-100">
                                         <thead>
                                         <tr>
                                             <th>No</th>
@@ -41,7 +41,7 @@
                                             <th>Nama Petugas</th>
                                             <th>Total Juri yang<br>sudah menilai</th>
                                             <th>Nilai Final</th>
-                                            <th>Nilai Bobot <br> Akhir {{ ($forms->first()->bobot_presentasi ?? 35) }}%</th>
+                                            <th>Nilai Bobot <br> Akhir {{ ($forms->first()->bobot_exhibition ?? 20) }}%</th>
                                             <th>Kategori</th>
                                             <th>Action</th>
                                         </tr>
@@ -56,9 +56,9 @@
                                                     <td class="text-center">{{ $form->nilai_final !== null ? number_format($form->nilai_final, 2) : '-' }}</td>
                                                     <td class="text-center">{{ $form->nilai_final_dengan_bobot !== null ? number_format($form->nilai_final_dengan_bobot, 2) : '-' }}</td>
                                                     <td>
-                                                        @if(!empty($form->kategori_skor) && $form->kategori_skor !== null)
+                                                        @if($form->kategori_penilaian)
                                                             @php
-                                                                $badgeClass = match(trim($form->kategori_skor)) {
+                                                                $badgeClass = match($form->kategori_penilaian) {
                                                                     'Sangat Baik' => 'bg-success',
                                                                     'Baik' => 'bg-info',
                                                                     'Cukup' => 'bg-warning',
@@ -67,15 +67,15 @@
                                                                     default => 'bg-secondary',
                                                                 };
                                                             @endphp
-                                                            <span class="badge {{ $badgeClass }}">{{ trim($form->kategori_skor) }}</span>
+                                                            <span class="badge {{ $badgeClass }}">{{ $form->kategori_penilaian }}</span>
                                                         @else
                                                             <span class="badge bg-secondary">Belum Dinilai</span>
                                                         @endif
                                                     </td>
                                                     <td>
                                                         <div class="btn-group">
-                                                            <a class="btn btn-sm btn-outline-info" href="{{ route('dashboard.presentation.produsen.show', $form->respondent_id) }}">Detail</a>
-                                                            <a class="btn btn-sm btn-primary" href="{{ route('dashboard.presentation.produsen.edit', $form->respondent_id) }}">Nilai Presentasi</a>
+                                                            <a class="btn btn-sm btn-outline-info" href="{{ route('dashboard.exhibition.produsen.show', $form->respondent_id) }}">Detail</a>
+                                                            <a class="btn btn-sm btn-primary" href="{{ route('dashboard.exhibition.produsen.edit', $form->respondent_id) }}">Nilai Exhibition</a>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -101,105 +101,78 @@
 @endsection
 
 @push('styles')
-<style>
-    /* Custom badge colors */
-    .badge.bg-orange {
-        background-color: #fd7e14 !important;
-        color: #fff !important;
-    }
-    
-    #datatable {
-        table-layout: fixed;
-        width: 100% !important;
-    }
-
-    #datatable th:nth-child(1),
-    #datatable td:nth-child(1) {
-        width: 50px !important;
-        max-width: 50px !important;
-    }
-
-    #datatable th:nth-child(2),
-    #datatable td:nth-child(2) {
-        width: 180px !important;
-        max-width: 180px !important;
-        word-wrap: break-word;
-        white-space: normal;
-    }
-
-    #datatable th:nth-child(3),
-    #datatable td:nth-child(3) {
-        width: 150px !important;
-        max-width: 150px !important;
-        word-wrap: break-word;
-        white-space: normal;
-    }
-
-    #datatable th:nth-child(4),
-    #datatable td:nth-child(4) {
-        width: 80px !important;
-        max-width: 80px !important;
-        text-align: center;
-    }
-
-    #datatable th:nth-child(5),
-    #datatable td:nth-child(5) {
-        width: 90px !important;
-        max-width: 90px !important;
-        text-align: center;
-    }
-
-    #datatable th:nth-child(6),
-    #datatable td:nth-child(6) {
-        width: 90px !important;
-        max-width: 90px !important;
-        text-align: center;
-    }
-
-    #datatable th:nth-child(7),
-    #datatable td:nth-child(7) {
-        width: 110px !important;
-        max-width: 110px !important;
-        text-align: center;
-    }
-
-    #datatable th:nth-child(8),
-    #datatable td:nth-child(8) {
-        width: 200px !important;
-        max-width: 200px !important;
-    }
-
-    #datatable td {
-        vertical-align: middle;
-    }
-</style>
+    <!-- DataTables -->
+    <link href="{{ asset('dashboard-assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('dashboard-assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+    <style>
+        /* Custom badge colors */
+        .badge.bg-orange {
+            background-color: #fd7e14 !important;
+            color: #fff !important;
+        }
+        #datatable-exhibition-produsen th:nth-child(1) { width: 3% !important; min-width: 30px; }
+        #datatable-exhibition-produsen th:nth-child(2) { width: 20% !important; }
+        #datatable-exhibition-produsen th:nth-child(3) { width: 13% !important; }
+        #datatable-exhibition-produsen th:nth-child(4) { width: 9% !important; text-align: center; }
+        #datatable-exhibition-produsen th:nth-child(5) { width: 8% !important; text-align: center; }
+        #datatable-exhibition-produsen th:nth-child(6) { width: 11% !important; text-align: center; }
+        #datatable-exhibition-produsen th:nth-child(7) { width: 10% !important; text-align: center; }
+        #datatable-exhibition-produsen th:nth-child(8) { width: 26% !important; }
+        #datatable-exhibition-produsen td:nth-child(2),
+        #datatable-exhibition-produsen td:nth-child(3) {
+            white-space: normal !important;
+            word-wrap: break-word !important;
+        }
+    </style>
 @endpush
 
 @push('scripts')
-<script>
-$(document).ready(function() {
-    // Destroy existing DataTable if it exists
-    if ($.fn.DataTable.isDataTable('#datatable')) {
-        $('#datatable').DataTable().destroy();
+    <!-- Required datatable js -->
+    <script src="{{ asset('dashboard-assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('dashboard-assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+    <!-- Responsive examples -->
+    <script src="{{ asset('dashboard-assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
+    <script src="{{ asset('dashboard-assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}"></script>
+
+    <script>
+$(document).ready(function () {
+    // Check if DataTable is already initialized and destroy it
+    if ($.fn.DataTable.isDataTable('#datatable-exhibition-produsen')) {
+        $('#datatable-exhibition-produsen').DataTable().destroy();
     }
 
-    // Re-initialize with custom options
-    $('#datatable').DataTable({
-        lengthMenu: [[10, 15, 25, 50, -1], [10, 15, 25, 50, "All"]],
-        pageLength: 15,
+    // Stop default datatables.init.js from initializing this table
+    $('#datatable-exhibition-produsen').addClass('dt-custom-init');
+
+    var table = $("#datatable-exhibition-produsen").DataTable({
         responsive: true,
         order: [[0, 'asc']],
         columnDefs: [
-            { width: "4%", targets: 0 },   // No
+            { width: "3%", targets: 0 },   // No
             { width: "20%", targets: 1 },  // Nama Instansi
-            { width: "16%", targets: 2 },  // Nama Petugas
-            { width: "13%", targets: 3 },  // Jumlah Juri
-            { width: "10%", targets: 4 },  // Nilai Final
-            { width: "10%", targets: 5 },  // Nilai Bobot
+            { width: "13%", targets: 2 },  // Nama Petugas
+            { width: "9%", targets: 3 },   // Jumlah Juri
+            { width: "8%", targets: 4 },   // Nilai Final
+            { width: "11%", targets: 5 },  // Nilai Bobot
             { width: "10%", targets: 6 },  // Kategori
-            { width: "17%", targets: 7 }   // Action
+            { width: "26%", targets: 7, orderable: false }   // Action
         ],
-        autoWidth: false
+        autoWidth: false,
+        language: {
+            search: "Cari:",
+            lengthMenu: "Tampilkan _MENU_ data per halaman",
+            info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+            infoEmpty: "Menampilkan 0 sampai 0 dari 0 data",
+            infoFiltered: "(difilter dari _MAX_ total data)",
+            paginate: {
+                first: "Pertama",
+                last: "Terakhir",
+                next: "Selanjutnya",
+                previous: "Sebelumnya"
+            },
+            zeroRecords: "Tidak ada data yang ditemukan",
+            emptyTable: "Tidak ada data"
+        }
     });
 });
 </script>

@@ -26,6 +26,14 @@ class ProdusenPresentationController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
         
+        // Fix missing kategori_skor for records that have nilai_final but no kategori
+        foreach ($forms as $form) {
+            if ($form->nilai_final !== null && empty($form->kategori_skor)) {
+                $form->calculateNilaiFinal();
+                $form->save();
+            }
+        }
+        
         return view('dashboard.pages.presentation.produsen.index', compact('title', 'pageTitle', 'breadcrumbs', 'forms', 'term'));
     }
     

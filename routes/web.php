@@ -11,6 +11,8 @@ use App\Http\Controllers\dashboard\UserManagementController;
 use App\Http\Controllers\dashboard\SyncFormController;
 use App\Http\Controllers\dashboard\BpkhPresentationController;
 use App\Http\Controllers\dashboard\ProdusenPresentationController;
+use App\Http\Controllers\dashboard\BpkhExhibitionController;
+use App\Http\Controllers\dashboard\ProdusenExhibitionController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -62,6 +64,17 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/presentation-produsen-dg/{respondentId}/nilai', [ProdusenPresentationController::class, 'update'])->name('dashboard.presentation.produsen.update');
     Route::get('/presentation-produsen-dg/{respondentId}/history', [ProdusenPresentationController::class, 'history'])->name('dashboard.presentation.produsen.history');
 
+    // Penilaian Exhibition/Poster BPKH
+    Route::get('/exhibition-bpkh', [BpkhExhibitionController::class, 'index'])->name('dashboard.exhibition.bpkh.index');
+    Route::get('/exhibition-bpkh/{respondentId}', [BpkhExhibitionController::class, 'show'])->name('dashboard.exhibition.bpkh.show');
+    Route::get('/exhibition-bpkh/{respondentId}/nilai', [BpkhExhibitionController::class, 'edit'])->name('dashboard.exhibition.bpkh.edit');
+    Route::post('/exhibition-bpkh/{respondentId}/nilai', [BpkhExhibitionController::class, 'update'])->name('dashboard.exhibition.bpkh.update');
+
+    // Penilaian Exhibition/Poster Produsen DG
+    Route::get('/exhibition-produsen-dg', [ProdusenExhibitionController::class, 'index'])->name('dashboard.exhibition.produsen.index');
+    Route::get('/exhibition-produsen-dg/{respondentId}', [ProdusenExhibitionController::class, 'show'])->name('dashboard.exhibition.produsen.show');
+    Route::get('/exhibition-produsen-dg/{respondentId}/nilai', [ProdusenExhibitionController::class, 'edit'])->name('dashboard.exhibition.produsen.edit');
+    Route::post('/exhibition-produsen-dg/{respondentId}/nilai', [ProdusenExhibitionController::class, 'update'])->name('dashboard.exhibition.produsen.update');
 
     // User Management Routes (Admin & Superadmin only)
     Route::middleware(['role:admin,superadmin'])->group(function () {
