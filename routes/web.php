@@ -109,6 +109,8 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/presentation-session/bpkh/{id}', [PresentationSessionController::class, 'destroyBpkh'])->name('dashboard.presentation-session.bpkh.destroy');
         Route::delete('/presentation-session/produsen/{id}', [PresentationSessionController::class, 'destroyProdusen'])->name('dashboard.presentation-session.produsen.destroy');
         Route::post('/presentation-session/update-order', [PresentationSessionController::class, 'updateOrder'])->name('dashboard.presentation-session.update-order');
+        Route::post('/presentation-session/config', [PresentationSessionController::class, 'storeSessionConfig'])->name('dashboard.presentation-session.config.store');
+        Route::delete('/presentation-session/config/{id}', [PresentationSessionController::class, 'destroySessionConfig'])->name('dashboard.presentation-session.config.destroy');
     });
 
 });

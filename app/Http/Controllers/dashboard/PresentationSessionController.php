@@ -8,6 +8,7 @@ use App\Models\BpkhPresentationSession;
 use App\Models\ProdusenPresentationSession;
 use App\Models\BpkhPresentationAssesment;
 use App\Models\ProdusenPresentationAssesment;
+use App\Models\PresentationSessionConfig;
 
 class PresentationSessionController extends Controller
 {
@@ -22,6 +23,10 @@ class PresentationSessionController extends Controller
             ['name' => 'Dashboard', 'url' => route('dashboard.index')],
             ['name' => 'Manajemen Sesi Presentasi', 'url' => null, 'active' => true]
         ];
+        
+        // Get session configurations
+        $bpkhSessionConfigs = PresentationSessionConfig::getActiveBpkhSessions();
+        $produsenSessionConfigs = PresentationSessionConfig::getActiveProdusenSessions();
         
         // Get all sessions grouped
         $bpkhSessions = BpkhPresentationSession::getGroupedSessions();
@@ -38,6 +43,7 @@ class PresentationSessionController extends Controller
         
         return view('dashboard.pages.presentation_session.index', compact(
             'title', 'pageTitle', 'breadcrumbs',
+            'bpkhSessionConfigs', 'produsenSessionConfigs',
             'bpkhSessions', 'produsenSessions',
             'availableBpkh', 'availableProdusen'
         ));
@@ -164,5 +170,62 @@ class PresentationSessionController extends Controller
         }
         
         return response()->json(['success' => true, 'message' => 'Urutan berhasil diupdate']);
+    }
+    
+    /**
+     * Store new session configuration
+     */
+    public function storeSessionConfig(Request $request)
+    {
+        $request->validate([
+            'session_number' => 'required|integer|min:1',
+            'session_type' => 'required|in:bpkh,produsen'
+        ]);
+        
+        // Check if session already exists
+        $exists = PresentationSessionConfig::where('session_number', $request->session_number)
+            ->where('session_type', $request->session_type)
+            ->exists();
+            
+        if ($exists) {
+            return back()->with('error', 'Sesi ' . $request->session_number . ' untuk ' . ucfirst($request->session_type) . ' sudah ada');
+        }
+        
+        // Get max order for this type
+        $maxOrder = PresentationSessionConfig::where('session_type', $request->session_type)->max('order') ?? 0;
+        
+        PresentationSessionConfig::create([
+            'session_name' => 'Sesi ' . $request->session_number,
+            'session_number' => $request->session_number,
+            'session_type' => $request->session_type,
+            'order' => $maxOrder + 1,
+            'is_active' => true
+        ]);
+        
+        return back()->with('success', 'Sesi ' . $request->session_number . ' berhasil ditambahkan');
+    }
+    
+    /**
+     * Delete session configuration
+     */
+    public function destroySessionConfig($id)
+    {
+        $config = PresentationSessionConfig::findOrFail($id);
+        
+        // Check if there are participants in this session
+        $hasParticipants = false;
+        if ($config->session_type === 'bpkh') {
+            $hasParticipants = BpkhPresentationSession::where('session_name', $config->session_name)->exists();
+        } else {
+            $hasParticipants = ProdusenPresentationSession::where('session_name', $config->session_name)->exists();
+        }
+        
+        if ($hasParticipants) {
+            return back()->with('error', 'Tidak dapat menghapus sesi yang masih memiliki peserta. Hapus peserta terlebih dahulu.');
+        }
+        
+        $config->delete();
+        
+        return back()->with('success', 'Konfigurasi sesi berhasil dihapus');
     }
 }

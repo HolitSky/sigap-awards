@@ -13,9 +13,14 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title mb-3">
-                            <i class="mdi mdi-calendar-clock text-primary me-2"></i>Sesi Presentasi BPKH
-                        </h4>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="card-title mb-0">
+                                <i class="mdi mdi-calendar-clock text-primary me-2"></i>Sesi Presentasi BPKH
+                            </h4>
+                            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addBpkhSessionModal">
+                                <i class="mdi mdi-plus-circle me-1"></i>Tambah Sesi Baru
+                            </button>
+                        </div>
                         
                         <!-- Add Participant Form -->
                         <form method="POST" action="{{ route('dashboard.presentation-session.bpkh.store') }}" class="mb-4">
@@ -25,9 +30,9 @@
                                     <label class="form-label">Nama Sesi</label>
                                     <select name="session_name" class="form-select" required>
                                         <option value="">Pilih Sesi</option>
-                                        <option value="Sesi 1">Sesi 1</option>
-                                        <option value="Sesi 3">Sesi 3</option>
-                                        <option value="Sesi 5">Sesi 5</option>
+                                        @foreach($bpkhSessionConfigs as $config)
+                                            <option value="{{ $config->session_name }}">{{ $config->session_name }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="col-md-6">
@@ -49,11 +54,19 @@
 
                         <!-- Sessions Display -->
                         <div class="row">
-                            @foreach(['Sesi 1', 'Sesi 3', 'Sesi 5'] as $sessionName)
+                            @foreach($bpkhSessionConfigs as $config)
+                                @php
+                                    $sessionName = $config->session_name;
+                                @endphp
                                 <div class="col-md-4 mb-3">
                                     <div class="card border">
-                                        <div class="card-header bg-primary text-white">
+                                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                                             <h5 class="mb-0"><i class="mdi mdi-calendar-text me-2"></i>{{ $sessionName }}</h5>
+                                            <button type="button" class="btn btn-sm btn-light btn-delete-session-config" 
+                                                    data-id="{{ $config->id }}"
+                                                    data-name="{{ $sessionName }}">
+                                                <i class="mdi mdi-close"></i>
+                                            </button>
                                         </div>
                                         <div class="card-body">
                                             @if(isset($bpkhSessions[$sessionName]) && $bpkhSessions[$sessionName]->count() > 0)
@@ -92,9 +105,14 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title mb-3">
-                            <i class="mdi mdi-calendar-clock text-success me-2"></i>Sesi Presentasi Produsen DG
-                        </h4>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="card-title mb-0">
+                                <i class="mdi mdi-calendar-clock text-success me-2"></i>Sesi Presentasi Produsen DG
+                            </h4>
+                            <button type="button" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#addProdusenSessionModal">
+                                <i class="mdi mdi-plus-circle me-1"></i>Tambah Sesi Baru
+                            </button>
+                        </div>
                         
                         <!-- Add Participant Form -->
                         <form method="POST" action="{{ route('dashboard.presentation-session.produsen.store') }}" class="mb-4">
@@ -104,8 +122,9 @@
                                     <label class="form-label">Nama Sesi</label>
                                     <select name="session_name" class="form-select" required>
                                         <option value="">Pilih Sesi</option>
-                                        <option value="Sesi 2">Sesi 2</option>
-                                        <option value="Sesi 4">Sesi 4</option>
+                                        @foreach($produsenSessionConfigs as $config)
+                                            <option value="{{ $config->session_name }}">{{ $config->session_name }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="col-md-6">
@@ -127,11 +146,19 @@
 
                         <!-- Sessions Display -->
                         <div class="row">
-                            @foreach(['Sesi 2', 'Sesi 4'] as $sessionName)
+                            @foreach($produsenSessionConfigs as $config)
+                                @php
+                                    $sessionName = $config->session_name;
+                                @endphp
                                 <div class="col-md-6 mb-3">
                                     <div class="card border">
-                                        <div class="card-header bg-success text-white">
+                                        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
                                             <h5 class="mb-0"><i class="mdi mdi-calendar-text me-2"></i>{{ $sessionName }}</h5>
+                                            <button type="button" class="btn btn-sm btn-light btn-delete-session-config" 
+                                                    data-id="{{ $config->id }}"
+                                                    data-name="{{ $sessionName }}">
+                                                <i class="mdi mdi-close"></i>
+                                            </button>
                                         </div>
                                         <div class="card-body">
                                             @if(isset($produsenSessions[$sessionName]) && $produsenSessions[$sessionName]->count() > 0)
@@ -165,6 +192,72 @@
             </div>
         </div>
 
+    </div>
+</div>
+
+<!-- Modal: Add BPKH Session -->
+<div class="modal fade" id="addBpkhSessionModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="{{ route('dashboard.presentation-session.config.store') }}">
+                @csrf
+                <input type="hidden" name="session_type" value="bpkh">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="mdi mdi-plus-circle me-2"></i>Tambah Sesi BPKH Baru</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Nomor Sesi <span class="text-danger">*</span></label>
+                        <input type="number" name="session_number" class="form-control" min="1" required placeholder="Contoh: 6, 7, 8, dst">
+                        <small class="text-muted">Masukkan nomor sesi yang belum ada</small>
+                    </div>
+                    <div class="alert alert-info mb-0">
+                        <i class="mdi mdi-information me-2"></i>
+                        <strong>Info:</strong> Sesi akan dibuat dengan nama "Sesi [Nomor]". Contoh: Sesi 6, Sesi 7, dst.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="mdi mdi-check me-1"></i>Tambah Sesi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Add Produsen Session -->
+<div class="modal fade" id="addProdusenSessionModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="{{ route('dashboard.presentation-session.config.store') }}">
+                @csrf
+                <input type="hidden" name="session_type" value="produsen">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title"><i class="mdi mdi-plus-circle me-2"></i>Tambah Sesi Produsen Baru</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Nomor Sesi <span class="text-danger">*</span></label>
+                        <input type="number" name="session_number" class="form-control" min="1" required placeholder="Contoh: 6, 7, 8, dst">
+                        <small class="text-muted">Masukkan nomor sesi yang belum ada</small>
+                    </div>
+                    <div class="alert alert-info mb-0">
+                        <i class="mdi mdi-information me-2"></i>
+                        <strong>Info:</strong> Sesi akan dibuat dengan nama "Sesi [Nomor]". Contoh: Sesi 6, Sesi 7, dst.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="mdi mdi-check me-1"></i>Tambah Sesi
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -312,6 +405,58 @@ $(document).ready(function() {
                 const form = $('<form>', {
                     'method': 'POST',
                     'action': '{{ route('dashboard.presentation-session.produsen.destroy', ':id') }}'.replace(':id', id)
+                });
+                
+                form.append($('<input>', {
+                    'type': 'hidden',
+                    'name': '_token',
+                    'value': '{{ csrf_token() }}'
+                }));
+                
+                form.append($('<input>', {
+                    'type': 'hidden',
+                    'name': '_method',
+                    'value': 'DELETE'
+                }));
+                
+                $('body').append(form);
+                form.submit();
+            }
+        });
+    });
+    
+    // Delete Session Config
+    $('.btn-delete-session-config').on('click', function() {
+        const id = $(this).data('id');
+        const name = $(this).data('name');
+        
+        Swal.fire({
+            title: 'Hapus Konfigurasi Sesi?',
+            html: `Apakah Anda yakin ingin menghapus<br><strong>${name}</strong>?<br><br><small class="text-danger">Sesi hanya bisa dihapus jika tidak ada peserta di dalamnya.</small>`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: '<i class="mdi mdi-delete me-1"></i> Ya, Hapus!',
+            cancelButtonText: '<i class="mdi mdi-close me-1"></i> Batal',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Show loading
+                Swal.fire({
+                    title: 'Menghapus...',
+                    text: 'Mohon tunggu sebentar',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+                
+                // Create form and submit
+                const form = $('<form>', {
+                    'method': 'POST',
+                    'action': '{{ route('dashboard.presentation-session.config.destroy', ':id') }}'.replace(':id', id)
                 });
                 
                 form.append($('<input>', {
