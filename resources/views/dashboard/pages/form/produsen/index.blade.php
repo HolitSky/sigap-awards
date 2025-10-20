@@ -40,6 +40,7 @@
                                             <th>No</th>
                                             <th>Nama Instansi/Direktorat Produsen DG</th>
                                             <th>Petugas Produsen DG</th>
+                                            <th>Nominasi</th>
                                             <th>Nomor Telepon / Nomor WhatsApp Aktif</th>
                                             <th>Status Nilai</th>
                                             <th>Nilai Final</th>
@@ -54,6 +55,13 @@
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $form->nama_instansi }}</td>
                                                     <td>{{ $form->nama_petugas }}</td>
+                                                    <td class="text-center">
+                                                        @if($form->nominasi)
+                                                            <span class="badge bg-success">Masuk</span>
+                                                        @else
+                                                            <span class="badge bg-secondary">Tidak Masuk</span>
+                                                        @endif
+                                                    </td>
                                                     <td>{{ $form->phone }}</td>
 
 
@@ -132,43 +140,50 @@
 
     #datatable th:nth-child(4),
     #datatable td:nth-child(4) {
+        width: 80px !important;
+        max-width: 80px !important;
+        text-align: center;
+    }
+
+    #datatable th:nth-child(5),
+    #datatable td:nth-child(5) {
         width: 130px !important;
         max-width: 130px !important;
         word-wrap: break-word;
         white-space: normal;
     }
 
-    #datatable th:nth-child(5),
-    #datatable td:nth-child(5) {
+    #datatable th:nth-child(6),
+    #datatable td:nth-child(6) {
         width: 100px !important;
         max-width: 100px !important;
         text-align: center;
     }
 
-    #datatable th:nth-child(6),
-    #datatable td:nth-child(6) {
+    #datatable th:nth-child(7),
+    #datatable td:nth-child(7) {
         width: 80px !important;
         max-width: 80px !important;
         text-align: center;
     }
 
-    #datatable th:nth-child(7),
-    #datatable td:nth-child(7) {
+    #datatable th:nth-child(8),
+    #datatable td:nth-child(8) {
         width: 90px !important;
         max-width: 90px !important;
         text-align: center;
     }
 
-    #datatable th:nth-child(8),
-    #datatable td:nth-child(8) {
+    #datatable th:nth-child(9),
+    #datatable td:nth-child(9) {
         width: 150px !important;
         max-width: 150px !important;
         word-wrap: break-word;
         white-space: normal;
     }
 
-    #datatable th:nth-child(9),
-    #datatable td:nth-child(9) {
+    #datatable th:nth-child(10),
+    #datatable td:nth-child(10) {
         width: 180px !important;
         max-width: 180px !important;
     }

@@ -10,6 +10,7 @@ class ProdusenForm extends Model
         'respondent_id',
         'nama_instansi',
         'nama_petugas',
+        'nominasi',
         'phone',
         'website',
         'status_nilai',
@@ -24,6 +25,7 @@ class ProdusenForm extends Model
     ];
 
     protected $casts = [
+        'nominasi' => 'boolean',
         'meta' => 'array',
         'synced_at' => 'datetime',
     ];

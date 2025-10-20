@@ -10,6 +10,7 @@ class BpkhForm extends Model
         'respondent_id',
         'nama_bpkh',
         'petugas_bpkh',
+        'nominasi',
         'phone',
         'website',
         'status_nilai',
@@ -24,6 +25,7 @@ class BpkhForm extends Model
     ];
 
     protected $casts = [
+        'nominasi' => 'boolean',
         'meta' => 'array',
         'synced_at' => 'datetime',
     ];
