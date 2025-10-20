@@ -27,29 +27,91 @@ di lingkungan Kementerian Kehutanan Indonesia.
 
 Proyek ini dibangun menggunakan teknologi modern:
 
-- [Laravel 12](https://laravel.com) - Framework PHP yang elegan & powerful
-- Modern JavaScript dengan pendekatan OOP
-- Responsive Design dengan CSS modern
-- Countdown Timer & Dynamic UI Components
-- Terhubung dengan Platform https://tally.so/ sebagai form
+### Backend
+- [Laravel 11](https://laravel.com) - Framework PHP yang elegan & powerful
+- PHP 8.2+ dengan type safety
+- MySQL Database untuk data persistence
+- Google Sheets API untuk integrasi data
+
+### Frontend
+- Modern JavaScript (ES6+) dengan jQuery
+- Blade Template Engine
+- Bootstrap 5 untuk UI components
+- CSS3 dengan animations & transitions
+- Glass-morphism design patterns
+- Responsive design untuk semua device
+
+### Libraries & Tools
+- Maatwebsite Excel untuk export data
+- Mews Captcha untuk security
+- Lottie untuk animations
+- DataTables untuk table management
 
 ## ✨ Fitur
 
-- 🏠 **Landing Page Modern**
-  - Tampilan yang elegan dan responsif
+### 🏠 Landing Page
+- **Homepage Modern & Responsif**
+  - Tampilan elegan dengan glass-morphism design
   - Countdown timer menuju tanggal peluncuran
   - Komponen UI yang dinamis dan interaktif
+  - Pengumuman peserta lolos tahap presentasi
 
-- 📊 **Framework Penilaian IGIF**
-  - Adopsi standar global untuk penilaian geospasial
-  - Kriteria yang disesuaikan dengan konteks kehutanan Indonesia
-  - Terintegrasi dengan platform Tally.so untuk pengisian form penilaian
-  - Sistem penilaian yang transparan dan terukur
+### 🔐 Sistem Autentikasi
+- **Login dengan Captcha**
+  - Keamanan berlapis dengan captcha verification
+  - Session management yang aman
+  - Role-based access control (Admin, Asesor, Viewer)
 
-- 🔄 **Integrasi Google Sheets**
-  - Sinkronisasi otomatis data form dari Google Sheets
-  - Pengelolaan data responden yang real-time
-  - Penyimpanan metadata lengkap dari setiap submission
+### 👥 User Management
+- **Manajemen Pengguna Lengkap**
+  - CRUD user dengan role assignment
+  - Filter dan pencarian user
+  - Bulk actions untuk efisiensi
+  - Export data user
+
+### 📊 Dashboard Penilaian
+
+#### **Presentation Module**
+- **Penilaian Tahap Presentasi**
+  - Penilaian individual per peserta
+  - Sistem scoring dengan bobot kriteria
+  - Session management (Sesi A, B, C)
+  - Real-time progress tracking
+  - Export hasil penilaian ke Excel
+  - Visual feedback dengan progress indicators
+
+#### **Exhibition Module**
+- **Penilaian Tahap Exhibition**
+  - Collective scoring untuk multiple peserta
+  - Bulk selection dengan session grouping
+  - Active state indicators untuk session buttons
+  - Validasi data sebelum submit
+  - Auto-save functionality
+  - Export batch scoring results
+
+### 🔄 Integrasi Google Sheets
+- **Sinkronisasi Otomatis**
+  - Sync data BPKH dan Produsen dari Google Sheets
+  - Real-time data updates
+  - Metadata preservation
+  - Error handling dan logging
+  - Scheduled sync support
+
+### 📈 Fitur Penilaian IGIF
+- **Framework Penilaian Komprehensif**
+  - Adopsi standar IGIF global
+  - 9 Pilar penilaian dengan sub-kriteria
+  - Sistem bobot yang terukur
+  - Validasi scoring otomatis
+  - Perhitungan nilai akhir real-time
+
+### 📢 Pengumuman
+- **Halaman Announcement**
+  - List peserta lolos tahap presentasi
+  - Kategorisasi: Produsen & BPKH
+  - Design modern dengan animations
+  - Fully responsive untuk semua device
+  - Sticky footer layout
 
 ## 🚀 Instalasi
 
@@ -92,7 +154,11 @@ php artisan serve
 Untuk memperbarui data dari Google Sheets, jalankan:
 
 ```bash
+# Sync data BPKH
 php artisan bpkh:sync-sheets
+
+# Sync data Produsen
+php artisan produsen:sync-sheets
 ```
 
 Command ini akan:
@@ -100,6 +166,72 @@ Command ini akan:
 - Memperbarui atau menambahkan record baru ke database
 - Menyimpan metadata lengkap sesuai urutan kolom di spreadsheet
 - Mencatat waktu sinkronisasi terakhir
+
+## 📋 Struktur Modul
+
+### Dashboard Modules
+```
+dashboard/
+├── presentation/
+│   ├── bpkh/          # Penilaian presentasi BPKH
+│   └── produsen/      # Penilaian presentasi Produsen
+├── exhibition/
+│   ├── bpkh/          # Penilaian exhibition BPKH
+│   └── produsen/      # Penilaian exhibition Produsen
+└── user-management/   # Manajemen user & roles
+```
+
+### Roles & Permissions
+- **Admin**: Full access ke semua fitur
+- **Asesor**: Akses penilaian presentation & exhibition
+- **Viewer**: Read-only access untuk melihat data
+
+## 🎯 Workflow Penilaian
+
+1. **Tahap Presentation**
+   - Asesor login ke dashboard
+   - Pilih kategori (BPKH/Produsen)
+   - Pilih peserta dan session
+   - Isi form penilaian per pilar
+   - Submit dan lihat hasil real-time
+
+2. **Tahap Exhibition**
+   - Asesor masuk ke modul exhibition
+   - Pilih multiple peserta (bulk selection)
+   - Atau gunakan session button untuk auto-select
+   - Isi collective scoring
+   - Submit batch assessment
+
+3. **Export & Reporting**
+   - Export hasil ke Excel
+   - View summary statistics
+   - Track assessment progress
+
+## 🆕 Recent Updates
+
+### Version 2.0 (October 2025)
+- ✅ **Exhibition Module Enhancement**
+  - Added session button active state indicators
+  - Improved bulk selection UX
+  - Enhanced visual feedback for user actions
+  
+- ✅ **Announcement Page**
+  - New announcement page for qualified participants
+  - Modern glass-morphism design
+  - Fully responsive layout with sticky footer
+  - Smooth animations and transitions
+
+- ✅ **UI/UX Improvements**
+  - Enhanced responsive design for all viewports
+  - Improved scroll behavior on small screens
+  - Better visual hierarchy and spacing
+  - Consistent color scheme across modules
+
+- ✅ **Bug Fixes**
+  - Fixed overflow issues on small viewports
+  - Resolved session button state management
+  - Fixed link navigation in landing page
+  - Improved form validation feedback
 
 ## 🤝 Kontribusi
 
