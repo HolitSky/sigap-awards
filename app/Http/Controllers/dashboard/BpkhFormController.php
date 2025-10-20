@@ -18,7 +18,9 @@ class BpkhFormController extends Controller
         $term=$request->string('q')->toString();
         $forms=BpkhForm::query()
             ->search($term)
-            ->orderBy('nominasi', 'desc') // nominasi true (1) di atas, false (0) di bawah
+            ->orderBy('nominasi', 'desc') // nominasi true (1) di atas
+            ->orderByRaw('nilai_bobot_total IS NULL ASC') // non-null dulu, null di bawah
+            ->orderBy('nilai_bobot_total', 'desc') // nilai tertinggi di atas
             ->orderBy('sheet_row_number','asc')
             ->orderBy('respondent_id','asc')
             ->get();
