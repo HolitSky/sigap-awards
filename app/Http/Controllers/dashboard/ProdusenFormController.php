@@ -17,6 +17,7 @@ class ProdusenFormController extends Controller
         $term=$request->string('q')->toString();
         $forms=ProdusenForm::query()
             ->search($term)
+            ->orderBy('nominasi', 'desc') // nominasi true (1) di atas, false (0) di bawah
             ->orderBy('sheet_row_number','asc')
             ->orderBy('respondent_id','asc')
             ->get();
