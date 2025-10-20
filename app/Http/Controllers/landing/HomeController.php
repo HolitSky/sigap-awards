@@ -44,4 +44,39 @@ class HomeController extends Controller
          $launchFinish = Carbon::create(2025, 10, 16, 0, 0, 0);
         return view('landing.pages.home.thanks-for-submit', compact('launchStart', 'launchFinish'));
     }
+
+    public function announcement()
+    {
+        // Data pengumuman peserta yang lolos ke tahap presentasi
+        $announcements = [
+            'Produsen Data Geospasial' => [
+                'Direktorat Penggunaan Kawasan Hutan',
+                'Direktorat Bina Usaha Pemanfaatan Hutan',
+                'Direktorat Perencanaan dan Evaluasi Pengelolaan Daerah Aliran Sungai',
+                'Direktorat Rehabilitasi Mangrove',
+                'Direktorat Pengendalian Kebakaran Hutan',
+                'Direktorat Penyiapan Kawasan Perhutanan Sosial',
+            ],
+            'Balai Pemantapan Kawasan Hutan' => [
+                'BPKH Wilayah I Medan',
+                'BPKH Wilayah III Pontianak',
+                'BPKH Wilayah V Banjarbaru',
+                'BPKH Wilayah VII Makassar',
+                'BPKH Wilayah VIII Denpasar',
+                'BPKH Wilayah IX Ambon',
+                'BPKH Wilayah XI Yogyakarta',
+                'BPKH Wilayah XII Tanjung Pinang',
+                'BPKH Wilayah XVII Manokwari',
+                'BPKH Wilayah XVIII Banda Aceh',
+                'BPKH Wilayah XX Bandar Lampung',
+                'BPKH Wilayah XXI Palangkaraya',
+            ],
+        ];
+
+        // Konfigurasi launch date dari Controller
+        $launchStart = Carbon::create(2025, 10, 3, 0, 0, 0);
+        $launchFinish = Carbon::create(2025, 10, 17, 0, 0, 0);
+
+        return view('landing.pages.home.announcement', compact('announcements', 'launchStart', 'launchFinish'));
+    }
 }

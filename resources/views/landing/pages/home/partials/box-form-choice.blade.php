@@ -203,16 +203,35 @@
                             <img src="{{ asset('sigap-assets/images/m4cr-logo.png') }}" alt="Logo M4CR">
                         </div>
                         <div class="glass-container">
-                            <div class="glass-card">
+                        <!-- Start Menu Produsen Data Geospasial -->
+
+                        {{-- <div class="glass-card">
                             <a href="javascript:void(0);">
                                 Form Produsen Data Geospasial
                             </a>
-                        </div>
-                        <div class="glass-card">
+                        </div> --}}
+
+                        <!-- End Menu Produsen Data Geospasial -->
+
+                        <!-- Start Menu BPKH -->
+
+                        {{-- <div class="glass-card">
                             <a href="javascript:void(0);">
                                 Form Balai Pemantapan Kawasan Hutan (BPKH)
                             </a>
+                        </div> --}}
+
+                         <!-- End Menu BPKH -->
+
+
+                         <!-- Start Menu Pengumuman List Masuk Tahap Presentasi -->
+                         <div class="glass-card">
+                            <a href="{{ route('announcement') }}">
+                                Pengumuman : List Peserta Tahap Presentasi
+                            </a>
                         </div>
+                        <!-- End Menu Pengumuman List Masuk Tahap Presentasi -->
+
                         </div>
                     </div>
 
@@ -295,6 +314,13 @@
         // Add click event to form cards
         formCards.forEach((card, index) => {
             card.addEventListener('click', function(e) {
+                // Skip if this is the announcement link (has actual href, not javascript:void)
+                const href = card.getAttribute('href');
+                if (href && !href.includes('javascript:void')) {
+                    // Let the link work normally
+                    return;
+                }
+
                 e.preventDefault();
                 // Determine form type based on card content
                 const cardText = card.textContent.trim().toLowerCase();

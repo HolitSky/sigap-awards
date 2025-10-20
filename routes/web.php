@@ -19,6 +19,8 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/thanks-for-submit', [HomeController::class, 'thanksForSubmit'])->name('thanks-for-submit');
 
+Route::get('/announcement', [HomeController::class, 'announcement'])->name('announcement');
+
 // Auth Routes (Guest only - redirect to dashboard if already logged in)
 Route::middleware(['guest'])->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');

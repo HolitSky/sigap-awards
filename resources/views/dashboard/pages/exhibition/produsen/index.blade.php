@@ -152,6 +152,32 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+        
+        /* Session button active state */
+        .session-select.active {
+            background-color: #556ee6 !important;
+            color: #fff !important;
+            border-color: #556ee6 !important;
+        }
+        
+        /* Session button completed state */
+        .session-select.session-completed {
+            background-color: #34c38f !important;
+            color: #fff !important;
+            border-color: #34c38f !important;
+            font-weight: 600;
+        }
+        
+        .session-select.session-completed:hover {
+            background-color: #2ca87f !important;
+            border-color: #2ca87f !important;
+        }
+        
+        /* Keep completed state even when active */
+        .session-select.session-completed.active {
+            background-color: #2ca87f !important;
+            border-color: #2ca87f !important;
+        }
     </style>
 @endpush
 
@@ -225,17 +251,23 @@ $(document).ready(function () {
         });
         
         updateBulkActionButton();
+        
+        // Visual feedback - toggle active class
+        $('.session-select').removeClass('active');
+        $(this).addClass('active');
     });
     
     // Select all checkbox
     $('#select-all').on('change', function() {
         $('.participant-checkbox').prop('checked', $(this).is(':checked'));
+        $('.session-select').removeClass('active');
         updateBulkActionButton();
     });
     
     // Individual checkbox
     $('.participant-checkbox').on('change', function() {
         updateBulkActionButton();
+        $('.session-select').removeClass('active');
         
         // Update select-all checkbox
         const total = $('.participant-checkbox').length;
