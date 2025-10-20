@@ -30,12 +30,23 @@
                                         </div>
                                     </form>
 
-                                    <h4 class="card-title">Penilaian Presentasi BPKH</h4>
-                                    <p class="card-title-desc">Daftar penilaian presentasi untuk BPKH yang sudah masuk tahap presentasi.</p>
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <div>
+                                            <h4 class="card-title mb-1">Penilaian Presentasi BPKH</h4>
+                                            <p class="card-title-desc mb-0">Daftar penilaian presentasi untuk BPKH yang sudah masuk nominasi dan dalam tahap presentasi.</p>
+                                        </div>
+                                        <div id="bulk-action-container" style="display: none;">
+                                            <button type="button" id="btn-bulk-score" class="btn btn-primary">
+                                                <i class="mdi mdi-clipboard-check-multiple-outline me-1"></i>
+                                                Penilaian Kolektif (<span id="selected-count">0</span>)
+                                            </button>
+                                        </div>
+                                    </div>
 
                                     <table id="datatable" class="table table-bordered dt-responsive nowrap w-100">
                                         <thead>
                                         <tr>
+                                            <th><input type="checkbox" id="select-all" class="form-check-input"></th>
                                             <th>No</th>
                                             <th>Nama BPKH</th>
                                             <th>Petugas BPKH</th>
@@ -49,6 +60,7 @@
                                         <tbody>
                                             @forelse(($forms ?? []) as $form)
                                                 <tr>
+                                                    <td><input type="checkbox" class="form-check-input participant-checkbox" data-id="{{ $form->respondent_id }}" data-name="{{ $form->nama_bpkh }}"></td>
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $form->nama_bpkh }}</td>
                                                     <td>{{ $form->petugas_bpkh }}</td>
@@ -81,7 +93,7 @@
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="8" class="text-center">Tidak ada data</td>
+                                                    <td colspan="9" class="text-center">Tidak ada data</td>
                                                 </tr>
                                             @endforelse
                                         </tbody>
@@ -107,7 +119,7 @@
         background-color: #fd7e14 !important;
         color: #fff !important;
     }
-    
+
     #datatable {
         table-layout: fixed;
         width: 100% !important;
@@ -188,18 +200,61 @@ $(document).ready(function() {
         lengthMenu: [[10, 15, 25, 50, -1], [10, 15, 25, 50, "All"]],
         pageLength: 15,
         responsive: true,
-        order: [[0, 'asc']],
+        order: [[1, 'asc']],
         columnDefs: [
-            { width: "4%", targets: 0 },   // No
-            { width: "20%", targets: 1 },  // Nama BPKH
-            { width: "16%", targets: 2 },  // Petugas BPKH
-            { width: "13%", targets: 3 },  // Jumlah Juri
-            { width: "10%", targets: 4 },  // Nilai Final
-            { width: "10%", targets: 5 },  // Nilai Bobot
-            { width: "10%", targets: 6 },  // Kategori
-            { width: "17%", targets: 7 }   // Action
+            { width: "3%", targets: 0, orderable: false },   // Checkbox
+            { width: "3%", targets: 1 },   // No
+            { width: "19%", targets: 2 },  // Nama BPKH
+            { width: "15%", targets: 3 },  // Petugas BPKH
+            { width: "12%", targets: 4 },  // Jumlah Juri
+            { width: "9%", targets: 5 },   // Nilai Final
+            { width: "10%", targets: 6 },  // Nilai Bobot
+            { width: "10%", targets: 7 },  // Kategori
+            { width: "19%", targets: 8 }   // Action
         ],
         autoWidth: false
+    });
+
+    // Handle select all checkbox
+    $('#select-all').on('change', function() {
+        $('.participant-checkbox').prop('checked', $(this).prop('checked'));
+        updateBulkButton();
+    });
+
+    // Handle individual checkbox
+    $('.participant-checkbox').on('change', function() {
+        updateBulkButton();
+        // Update select-all if all checkboxes are checked
+        const allChecked = $('.participant-checkbox').length === $('.participant-checkbox:checked').length;
+        $('#select-all').prop('checked', allChecked);
+    });
+
+    // Update bulk action button visibility and count
+    function updateBulkButton() {
+        const checkedCount = $('.participant-checkbox:checked').length;
+        $('#selected-count').text(checkedCount);
+        if (checkedCount > 0) {
+            $('#bulk-action-container').slideDown(200);
+        } else {
+            $('#bulk-action-container').slideUp(200);
+        }
+    }
+
+    // Handle bulk score button click
+    $('#btn-bulk-score').on('click', function() {
+        const selectedIds = [];
+        $('.participant-checkbox:checked').each(function() {
+            selectedIds.push($(this).data('id'));
+        });
+
+        if (selectedIds.length === 0) {
+            alert('Pilih minimal 1 peserta untuk dinilai');
+            return;
+        }
+
+        // Redirect to bulk scoring page with selected IDs
+        const ids = selectedIds.join(',');
+        window.location.href = '{{ route("dashboard.presentation.bpkh.bulk-score") }}?ids=' + ids;
     });
 });
 </script>

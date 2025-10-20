@@ -205,4 +205,189 @@ class ProdusenPresentationController extends Controller
         
         return response()->json($records);
     }
+    
+    public function bulkScoreForm(Request $request)
+    {
+        $title = 'Penilaian Kolektif Presentasi Produsen DG';
+        $pageTitle = $title;
+        $breadcrumbs = [
+            ['name' => 'Penilaian Presentasi', 'url' => route('dashboard.presentation.produsen.index')],
+            ['name' => 'Produsen DG', 'url' => route('dashboard.presentation.produsen.index')],
+            ['name' => 'Penilaian Kolektif', 'url' => null, 'active' => true]
+        ];
+        
+        // Get selected IDs from query string
+        $ids = $request->query('ids');
+        if (!$ids) {
+            return redirect()->route('dashboard.presentation.produsen.index')
+                ->withErrors(['error' => 'Tidak ada peserta yang dipilih']);
+        }
+        
+        $selectedIds = explode(',', $ids);
+        
+        // Get forms data
+        $forms = ProdusenPresentationAssesment::whereIn('respondent_id', $selectedIds)->get();
+        
+        if ($forms->isEmpty()) {
+            return redirect()->route('dashboard.presentation.produsen.index')
+                ->withErrors(['error' => 'Data peserta tidak ditemukan']);
+        }
+        
+        // Get previous assessments for current user
+        $userAssessments = [];
+        foreach ($forms as $form) {
+            $userAssessment = [];
+            
+            // Get penilaian data (catatan, rekomendasi, dll)
+            if ($form->penilaian_per_juri) {
+                foreach ($form->penilaian_per_juri as $penilaian) {
+                    if ($penilaian['user_id'] == Auth::id()) {
+                        $userAssessment = $penilaian;
+                        break;
+                    }
+                }
+            }
+            
+            // Get aspek scores detail
+            if ($form->aspek_penilaian && isset($form->aspek_penilaian[Auth::id()])) {
+                $userAssessment['aspek_scores'] = $form->aspek_penilaian[Auth::id()];
+            }
+            
+            $userAssessments[$form->respondent_id] = $userAssessment;
+        }
+        
+        // Get aspek penilaian structure
+        $aspekPenilaian = [
+            'substansi_capaian' => ['label' => 'Substansi & Capaian', 'bobot' => 30],
+            'implementasi_strategi' => ['label' => 'Implementasi & Strategi', 'bobot' => 20],
+            'kedalaman_analisis' => ['label' => 'Kedalaman Analisis', 'bobot' => 15],
+            'kejelasan_alur' => ['label' => 'Kejelasan Alur', 'bobot' => 10],
+            'kemampuan_menjawab' => ['label' => 'Kemampuan Menjawab', 'bobot' => 15],
+            'kreativitas_daya_tarik' => ['label' => 'Kreativitas & Daya Tarik', 'bobot' => 10],
+        ];
+        
+        $rekomendasiOptions = [
+            'Layak sebagai pemenang kategori',
+            'Layak sebagai nominasi utama',
+            'Perlu pembinaan lebih lanjut'
+        ];
+        
+        return view('dashboard.pages.presentation.produsen.collective_score', compact(
+            'title', 'pageTitle', 'breadcrumbs', 'forms', 'aspekPenilaian', 'rekomendasiOptions', 'userAssessments'
+        ));
+    }
+    
+    public function bulkScoreStore(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $participants = $request->input('participants', []);
+            
+            if (empty($participants)) {
+                return back()->withErrors(['error' => 'Tidak ada data penilaian yang dikirim']);
+            }
+            
+            $successCount = 0;
+            
+            foreach ($participants as $respondentId => $data) {
+                // Validate each participant data
+                $validated = validator($data, [
+                    'substansi_capaian' => ['required', 'integer', 'min:1', 'max:100'],
+                    'implementasi_strategi' => ['required', 'integer', 'min:1', 'max:100'],
+                    'kedalaman_analisis' => ['required', 'integer', 'min:1', 'max:100'],
+                    'kejelasan_alur' => ['required', 'integer', 'min:1', 'max:100'],
+                    'kemampuan_menjawab' => ['required', 'integer', 'min:1', 'max:100'],
+                    'kreativitas_daya_tarik' => ['required', 'integer', 'min:1', 'max:100'],
+                    'catatan_juri' => ['nullable', 'string', 'max:5000'],
+                    'rekomendasi' => ['required', 'string'],
+                ])->validate();
+                
+                $form = ProdusenPresentationAssesment::where('respondent_id', $respondentId)->firstOrFail();
+                
+                // Calculate nilai akhir per user
+                $aspekScores = [
+                    'substansi_capaian' => ['score' => $validated['substansi_capaian'], 'bobot' => 30],
+                    'implementasi_strategi' => ['score' => $validated['implementasi_strategi'], 'bobot' => 20],
+                    'kedalaman_analisis' => ['score' => $validated['kedalaman_analisis'], 'bobot' => 15],
+                    'kejelasan_alur' => ['score' => $validated['kejelasan_alur'], 'bobot' => 10],
+                    'kemampuan_menjawab' => ['score' => $validated['kemampuan_menjawab'], 'bobot' => 15],
+                    'kreativitas_daya_tarik' => ['score' => $validated['kreativitas_daya_tarik'], 'bobot' => 10],
+                ];
+                
+                $nilaiAkhirUser = 0;
+                foreach ($aspekScores as $aspek => $detail) {
+                    $nilaiAkhirUser += ($detail['score'] * $detail['bobot']) / 100;
+                }
+                $nilaiAkhirUser = round($nilaiAkhirUser, 2);
+                
+                // Update penilaian juri
+                $penilaianJuri = $form->penilaian_per_juri ?? [];
+                $found = false;
+                
+                foreach ($penilaianJuri as &$penilaian) {
+                    if ($penilaian['user_id'] == Auth::id()) {
+                        $penilaian['user_name'] = Auth::user()->name;
+                        $penilaian['nilai_akhir_user'] = $nilaiAkhirUser;
+                        $penilaian['catatan'] = $validated['catatan_juri'];
+                        $penilaian['rekomendasi'] = $validated['rekomendasi'];
+                        $penilaian['assessed_at'] = now()->toDateTimeString();
+                        $found = true;
+                        break;
+                    }
+                }
+                
+                if (!$found) {
+                    $penilaianJuri[] = [
+                        'user_id' => Auth::id(),
+                        'user_name' => Auth::user()->name,
+                        'nilai_akhir_user' => $nilaiAkhirUser,
+                        'catatan' => $validated['catatan_juri'],
+                        'rekomendasi' => $validated['rekomendasi'],
+                        'assessed_at' => now()->toDateTimeString(),
+                    ];
+                }
+                
+                $form->penilaian_per_juri = $penilaianJuri;
+                
+                // Update aspek penilaian
+                $currentAspek = $form->aspek_penilaian ?? [];
+                $currentAspek[Auth::id()] = $aspekScores;
+                $form->aspek_penilaian = $currentAspek;
+                
+                // Recalculate nilai final
+                $form->calculateNilaiFinal();
+                $form->save();
+                
+                // Record assessment history
+                RecordPresentationAssesment::create([
+                    'user_id' => Auth::id(),
+                    'user_name' => Auth::user()->name,
+                    'user_email' => Auth::user()->email,
+                    'user_role' => Auth::user()->role,
+                    'form_type' => 'produsen',
+                    'respondent_id' => $respondentId,
+                    'form_name' => $form->nama_instansi,
+                    'action_type' => 'presentation_assessment',
+                    'nilai_akhir_user' => $nilaiAkhirUser,
+                    'catatan_juri' => $validated['catatan_juri'],
+                    'rekomendasi' => $validated['rekomendasi'],
+                    'aspek_scores' => $aspekScores,
+                ]);
+                
+                $successCount++;
+            }
+            
+            DB::commit();
+            
+            return redirect()
+                ->route('dashboard.presentation.produsen.index')
+                ->with('success', "Berhasil menyimpan penilaian untuk {$successCount} peserta!");
+                
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()
+                ->withInput()
+                ->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()]);
+        }
+    }
 }
