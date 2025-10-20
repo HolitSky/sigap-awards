@@ -125,60 +125,77 @@
         width: 100% !important;
     }
 
+    /* Checkbox column */
     #datatable th:nth-child(1),
     #datatable td:nth-child(1) {
-        width: 50px !important;
-        max-width: 50px !important;
+        width: 35px !important;
+        max-width: 35px !important;
+        text-align: center;
     }
 
+    /* No column */
     #datatable th:nth-child(2),
     #datatable td:nth-child(2) {
+        width: 45px !important;
+        max-width: 45px !important;
+        text-align: center;
+    }
+
+    /* Nama Instansi column */
+    #datatable th:nth-child(3),
+    #datatable td:nth-child(3) {
+        width: 220px !important;
+        max-width: 220px !important;
+        word-wrap: break-word;
+        white-space: normal;
+    }
+
+    /* Nama Petugas column */
+    #datatable th:nth-child(4),
+    #datatable td:nth-child(4) {
         width: 180px !important;
         max-width: 180px !important;
         word-wrap: break-word;
         white-space: normal;
     }
 
-    #datatable th:nth-child(3),
-    #datatable td:nth-child(3) {
-        width: 150px !important;
-        max-width: 150px !important;
-        word-wrap: break-word;
-        white-space: normal;
-    }
-
-    #datatable th:nth-child(4),
-    #datatable td:nth-child(4) {
+    /* Total Juri column */
+    #datatable th:nth-child(5),
+    #datatable td:nth-child(5) {
         width: 80px !important;
         max-width: 80px !important;
         text-align: center;
     }
 
-    #datatable th:nth-child(5),
-    #datatable td:nth-child(5) {
-        width: 90px !important;
-        max-width: 90px !important;
-        text-align: center;
-    }
-
+    /* Nilai Final column */
     #datatable th:nth-child(6),
     #datatable td:nth-child(6) {
+        width: 85px !important;
+        max-width: 85px !important;
+        text-align: center;
+    }
+
+    /* Nilai Bobot column */
+    #datatable th:nth-child(7),
+    #datatable td:nth-child(7) {
         width: 90px !important;
         max-width: 90px !important;
         text-align: center;
     }
 
-    #datatable th:nth-child(7),
-    #datatable td:nth-child(7) {
+    /* Kategori column */
+    #datatable th:nth-child(8),
+    #datatable td:nth-child(8) {
         width: 110px !important;
         max-width: 110px !important;
         text-align: center;
     }
 
-    #datatable th:nth-child(8),
-    #datatable td:nth-child(8) {
-        width: 200px !important;
-        max-width: 200px !important;
+    /* Action column */
+    #datatable th:nth-child(9),
+    #datatable td:nth-child(9) {
+        width: 155px !important;
+        max-width: 155px !important;
     }
 
     #datatable td {
@@ -203,14 +220,14 @@ $(document).ready(function() {
         order: [[1, 'asc']],
         columnDefs: [
             { width: "3%", targets: 0, orderable: false },   // Checkbox
-            { width: "3%", targets: 1 },   // No
-            { width: "19%", targets: 2 },  // Nama Instansi
-            { width: "15%", targets: 3 },  // Nama Petugas
-            { width: "12%", targets: 4 },  // Jumlah Juri
-            { width: "9%", targets: 5 },   // Nilai Final
-            { width: "10%", targets: 6 },  // Nilai Bobot
-            { width: "10%", targets: 7 },  // Kategori
-            { width: "19%", targets: 8 }   // Action
+            { width: "4%", targets: 1 },   // No
+            { width: "22%", targets: 2 },  // Nama Instansi
+            { width: "18%", targets: 3 },  // Nama Petugas
+            { width: "8%", targets: 4 },   // Total Juri
+            { width: "8%", targets: 5 },   // Nilai Final
+            { width: "9%", targets: 6 },   // Nilai Bobot
+            { width: "11%", targets: 7 },  // Kategori
+            { width: "17%", targets: 8 }   // Action
         ],
         autoWidth: false
     });
