@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\BpkhPresentationAssesment;
 use App\Models\RecordPresentationAssesment;
+use App\Models\BpkhPresentationSession;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -34,29 +35,44 @@ class BpkhPresentationController extends Controller
             }
         }
         
-        // Define presentation sessions
-        $sessions = [
-            'Sesi 1' => [
-                'BPKH Wilayah III Pontianak',
-                'BPKH Wilayah VII Makassar',
-                'BPKH Wilayah XII Tanjung Pinang',
-                'BPKH Wilayah XX Bandar Lampung'
-            ],
-            'Sesi 3' => [
-                'BPKH Wilayah V Banjarbaru',
-                'BPKH Wilayah IX Ambon',
-                'BPKH Wilayah XVII Manokwari',
-                'BPKH Wilayah XXI Palangkaraya'
-            ],
-            'Sesi 5' => [
-                'BPKH Wilayah I Medan',
-                'BPKH Wilayah VIII Denpasar',
-                'BPKH Wilayah XI Yogyakarta',
-                'BPKH Wilayah XVIII Banda Aceh'
-            ]
-        ];
+        // Get presentation sessions from database (dynamic)
+        $sessionsGrouped = BpkhPresentationSession::getGroupedSessions();
+        $sessions = [];
+        foreach ($sessionsGrouped as $sessionName => $participants) {
+            $sessions[$sessionName] = $participants->pluck('nama_bpkh')->toArray();
+        }
         
-        return view('dashboard.pages.presentation.bpkh.index', compact('title', 'pageTitle', 'breadcrumbs', 'forms', 'term', 'sessions'));
+        // Check which sessions are completed by current user
+        $currentUserId = Auth::id();
+        $completedSessions = [];
+        
+        foreach ($sessions as $sessionName => $participants) {
+            $allCompleted = true;
+            foreach ($participants as $participantName) {
+                // Find form for this participant
+                $form = $forms->firstWhere('nama_bpkh', $participantName);
+                if ($form) {
+                    // Check if current user has assessed this participant
+                    $hasAssessed = collect($form->penilaian_per_juri ?? [])->contains(function ($penilaian) use ($currentUserId) {
+                        return $penilaian['user_id'] == $currentUserId;
+                    });
+                    
+                    if (!$hasAssessed) {
+                        $allCompleted = false;
+                        break;
+                    }
+                } else {
+                    $allCompleted = false;
+                    break;
+                }
+            }
+            
+            if ($allCompleted) {
+                $completedSessions[] = $sessionName;
+            }
+        }
+        
+        return view('dashboard.pages.presentation.bpkh.index', compact('title', 'pageTitle', 'breadcrumbs', 'forms', 'term', 'sessions', 'completedSessions'));
     }
     
     public function show(string $respondentId)
@@ -254,6 +270,22 @@ class BpkhPresentationController extends Controller
             return redirect()->route('dashboard.presentation.bpkh.index')
                 ->withErrors(['error' => 'Data peserta tidak ditemukan']);
         }
+        
+        // Sort forms based on session order
+        $sessionOrder = [];
+        $sessionData = BpkhPresentationSession::whereIn('respondent_id', $selectedIds)
+            ->orderBy('session_name')
+            ->orderBy('order')
+            ->get();
+        
+        foreach ($sessionData as $index => $session) {
+            $sessionOrder[$session->respondent_id] = $index;
+        }
+        
+        // Sort forms collection based on session order
+        $forms = $forms->sortBy(function($form) use ($sessionOrder) {
+            return $sessionOrder[$form->respondent_id] ?? 999;
+        })->values();
         
         // Get previous assessments for current user
         $userAssessments = [];

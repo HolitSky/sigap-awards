@@ -38,8 +38,13 @@
                                         <div class="d-flex gap-2 align-items-center">
                                             <div class="btn-group" role="group">
                                                 @foreach($sessions as $sessionName => $participants)
-                                                    <button type="button" class="btn btn-outline-secondary btn-sm session-select" data-session="{{ $sessionName }}">
-                                                        <i class="mdi mdi-checkbox-multiple-marked-outline me-1"></i>{{ $sessionName }}
+                                                    @php
+                                                        $isCompleted = in_array($sessionName, $completedSessions ?? []);
+                                                        $btnClass = $isCompleted ? 'btn-success' : 'btn-outline-secondary';
+                                                        $icon = $isCompleted ? 'mdi-check-circle' : 'mdi-checkbox-multiple-marked-outline';
+                                                    @endphp
+                                                    <button type="button" class="btn {{ $btnClass }} btn-sm session-select {{ $isCompleted ? 'session-completed' : '' }}" data-session="{{ $sessionName }}">
+                                                        <i class="mdi {{ $icon }} me-1"></i>{{ $sessionName }}
                                                     </button>
                                                 @endforeach
                                             </div>
@@ -216,6 +221,25 @@
         background-color: #556ee6 !important;
         color: #fff !important;
         border-color: #556ee6 !important;
+    }
+
+    /* Session button completed state */
+    .session-select.session-completed {
+        background-color: #34c38f !important;
+        color: #fff !important;
+        border-color: #34c38f !important;
+        font-weight: 600;
+    }
+
+    .session-select.session-completed:hover {
+        background-color: #2ca87f !important;
+        border-color: #2ca87f !important;
+    }
+
+    /* Keep completed state even when active */
+    .session-select.session-completed.active {
+        background-color: #2ca87f !important;
+        border-color: #2ca87f !important;
     }
 </style>
 @endpush

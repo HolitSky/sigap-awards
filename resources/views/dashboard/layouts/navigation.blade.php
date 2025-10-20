@@ -114,6 +114,14 @@
                     </a>
                 </li>
 
+
+                 <li>
+                    <a href="{{ route('dashboard.presentation-session.index') }}" class="waves-effect">
+                        <i class="mdi mdi-calendar-clock"></i>
+                        <span key="t-forms">Manajemen Sesi Presentasi</span>
+                    </a>
+                </li>
+
             </ul>
             @endcan
 

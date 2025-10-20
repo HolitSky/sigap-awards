@@ -13,6 +13,7 @@ use App\Http\Controllers\dashboard\BpkhPresentationController;
 use App\Http\Controllers\dashboard\ProdusenPresentationController;
 use App\Http\Controllers\dashboard\BpkhExhibitionController;
 use App\Http\Controllers\dashboard\ProdusenExhibitionController;
+use App\Http\Controllers\dashboard\PresentationSessionController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -100,6 +101,14 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/sync-form', [SyncFormController::class, 'index'])->name('sync-form.index');
         Route::post('/sync-form/bpkh', [SyncFormController::class, 'syncFormBpkh'])->name('sync-form.bpkh');
         Route::post('/sync-form/produsen', [SyncFormController::class, 'syncFormProdusen'])->name('sync-form.produsen');
+        
+        // Presentation Session Management Routes (Superadmin only)
+        Route::get('/presentation-session', [PresentationSessionController::class, 'index'])->name('dashboard.presentation-session.index');
+        Route::post('/presentation-session/bpkh', [PresentationSessionController::class, 'storeBpkh'])->name('dashboard.presentation-session.bpkh.store');
+        Route::post('/presentation-session/produsen', [PresentationSessionController::class, 'storeProdusen'])->name('dashboard.presentation-session.produsen.store');
+        Route::delete('/presentation-session/bpkh/{id}', [PresentationSessionController::class, 'destroyBpkh'])->name('dashboard.presentation-session.bpkh.destroy');
+        Route::delete('/presentation-session/produsen/{id}', [PresentationSessionController::class, 'destroyProdusen'])->name('dashboard.presentation-session.produsen.destroy');
+        Route::post('/presentation-session/update-order', [PresentationSessionController::class, 'updateOrder'])->name('dashboard.presentation-session.update-order');
     });
 
 });

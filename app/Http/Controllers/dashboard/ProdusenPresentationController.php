@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ProdusenPresentationAssesment;
 use App\Models\RecordPresentationAssesment;
+use App\Models\ProdusenPresentationSession;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -34,21 +35,44 @@ class ProdusenPresentationController extends Controller
             }
         }
         
-        // Define presentation sessions
-        $sessions = [
-            'Sesi 2' => [
-                'Direktorat Penggunaan Kawasan Hutan',
-                'Direktorat Perencanaan dan Evaluasi Pengelolaan Daerah Aliran Sungai',
-                'Direktorat Pengendalian Kebakaran Hutan'
-            ],
-            'Sesi 4' => [
-                'Direktorat Bina Usaha Pemanfaatan Hutan',
-                'Direktorat Rehabilitasi Mangrove',
-                'Direktorat Penyiapan Kawasan Perhutanan Sosial'
-            ]
-        ];
+        // Get presentation sessions from database (dynamic)
+        $sessionsGrouped = ProdusenPresentationSession::getGroupedSessions();
+        $sessions = [];
+        foreach ($sessionsGrouped as $sessionName => $participants) {
+            $sessions[$sessionName] = $participants->pluck('nama_instansi')->toArray();
+        }
         
-        return view('dashboard.pages.presentation.produsen.index', compact('title', 'pageTitle', 'breadcrumbs', 'forms', 'term', 'sessions'));
+        // Check which sessions are completed by current user
+        $currentUserId = Auth::id();
+        $completedSessions = [];
+        
+        foreach ($sessions as $sessionName => $participants) {
+            $allCompleted = true;
+            foreach ($participants as $participantName) {
+                // Find form for this participant
+                $form = $forms->firstWhere('nama_instansi', $participantName);
+                if ($form) {
+                    // Check if current user has assessed this participant
+                    $hasAssessed = collect($form->penilaian_per_juri ?? [])->contains(function ($penilaian) use ($currentUserId) {
+                        return $penilaian['user_id'] == $currentUserId;
+                    });
+                    
+                    if (!$hasAssessed) {
+                        $allCompleted = false;
+                        break;
+                    }
+                } else {
+                    $allCompleted = false;
+                    break;
+                }
+            }
+            
+            if ($allCompleted) {
+                $completedSessions[] = $sessionName;
+            }
+        }
+        
+        return view('dashboard.pages.presentation.produsen.index', compact('title', 'pageTitle', 'breadcrumbs', 'forms', 'term', 'sessions', 'completedSessions'));
     }
     
     public function show(string $respondentId)
@@ -246,6 +270,22 @@ class ProdusenPresentationController extends Controller
             return redirect()->route('dashboard.presentation.produsen.index')
                 ->withErrors(['error' => 'Data peserta tidak ditemukan']);
         }
+        
+        // Sort forms based on session order
+        $sessionOrder = [];
+        $sessionData = ProdusenPresentationSession::whereIn('respondent_id', $selectedIds)
+            ->orderBy('session_name')
+            ->orderBy('order')
+            ->get();
+        
+        foreach ($sessionData as $index => $session) {
+            $sessionOrder[$session->respondent_id] = $index;
+        }
+        
+        // Sort forms collection based on session order
+        $forms = $forms->sortBy(function($form) use ($sessionOrder) {
+            return $sessionOrder[$form->respondent_id] ?? 999;
+        })->values();
         
         // Get previous assessments for current user
         $userAssessments = [];
