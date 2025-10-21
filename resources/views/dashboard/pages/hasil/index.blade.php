@@ -35,6 +35,30 @@
         font-weight: 700;
         color: #556ee6;
     }
+
+    .row-not-final {
+        background-color: rgba(220, 53, 69, 0.15) !important;
+    }
+
+    .row-not-final:hover {
+        background-color: rgba(220, 53, 69, 0.2) !important;
+    }
+
+    .row-not-final td {
+        background-color: rgba(220, 53, 69, 0.08) !important;
+    }
+
+    table.dataTable tbody tr.row-not-final {
+        background-color: rgba(220, 53, 69, 0.15) !important;
+    }
+
+    table.dataTable tbody tr.row-not-final:hover {
+        background-color: rgba(220, 53, 69, 0.2) !important;
+    }
+
+    table.dataTable tbody tr.row-not-final td {
+        background-color: transparent !important;
+    }
 </style>
 @endpush
 
@@ -69,9 +93,15 @@
                         <h4 class="card-title mb-3">
                             <i class="bx bx-building me-2 text-primary"></i>Hasil Penilaian Final BPKH
                             <span class="badge bg-success ms-2">Nominees Only</span>
-                            <span class="badge bg-info ms-1">Dinilai 3 Juri</span>
                         </h4>
-                        <p class="card-title-desc">Nilai Final = Form (45%) + Presentasi (35%) + Exhibition (20%) | Hanya menampilkan peserta nominasi yang sudah dinilai oleh 3 juri di presentasi dan exhibition</p>
+                        <p class="card-title-desc">Nilai Final = Form (45%) + Presentasi (35%) + Exhibition (20%) | Badge menunjukkan jumlah juri yang sudah menilai</p>
+                        
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <i class="bx bx-info-circle me-2"></i>
+                            <strong>Informasi:</strong> Nilai dianggap <strong>FINAL</strong> jika Presentasi dan Exhibition sudah dinilai oleh <strong>minimal 3 juri</strong>. 
+                            Baris dengan <span class="badge bg-danger">background merah</span> menandakan penilaian belum final.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
 
                         <div class="table-responsive">
                             <table id="table-bpkh" class="table table-bordered table-hover table-hasil dt-responsive nowrap w-100">
@@ -88,7 +118,10 @@
                                 </thead>
                                 <tbody>
                                     @forelse($hasilBpkh as $index => $item)
-                                    <tr>
+                                    @php
+                                        $isFinal = ($item->total_juri_presentasi >= 3) && ($item->total_juri_exhibition >= 3);
+                                    @endphp
+                                    <tr class="{{ !$isFinal ? 'row-not-final' : '' }}">
                                         <td class="text-center">
                                             @if($index < 3)
                                                 <span class="rank-badge rank-{{ $index + 1 }}">{{ $index + 1 }}</span>
@@ -101,13 +134,25 @@
                                         </td>
                                         <td>{{ $item->petugas_bpkh }}</td>
                                         <td class="text-center">
-                                            <span class="badge bg-info">{{ number_format($item->nilai_form, 2) }}</span>
+                                            <div class="d-flex flex-column align-items-center gap-1">
+                                                <span class="badge bg-info">{{ number_format($item->nilai_form, 2) }}</span>
+                                            </div>
                                         </td>
                                         <td class="text-center">
-                                            <span class="badge bg-warning">{{ number_format($item->nilai_presentasi, 2) }}</span>
+                                            <div class="d-flex flex-column align-items-center gap-1">
+                                                <span class="badge bg-warning">{{ number_format($item->nilai_presentasi, 2) }}</span>
+                                                <small class="badge bg-secondary-subtle text-secondary">
+                                                    <i class="bx bx-user font-size-10"></i> {{ $item->total_juri_presentasi ?? 0 }} Juri
+                                                </small>
+                                            </div>
                                         </td>
                                         <td class="text-center">
-                                            <span class="badge bg-success">{{ number_format($item->nilai_exhibition, 2) }}</span>
+                                            <div class="d-flex flex-column align-items-center gap-1">
+                                                <span class="badge bg-success">{{ number_format($item->nilai_exhibition, 2) }}</span>
+                                                <small class="badge bg-secondary-subtle text-secondary">
+                                                    <i class="bx bx-user font-size-10"></i> {{ $item->total_juri_exhibition ?? 0 }} Juri
+                                                </small>
+                                            </div>
                                         </td>
                                         <td class="text-center">
                                             <span class="nilai-final">{{ number_format($item->nilai_final, 2) }}</span>
@@ -132,9 +177,15 @@
                         <h4 class="card-title mb-3">
                             <i class="bx bx-briefcase me-2 text-success"></i>Hasil Penilaian Final Produsen
                             <span class="badge bg-success ms-2">Nominees Only</span>
-                            <span class="badge bg-info ms-1">Dinilai 3 Juri</span>
                         </h4>
-                        <p class="card-title-desc">Nilai Final = Form (45%) + Presentasi (35%) + Exhibition (20%) | Hanya menampilkan peserta nominasi yang sudah dinilai oleh 3 juri di presentasi dan exhibition</p>
+                        <p class="card-title-desc">Nilai Final = Form (45%) + Presentasi (35%) + Exhibition (20%) | Badge menunjukkan jumlah juri yang sudah menilai</p>
+
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <i class="bx bx-info-circle me-2"></i>
+                            <strong>Informasi:</strong> Nilai dianggap <strong>FINAL</strong> jika Presentasi dan Exhibition sudah dinilai oleh <strong>minimal 3 juri</strong>. 
+                            Baris dengan <span class="badge bg-danger">background merah</span> menandakan penilaian belum final.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
 
                         <div class="table-responsive">
                             <table id="table-produsen" class="table table-bordered table-hover table-hasil dt-responsive nowrap w-100">
@@ -151,7 +202,10 @@
                                 </thead>
                                 <tbody>
                                     @forelse($hasilProdusen as $index => $item)
-                                    <tr>
+                                    @php
+                                        $isFinalProdusen = ($item->total_juri_presentasi >= 3) && ($item->total_juri_exhibition >= 3);
+                                    @endphp
+                                    <tr class="{{ !$isFinalProdusen ? 'row-not-final' : '' }}">
                                         <td class="text-center">
                                             @if($index < 3)
                                                 <span class="rank-badge rank-{{ $index + 1 }}">{{ $index + 1 }}</span>
@@ -164,13 +218,25 @@
                                         </td>
                                         <td>{{ $item->petugas_produsen }}</td>
                                         <td class="text-center">
-                                            <span class="badge bg-info">{{ number_format($item->nilai_form, 2) }}</span>
+                                            <div class="d-flex flex-column align-items-center gap-1">
+                                                <span class="badge bg-info">{{ number_format($item->nilai_form, 2) }}</span>
+                                            </div>
                                         </td>
                                         <td class="text-center">
-                                            <span class="badge bg-warning">{{ number_format($item->nilai_presentasi, 2) }}</span>
+                                            <div class="d-flex flex-column align-items-center gap-1">
+                                                <span class="badge bg-warning">{{ number_format($item->nilai_presentasi, 2) }}</span>
+                                                <small class="badge bg-secondary-subtle text-secondary">
+                                                    <i class="bx bx-user font-size-10"></i> {{ $item->total_juri_presentasi ?? 0 }} Juri
+                                                </small>
+                                            </div>
                                         </td>
                                         <td class="text-center">
-                                            <span class="badge bg-success">{{ number_format($item->nilai_exhibition, 2) }}</span>
+                                            <div class="d-flex flex-column align-items-center gap-1">
+                                                <span class="badge bg-success">{{ number_format($item->nilai_exhibition, 2) }}</span>
+                                                <small class="badge bg-secondary-subtle text-secondary">
+                                                    <i class="bx bx-user font-size-10"></i> {{ $item->total_juri_exhibition ?? 0 }} Juri
+                                                </small>
+                                            </div>
                                         </td>
                                         <td class="text-center">
                                             <span class="nilai-final">{{ number_format($item->nilai_final, 2) }}</span>

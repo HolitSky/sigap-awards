@@ -17,7 +17,7 @@ class HasilPenilaianController extends Controller
         
         // Get BPKH Final Scores
         // Formula: Nilai Form (bobot 45%) + Nilai Presentasi (bobot 35%) + Nilai Exhibition (bobot 20%)
-        // Only include nominees (nominasi = true) AND assessed by more than 2 judges in presentation AND exhibition
+        // Show all nominees with judge count info
         $hasilBpkh = BpkhForm::select(
             'bpkh_forms.respondent_id',
             'bpkh_forms.nama_bpkh',
@@ -34,25 +34,23 @@ class HasilPenilaianController extends Controller
                 WHERE bpkh_exhibitions.respondent_id = bpkh_forms.respondent_id
             ), 0) as nilai_exhibition'),
             DB::raw('(
-                SELECT COUNT(*)
-                FROM bpkh_presentasi_assesment
-                WHERE bpkh_presentasi_assesment.respondent_id = bpkh_forms.respondent_id
+                SELECT COUNT(DISTINCT user_id)
+                FROM record_presentasi_assesment
+                WHERE record_presentasi_assesment.respondent_id = bpkh_forms.respondent_id
+                AND record_presentasi_assesment.form_type = "bpkh"
             ) as total_juri_presentasi'),
             DB::raw('(
-                SELECT total_juri_menilai
-                FROM bpkh_exhibitions
-                WHERE bpkh_exhibitions.respondent_id = bpkh_forms.respondent_id
-                LIMIT 1
+                SELECT COUNT(DISTINCT user_id)
+                FROM record_exhibition_assesments rea
+                JOIN bpkh_exhibitions be ON rea.exhibition_id = be.id
+                WHERE be.respondent_id = bpkh_forms.respondent_id
+                AND rea.exhibition_type = "bpkh"
             ) as total_juri_exhibition')
         )
         ->where('nominasi', true)
         ->get()
-        ->filter(function ($item) {
-            // Only include if assessed by more than 2 judges in BOTH presentation AND exhibition
-            return $item->total_juri_presentasi > 2 && $item->total_juri_exhibition > 2;
-        })
         ->map(function ($item) {
-            // Calculate final score
+            // Calculate final score (judge counts already from query)
             $nilaiForm = $item->nilai_form ?? 0;
             $nilaiPresentasi = $item->nilai_presentasi ?? 0;
             $nilaiExhibition = $item->nilai_exhibition ?? 0;
@@ -64,7 +62,7 @@ class HasilPenilaianController extends Controller
         ->values();
 
         // Get Produsen Final Scores
-        // Only include nominees (nominasi = true) AND assessed by more than 2 judges in presentation AND exhibition
+        // Show all nominees with judge count info
         $hasilProdusen = ProdusenForm::select(
             'produsen_forms.respondent_id',
             'produsen_forms.nama_instansi',
@@ -81,25 +79,23 @@ class HasilPenilaianController extends Controller
                 WHERE produsen_exhibitions.respondent_id = produsen_forms.respondent_id
             ), 0) as nilai_exhibition'),
             DB::raw('(
-                SELECT COUNT(*)
-                FROM produsen_presentasi_assesment
-                WHERE produsen_presentasi_assesment.respondent_id = produsen_forms.respondent_id
+                SELECT COUNT(DISTINCT user_id)
+                FROM record_presentasi_assesment
+                WHERE record_presentasi_assesment.respondent_id = produsen_forms.respondent_id
+                AND record_presentasi_assesment.form_type = "produsen"
             ) as total_juri_presentasi'),
             DB::raw('(
-                SELECT total_juri_menilai
-                FROM produsen_exhibitions
-                WHERE produsen_exhibitions.respondent_id = produsen_forms.respondent_id
-                LIMIT 1
+                SELECT COUNT(DISTINCT user_id)
+                FROM record_exhibition_assesments rea
+                JOIN produsen_exhibitions pe ON rea.exhibition_id = pe.id
+                WHERE pe.respondent_id = produsen_forms.respondent_id
+                AND rea.exhibition_type = "produsen"
             ) as total_juri_exhibition')
         )
         ->where('nominasi', true)
         ->get()
-        ->filter(function ($item) {
-            // Only include if assessed by more than 2 judges in BOTH presentation AND exhibition
-            return $item->total_juri_presentasi > 2 && $item->total_juri_exhibition > 2;
-        })
         ->map(function ($item) {
-            // Calculate final score
+            // Calculate final score (judge counts already from query)
             $nilaiForm = $item->nilai_form ?? 0;
             $nilaiPresentasi = $item->nilai_presentasi ?? 0;
             $nilaiExhibition = $item->nilai_exhibition ?? 0;

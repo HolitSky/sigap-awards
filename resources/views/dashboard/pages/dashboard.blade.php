@@ -221,6 +221,170 @@
         </div>
         <!-- end chart row -->
 
+        <!-- Presentation Statistics Row -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <h4 class="mb-3"><i class="bx bx-bar-chart-alt-2 me-2"></i>Statistik Hasil Penilaian Presentasi</h4>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- BPKH Presentation Stats -->
+            <div class="col-xl-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between mb-4">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-md rounded-circle d-flex align-items-center justify-content-center me-3" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                    <i class="bx bx-trophy font-size-24 text-white"></i>
+                                </div>
+                                <div>
+                                    <h5 class="mb-1 fw-bold">Presentasi BPKH</h5>
+                                    <p class="text-muted mb-0 small">Berdasarkan Nilai Bobot Akhir (35%)</p>
+                                </div>
+                            </div>
+                            <select id="filterPresentasiBpkh" class="form-select form-select-sm" style="width: auto;">
+                                <option value="3" selected>Top 3</option>
+                                <option value="5">Top 5</option>
+                                <option value="10">Top 10</option>
+                                <option value="all">Semua</option>
+                            </select>
+                        </div>
+
+                        <div class="presentation-stats-list" id="listPresentasiBpkh">
+                            @php
+                                $maxScore = $statsPresentasiBpkh->max('nilai_final_dengan_bobot') ?? 35;
+                            @endphp
+                            @forelse($statsPresentasiBpkh as $index => $item)
+                            <div class="stats-item mb-3 p-3 rounded" data-index="{{ $index }}" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); border-left: 4px solid {{ $index === 0 ? '#FFD700' : ($index === 1 ? '#C0C0C0' : ($index === 2 ? '#CD7F32' : '#6c757d')) }}; {{ $index >= 3 ? 'display: none;' : '' }}">
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <div class="d-flex align-items-center flex-grow-1">
+                                        <div class="rank-badge me-3">
+                                            @if($index < 3)
+                                                <div class="avatar-sm rounded-circle d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, {{ $index === 0 ? '#FFD700, #FFA500' : ($index === 1 ? '#C0C0C0, #808080' : '#CD7F32, #8B4513') }}); box-shadow: 0 4px 8px rgba(0,0,0,0.15);">
+                                                    <span class="text-white fw-bold">{{ $index + 1 }}</span>
+                                                </div>
+                                            @else
+                                                <div class="avatar-sm rounded-circle d-flex align-items-center justify-content-center bg-secondary">
+                                                    <span class="text-white fw-bold">{{ $index + 1 }}</span>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1 fw-bold text-dark">{{ $item->nama_bpkh }}</h6>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <span class="badge bg-primary-subtle text-primary">
+                                                    <i class="bx bx-user font-size-12"></i> {{ $item->total_juri_menilai ?? 0 }} Juri Penilai
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-end ms-3">
+                                        <h4 class="mb-0 fw-bold" style="color: #28a745;">{{ number_format($item->nilai_final_dengan_bobot, 2) }}</h4>
+                                        <small class="text-muted">/ 35.00</small>
+                                    </div>
+                                </div>
+                                <div class="progress" style="height: 8px; border-radius: 10px;">
+                                    <div class="progress-bar" role="progressbar"
+                                         style="width: {{ ($item->nilai_final_dengan_bobot / $maxScore) * 100 }}%; background: linear-gradient(90deg, #28a745 0%, #20c997 100%);"
+                                         aria-valuenow="{{ $item->nilai_final_dengan_bobot }}"
+                                         aria-valuemin="0"
+                                         aria-valuemax="{{ $maxScore }}">
+                                    </div>
+                                </div>
+                            </div>
+                            @empty
+                            <div class="text-center py-5">
+                                <div class="avatar-lg mx-auto mb-3" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                    <i class="bx bx-info-circle font-size-24 text-white"></i>
+                                </div>
+                                <h6 class="text-muted">Belum ada data penilaian presentasi</h6>
+                            </div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Produsen Presentation Stats -->
+            <div class="col-xl-6">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between mb-4">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-md rounded-circle d-flex align-items-center justify-content-center me-3" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                                    <i class="bx bx-trophy font-size-24 text-white"></i>
+                                </div>
+                                <div>
+                                    <h5 class="mb-1 fw-bold">Presentasi Produsen</h5>
+                                    <p class="text-muted mb-0 small">Berdasarkan Nilai Bobot Akhir (35%)</p>
+                                </div>
+                            </div>
+                            <select id="filterPresentasiProdusen" class="form-select form-select-sm" style="width: auto;">
+                                <option value="3" selected>Top 3</option>
+                                <option value="5">Top 5</option>
+                                <option value="10">Top 10</option>
+                                <option value="all">Semua</option>
+                            </select>
+                        </div>
+
+                        <div class="presentation-stats-list" id="listPresentasiProdusen">
+                            @php
+                                $maxScoreProdusen = $statsPresentasiProdusen->max('nilai_final_dengan_bobot') ?? 35;
+                            @endphp
+                            @forelse($statsPresentasiProdusen as $index => $item)
+                            <div class="stats-item mb-3 p-3 rounded" data-index="{{ $index }}" style="background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%); border-left: 4px solid {{ $index === 0 ? '#FFD700' : ($index === 1 ? '#C0C0C0' : ($index === 2 ? '#CD7F32' : '#6c757d')) }}; {{ $index >= 3 ? 'display: none;' : '' }}">
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <div class="d-flex align-items-center flex-grow-1">
+                                        <div class="rank-badge me-3">
+                                            @if($index < 3)
+                                                <div class="avatar-sm rounded-circle d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, {{ $index === 0 ? '#FFD700, #FFA500' : ($index === 1 ? '#C0C0C0, #808080' : '#CD7F32, #8B4513') }}); box-shadow: 0 4px 8px rgba(0,0,0,0.15);">
+                                                    <span class="text-white fw-bold">{{ $index + 1 }}</span>
+                                                </div>
+                                            @else
+                                                <div class="avatar-sm rounded-circle d-flex align-items-center justify-content-center bg-secondary">
+                                                    <span class="text-white fw-bold">{{ $index + 1 }}</span>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1 fw-bold text-dark">{{ $item->nama_instansi }}</h6>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <span class="badge bg-success-subtle text-success">
+                                                    <i class="bx bx-user font-size-12"></i> {{ $item->total_juri_menilai ?? 0 }} Juri Penilai
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-end ms-3">
+                                        <h4 class="mb-0 fw-bold" style="color: #11998e;">{{ number_format($item->nilai_final_dengan_bobot, 2) }}</h4>
+                                        <small class="text-muted">/ 35.00</small>
+                                    </div>
+                                </div>
+                                <div class="progress" style="height: 8px; border-radius: 10px;">
+                                    <div class="progress-bar" role="progressbar"
+                                         style="width: {{ ($item->nilai_final_dengan_bobot / $maxScoreProdusen) * 100 }}%; background: linear-gradient(90deg, #11998e 0%, #38ef7d 100%);"
+                                         aria-valuenow="{{ $item->nilai_final_dengan_bobot }}"
+                                         aria-valuemin="0"
+                                         aria-valuemax="{{ $maxScoreProdusen }}">
+                                    </div>
+                                </div>
+                            </div>
+                            @empty
+                            <div class="text-center py-5">
+                                <div class="avatar-lg mx-auto mb-3" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                    <i class="bx bx-info-circle font-size-24 text-white"></i>
+                                </div>
+                                <h6 class="text-muted">Belum ada data penilaian presentasi</h6>
+                            </div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end presentation stats row -->
+
     </div>
     <!-- container-fluid -->
 </div>
@@ -484,6 +648,40 @@ document.addEventListener('DOMContentLoaded', function() {
     if (filterProdusen) {
         filterProdusen.addEventListener('change', function() {
             initProdusenChart(this.value);
+        });
+    }
+
+    // Filter Presentation Stats - BPKH
+    const filterPresentasiBpkh = document.getElementById('filterPresentasiBpkh');
+    if (filterPresentasiBpkh) {
+        filterPresentasiBpkh.addEventListener('change', function() {
+            const limit = this.value;
+            const items = document.querySelectorAll('#listPresentasiBpkh .stats-item');
+
+            items.forEach((item, index) => {
+                if (limit === 'all') {
+                    item.style.display = '';
+                } else {
+                    item.style.display = index < parseInt(limit) ? '' : 'none';
+                }
+            });
+        });
+    }
+
+    // Filter Presentation Stats - Produsen
+    const filterPresentasiProdusen = document.getElementById('filterPresentasiProdusen');
+    if (filterPresentasiProdusen) {
+        filterPresentasiProdusen.addEventListener('change', function() {
+            const limit = this.value;
+            const items = document.querySelectorAll('#listPresentasiProdusen .stats-item');
+
+            items.forEach((item, index) => {
+                if (limit === 'all') {
+                    item.style.display = '';
+                } else {
+                    item.style.display = index < parseInt(limit) ? '' : 'none';
+                }
+            });
         });
     }
 });

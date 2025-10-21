@@ -52,6 +52,27 @@ class DashboardController extends Controller
         $bobotBpkh = BpkhForm::whereNotNull('bobot')->value('bobot') ?? 45;
         $bobotProdusen = ProdusenForm::whereNotNull('bobot')->value('bobot') ?? 45;
 
+        // Get presentation statistics - Top 10 by nilai_final_dengan_bobot
+        $statsPresentasiBpkh = BpkhPresentationAssesment::select('respondent_id', 'nama_bpkh', 'nilai_final_dengan_bobot', 'penilaian_per_juri')
+            ->whereNotNull('nilai_final_dengan_bobot')
+            ->orderBy('nilai_final_dengan_bobot', 'desc')
+            ->limit(10)
+            ->get()
+            ->map(function ($item) {
+                $item->total_juri_menilai = count($item->penilaian_per_juri ?? []);
+                return $item;
+            });
+
+        $statsPresentasiProdusen = ProdusenPresentationAssesment::select('respondent_id', 'nama_instansi', 'nilai_final_dengan_bobot', 'penilaian_per_juri')
+            ->whereNotNull('nilai_final_dengan_bobot')
+            ->orderBy('nilai_final_dengan_bobot', 'desc')
+            ->limit(10)
+            ->get()
+            ->map(function ($item) {
+                $item->total_juri_menilai = count($item->penilaian_per_juri ?? []);
+                return $item;
+            });
+
         // Add role display
         $user = Auth::user();
         $roleDisplay = $this->getRoleDisplay($user->role);
@@ -68,6 +89,8 @@ class DashboardController extends Controller
             'chartProdusen',
             'bobotBpkh',
             'bobotProdusen',
+            'statsPresentasiBpkh',
+            'statsPresentasiProdusen',
             'roleDisplay'
         ));
     }
