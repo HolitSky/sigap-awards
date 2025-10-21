@@ -16,6 +16,15 @@
                     </a>
                 </li>
 
+
+                <!-- menu statistik akhir -->
+                <li>
+                    <a href="{{ route('dashboard.hasil.index') }}" class="waves-effect">
+                        <i class="bx bx-trophy"></i>
+                        <span key="t-dashboards">Hasil Penilaian Final</span>
+                    </a>
+                </li>
+
             </ul>
 
              <ul class="metismenu list-unstyled" id="side-menu">

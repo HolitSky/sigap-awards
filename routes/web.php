@@ -37,6 +37,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
+    // Hasil Penilaian Final
+    Route::get('/hasil-penilaian', [\App\Http\Controllers\dashboard\HasilPenilaianController::class, 'index'])->name('dashboard.hasil.index');
+
     // Profile Routes
     Route::get('/profile', [UserProfileController::class, 'index'])->name('profile.index');
     Route::put('/profile', [UserProfileController::class, 'update'])->name('profile.update');
