@@ -232,6 +232,14 @@
                         </div>
                         <!-- End Menu Pengumuman List Masuk Tahap Presentasi -->
 
+                         <!-- Start Menu CV Juri -->
+                         <div class="glass-card">
+                            <a href="{{ route('cv-juri') }}">
+                                Lihat CV Juri SIGAP Award 2025
+                            </a>
+                        </div>
+                        <!-- End Menu CV Juri -->
+
                         </div>
                     </div>
 

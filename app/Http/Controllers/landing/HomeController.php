@@ -79,4 +79,16 @@ class HomeController extends Controller
 
         return view('landing.pages.home.announcement', compact('announcements', 'launchStart', 'launchFinish'));
     }
+
+    public function cvJuri()
+    {
+        // Konfigurasi launch date dari Controller
+        $launchStart = Carbon::create(2025, 10, 3, 0, 0, 0);
+        $launchFinish = Carbon::create(2025, 10, 17, 0, 0, 0);
+
+        // Path ke PDF file
+        $pdfPath = 'sigap-assets/pdf/CV Juri SIGAP AWARD 2025.pdf';
+
+        return view('landing.pages.home.cv-juri', compact('launchStart', 'launchFinish', 'pdfPath'));
+    }
 }
