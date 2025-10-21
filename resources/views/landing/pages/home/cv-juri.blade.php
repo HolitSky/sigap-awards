@@ -242,38 +242,96 @@
 
     @media (max-width: 768px) {
         .cv-juri-wrapper {
-            padding: 40px 16px 60px;
+            padding: 30px 12px 40px;
+        }
+
+        .cv-juri-header {
+            margin-bottom: 20px;
         }
 
         .cv-juri-title {
-            font-size: 28px;
+            font-size: 24px;
         }
 
         .cv-juri-subtitle {
-            font-size: 16px;
+            font-size: 14px;
         }
 
         .cv-juri-icon {
-            font-size: 56px;
+            font-size: 48px;
+            margin-bottom: 12px;
         }
 
         .pdf-viewer-container {
-            padding: 16px;
+            padding: 12px;
+            margin-bottom: 20px;
         }
 
         .pdf-controls {
             flex-direction: column;
             align-items: stretch;
+            gap: 8px;
+            margin-bottom: 12px;
         }
 
         .pdf-controls-left,
         .pdf-controls-right {
             justify-content: center;
+            width: 100%;
+        }
+
+        .pdf-controls-left {
+            order: 1;
+        }
+
+        .pdf-controls-right {
+            order: 2;
+            flex-wrap: wrap;
+        }
+
+        .pdf-btn {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .pdf-zoom-btn {
+            padding: 6px 10px;
         }
 
         .pdf-canvas-container {
-            max-height: 60vh;
-            padding: 12px;
+            min-height: auto;
+            max-height: 55vh;
+            padding: 10px;
+        }
+
+        .back-home-container {
+            margin-top: 20px;
+            padding-bottom: 10px;
+        }
+
+        .btn-back-home {
+            padding: 12px 24px;
+            font-size: 14px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .cv-juri-title {
+            font-size: 20px;
+        }
+
+        .pdf-btn {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .pdf-page-info {
+            font-size: 12px;
+            padding: 6px 12px;
+        }
+
+        .pdf-canvas-container {
+            max-height: 50vh;
         }
     }
 </style>
