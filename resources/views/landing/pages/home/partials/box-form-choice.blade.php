@@ -240,6 +240,14 @@
                         </div>
                         <!-- End Menu CV Juri -->
 
+                        <!-- Start Menu Upload Presentasi -->
+                         <div class="glass-card">
+                            <a href="javascript:void(0);" onclick="showUploadPresentasiModal()">
+                                Upload Presentasi SIGAP Award 2025
+                            </a>
+                        </div>
+                        <!-- End Menu Upload Presentasi -->
+
                         </div>
                     </div>
 
@@ -256,6 +264,29 @@
                             <div class="modal-footer">
                                 <button class="modal-btn-close">Tutup</button>
                                 <button class="modal-btn-open" id="modal-btn-open">Buka Form</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal Upload Presentasi -->
+                    <div id="uploadPresentasiModal" class="modal-overlay" style="display: none;">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>Upload Presentasi</h3>
+                                <span class="modal-close-upload">&times;</span>
+                            </div>
+                            <div class="modal-body">
+                                <p style="margin-bottom: 20px;">Pilih kategori untuk upload presentasi:</p>
+                                <div style="display: flex; flex-direction: column; gap: 15px;">
+                                    <a href="https://form.sigap-award.site/bpkh-presentasi" target="_blank"
+                                       style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 30px; border-radius: 25px; text-decoration: none; font-weight: bold; text-align: center; transition: all 0.3s ease;">
+                                        📋 BPKH
+                                    </a>
+                                    <a href="https://form.sigap-award.site/produsen-presentasi" target="_blank"
+                                       style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 15px 30px; border-radius: 25px; text-decoration: none; font-weight: bold; text-align: center; transition: all 0.3s ease;">
+                                        🏭 Produsen
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -362,6 +393,43 @@
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' && modal.classList.contains('show')) {
                 hideModal();
+            }
+        });
+
+        // Upload Presentasi Modal Functions
+        const uploadModal = document.getElementById('uploadPresentasiModal');
+        const closeUploadBtn = document.querySelector('.modal-close-upload');
+
+        window.showUploadPresentasiModal = function() {
+            uploadModal.style.display = 'flex';
+            setTimeout(() => {
+                uploadModal.classList.add('show');
+            }, 10);
+        }
+
+        window.hideUploadPresentasiModal = function() {
+            uploadModal.classList.remove('show');
+            setTimeout(() => {
+                uploadModal.style.display = 'none';
+            }, 300);
+        }
+
+        // Close upload modal events
+        if (closeUploadBtn) {
+            closeUploadBtn.addEventListener('click', hideUploadPresentasiModal);
+        }
+
+        // Close upload modal when clicking outside
+        uploadModal.addEventListener('click', function(e) {
+            if (e.target === uploadModal) {
+                hideUploadPresentasiModal();
+            }
+        });
+
+        // Close upload modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && uploadModal.classList.contains('show')) {
+                hideUploadPresentasiModal();
             }
         });
     });

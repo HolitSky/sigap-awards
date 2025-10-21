@@ -1,0 +1,574 @@
+DOKUMENTASI FITUR APLIKASI SIGAP AWARDS
+=========================================
+
+OVERVIEW:
+Aplikasi SIGAP Awards adalah sistem penilaian komprehensif untuk BPKH
+dan Produsen dengan 3 tahap penilaian: Form, Presentasi, dan Exhibition/Poster.
+
+
+================================================================================
+1. MODUL USER MANAGEMENT
+================================================================================
+
+DESKRIPSI:
+Sistem manajemen pengguna dengan role-based access control untuk mengatur akses
+dan permission setiap user dalam aplikasi.
+
+FITUR UTAMA:
+- User CRUD (Create, Read, Update, Delete)
+- Role Management: Admin, Juri, Viewer
+- Permission Control per role
+- User Profile Management
+- Password Management
+- User Activity Tracking
+- Bulk User Import/Export
+
+ROLE & PERMISSION:
+1. Admin:
+   - Full access ke semua modul
+   - Manage users dan roles
+   - Manage nominees
+   - View all reports
+
+2. Juri:
+   - Access ke modul penilaian (Presentasi & Exhibition)
+   - View assigned participants
+   - Submit assessments
+   - View own assessment history
+
+3. Viewer:
+   - Read-only access
+   - View results dan reports
+   - No edit/delete permission
+
+TEKNOLOGI:
+- Laravel Authentication
+- Spatie Permission Package
+- Role-based middleware
+- Secure password hashing (bcrypt)
+
+================================================================================
+2. MODUL FORM PENILAIAN (45% BOBOT)
+================================================================================
+
+DESKRIPSI:
+Modul untuk penilaian tahap pertama berdasarkan formulir yang diisi oleh peserta.
+Penilaian dilakukan oleh satu assessor dengan bobot 45% dari nilai total.
+
+KATEGORI:
+A. BPKH (Badan Pengelola Keuangan Haji)
+B. Produsen
+
+FITUR UTAMA:
+- Form Submission Management
+- Aspek Penilaian Multi-dimensi
+- Auto-calculation dengan bobot
+- Kategori Penilaian (Sangat Baik, Baik, Cukup, Kurang, Sangat Kurang)
+- Nominasi System (Mark as Nominee)
+- Export to Excel/PDF
+- Search & Filter
+- Bulk Actions
+
+ASPEK PENILAIAN BPKH:
+1. Kelengkapan Dokumen
+2. Kesesuaian dengan Kriteria
+3. Inovasi Program
+4. Dampak Sosial
+5. Sustainability
+(Setiap aspek memiliki bobot yang dapat dikonfigurasi)
+
+ASPEK PENILAIAN PRODUSEN:
+1. Kualitas Produk
+2. Inovasi Produk
+3. Sertifikasi Halal
+4. Packaging & Branding
+5. Market Penetration
+(Setiap aspek memiliki bobot yang dapat dikonfigurasi)
+
+FLOW PROSES:
+1. Peserta submit form
+2. Admin/Assessor review form
+3. Assessor memberikan nilai per aspek
+4. System auto-calculate nilai final dengan bobot 45%
+5. Tentukan kategori penilaian
+6. Mark as nominee jika memenuhi kriteria
+
+TEKNOLOGI:
+- Dynamic form validation
+- JSON storage untuk aspek penilaian
+- Weighted scoring algorithm
+- Real-time calculation
+
+================================================================================
+3. MODUL PRESENTASI (35% BOBOT)
+================================================================================
+
+DESKRIPSI:
+Modul penilaian tahap kedua dimana peserta melakukan presentasi di hadapan
+multiple juri. Setiap juri memberikan penilaian independen dengan bobot 35%.
+
+FITUR UTAMA:
+- Multi-Jury Assessment System
+- Session Management
+- Real-time Scoring
+- Jury Assignment
+- Average Calculation dari multiple juri
+- Rekomendasi per Juri
+- Catatan/Notes per Assessment
+- Assessment History Tracking
+- Export Individual & Aggregate Reports
+
+ASPEK PENILAIAN PRESENTASI:
+1. Clarity of Presentation (Kejelasan Penyampaian)
+2. Content Quality (Kualitas Konten)
+3. Visual Aids (Penggunaan Media Visual)
+4. Q&A Handling (Kemampuan Menjawab Pertanyaan)
+5. Time Management (Manajemen Waktu)
+6. Overall Impact (Dampak Keseluruhan)
+
+JURY SYSTEM:
+- Minimum 3 juri per peserta untuk nilai final
+- Setiap juri memberikan nilai independen
+- System calculate average dari semua juri
+- Tracking: Berapa juri sudah menilai per peserta
+- Badge indicator jumlah juri yang sudah menilai
+
+REKOMENDASI OPTIONS:
+- Sangat Direkomendasikan
+- Direkomendasikan
+- Cukup Direkomendasikan
+- Kurang Direkomendasikan
+- Tidak Direkomendasikan
+
+FLOW PROSES:
+1. Admin assign juri ke session presentasi
+2. Peserta melakukan presentasi
+3. Setiap juri memberikan nilai per aspek
+4. Juri memberikan catatan dan rekomendasi
+5. System calculate average dari semua juri
+6. Apply bobot 35% untuk nilai final
+7. Record tersimpan di record_presentasi_assesment
+
+TEKNOLOGI:
+- Multi-user concurrent assessment
+- Real-time data aggregation
+- JSON storage untuk aspek scores
+- Average calculation algorithm
+- Session-based assessment tracking
+
+================================================================================
+4. MODUL EXHIBITION/POSTER (20% BOBOT)
+================================================================================
+
+DESKRIPSI:
+Modul penilaian tahap ketiga untuk exhibition booth atau poster display.
+Multiple juri menilai secara independen dengan bobot 20% dari nilai total.
+
+FITUR UTAMA:
+- Exhibition Booth Assessment
+- Multi-Jury Evaluation
+- Visual Assessment Criteria
+- Photo/Documentation Upload
+- Jury Assignment per Exhibition
+- Real-time Scoring Dashboard
+- Exhibition Schedule Management
+- Visitor Feedback Integration
+- Export Exhibition Reports
+
+ASPEK PENILAIAN EXHIBITION:
+1. Booth Design & Layout (Desain dan Tata Letak)
+2. Visual Appeal (Daya Tarik Visual)
+3. Information Clarity (Kejelasan Informasi)
+4. Interactive Elements (Elemen Interaktif)
+5. Staff Engagement (Keterlibatan Staff)
+6. Overall Presentation (Presentasi Keseluruhan)
+
+JURY SYSTEM:
+- Minimum 3 juri per exhibition untuk nilai final
+- Independent scoring per juri
+- Average calculation dari semua juri
+- Tracking jumlah juri yang sudah menilai
+- Badge indicator status penilaian
+
+KATEGORI PENILAIAN:
+- Sangat Baik (≥85): Exhibition sangat menarik, informatif, dan sesuai tema
+- Baik (75-84): Exhibition menarik dan informatif dengan beberapa area perbaikan
+- Cukup (65-74): Exhibition cukup baik namun perlu peningkatan
+- Kurang (50-64): Informasi dasar disajikan, namun kurang jelas dan menarik
+- Sangat Kurang (<50): Substansi dan tampilan tidak memenuhi kriteria
+
+FLOW PROSES:
+1. Admin setup exhibition schedule
+2. Assign juri ke exhibition area
+3. Juri visit booth dan memberikan penilaian
+4. Juri input nilai per aspek + catatan
+5. System calculate average dari semua juri
+6. Apply bobot 20% untuk nilai final
+7. Record tersimpan di record_exhibition_assesments
+
+TEKNOLOGI:
+- Mobile-friendly assessment interface
+- Photo upload & gallery
+- Real-time aggregation
+- JSON storage untuk penilaian per juri
+- Exhibition ID-based tracking
+
+================================================================================
+5. MODUL HASIL PENILAIAN FINAL
+================================================================================
+
+DESKRIPSI:
+Dashboard komprehensif yang menampilkan hasil akhir dari kombinasi 3 tahap
+penilaian dengan sistem ranking dan visual indicator untuk status final.
+
+FORMULA NILAI FINAL:
+Nilai Final = Form (45%) + Presentasi (35%) + Exhibition (20%)
+
+FITUR UTAMA:
+- Comprehensive Results Dashboard
+- Ranking System (Gold, Silver, Bronze badges)
+- Multi-Judge Status Indicator
+- Final Status Validation
+- Visual Red Background untuk penilaian belum final
+- Judge Count Badges per kolom
+- Export Results (Excel, PDF)
+- Filter by Category (BPKH/Produsen)
+- Sort by Score/Rank
+- Print-friendly Report
+
+KRITERIA NILAI FINAL:
+- Status "FINAL" jika:
+  * Presentasi dinilai oleh minimal 3 juri
+  * Exhibition dinilai oleh minimal 3 juri
+  * Semua tahap penilaian complete
+
+- Status "BELUM FINAL" jika:
+  * Presentasi < 3 juri
+  * Exhibition < 3 juri
+  * Ada tahap yang belum dinilai
+
+VISUAL INDICATORS:
+1. Rank Badges:
+   - 🥇 Rank 1: Gold gradient badge
+   - 🥈 Rank 2: Silver gradient badge
+   - 🥉 Rank 3: Bronze gradient badge
+   - 4+: Gray badge
+
+2. Judge Count Badges:
+   - Presentasi: Badge dengan icon user + jumlah juri
+   - Exhibition: Badge dengan icon user + jumlah juri
+   - Color: Gray subtle untuk info
+
+3. Row Background:
+   - Final (≥3 juri): White/Normal background
+   - Not Final (<3 juri): Red transparent background (rgba(220, 53, 69, 0.15))
+
+4. Alert Info:
+   - Warning alert di atas table
+   - Menjelaskan kriteria final
+   - Dismissible alert
+
+DISPLAY COLUMNS:
+1. Rank: Posisi ranking
+2. Nama BPKH/Instansi: Nama peserta
+3. Petugas: Nama petugas
+4. Form (45%): Nilai form dengan bobot
+5. Presentasi (35%): Nilai presentasi + badge jumlah juri
+6. Exhibition (20%): Nilai exhibition + badge jumlah juri
+7. Nilai Final: Total nilai (bold, large, colored)
+
+SORTING & FILTERING:
+- Default: Sort by Nilai Final (DESC)
+- Filter: BPKH vs Produsen
+- Filter: Final vs Not Final
+- Search: By name, petugas
+- Export: Filtered results
+
+TEKNOLOGI:
+- DataTables for interactive table
+- Real-time calculation
+- Responsive design
+- Print CSS optimization
+- Excel/PDF export libraries
+
+================================================================================
+6. MODUL DASHBOARD & STATISTICS
+================================================================================
+
+DESKRIPSI:
+Dashboard utama dengan statistik real-time, charts, dan overview dari seluruh
+proses penilaian.
+
+FITUR UTAMA:
+- Real-time Statistics Cards
+- Interactive Charts (Chart.js)
+- Assessment Progress Tracking
+- Jury Activity Monitor
+- Nominee Overview
+- Quick Actions Panel
+- Recent Activities Feed
+- System Notifications
+
+STATISTICS CARDS:
+1. Total Participants (BPKH + Produsen)
+2. Total Nominees
+3. Completed Assessments
+4. Pending Assessments
+5. Active Juries
+6. Final Results Count
+
+CHARTS & VISUALIZATIONS:
+1. Assessment Progress by Stage (Bar Chart)
+2. Score Distribution (Histogram)
+3. Category Breakdown (Pie Chart)
+4. Jury Activity Timeline (Line Chart)
+5. Top Performers (Horizontal Bar)
+
+QUICK ACTIONS:
+- Add New Participant
+- Assign Jury
+- View Pending Assessments
+- Generate Reports
+- Export Data
+
+RECENT ACTIVITIES:
+- Latest assessments submitted
+- New nominees added
+- Jury assignments
+- System updates
+
+TEKNOLOGI:
+- Chart.js for visualizations
+- Real-time data aggregation
+- Cached statistics for performance
+- Responsive dashboard layout
+
+================================================================================
+7. MODUL RECORD & AUDIT TRAIL
+================================================================================
+
+DESKRIPSI:
+Sistem tracking dan audit trail untuk semua aktivitas penilaian dan perubahan
+data dalam aplikasi.
+
+FITUR UTAMA:
+- Comprehensive Activity Logging
+- User Action Tracking
+- Assessment History
+- Data Change Log
+- Export Audit Reports
+- Filter by User/Date/Action
+- Search Functionality
+
+TRACKED ACTIVITIES:
+1. User Login/Logout
+2. Form Submissions
+3. Assessment Submissions (Presentasi & Exhibition)
+4. Nominee Status Changes
+5. User Management Actions
+6. Data Exports
+7. Report Generations
+
+RECORD TABLES:
+1. record_presentasi_assesment:
+   - user_id, user_name, user_email, user_role
+   - form_type (bpkh/produsen)
+   - respondent_id, form_name
+   - nilai_akhir_user
+   - catatan_juri, rekomendasi
+   - aspek_scores (JSON)
+   - timestamps
+
+2. record_exhibition_assesments:
+   - exhibition_type (bpkh/produsen)
+   - exhibition_id
+   - user_id, user_name
+   - nilai_akhir_user
+   - catatan_juri, rekomendasi
+   - assessed_at
+   - timestamps
+
+AUDIT FEATURES:
+- Who did what, when
+- Before/After values for changes
+- IP address tracking
+- Session tracking
+- Export audit logs
+
+TEKNOLOGI:
+- Database logging
+- Indexed tables for fast queries
+- JSON storage for detailed data
+- Timestamp tracking
+
+================================================================================
+8. MODUL REPORTS & EXPORT
+================================================================================
+
+DESKRIPSI:
+Sistem pelaporan komprehensif dengan berbagai format export dan customizable
+report templates.
+
+FITUR UTAMA:
+- Multiple Export Formats (Excel, PDF, CSV)
+- Customizable Report Templates
+- Scheduled Reports
+- Email Reports
+- Print-friendly Layouts
+- Batch Export
+- Report History
+
+REPORT TYPES:
+1. Individual Assessment Report:
+   - Detail per peserta
+   - Semua tahap penilaian
+   - Breakdown per aspek
+   - Jury comments
+
+2. Aggregate Results Report:
+   - Ranking all participants
+   - Score comparison
+   - Statistical analysis
+   - Charts & graphs
+
+3. Jury Activity Report:
+   - Assessment count per jury
+   - Average scores given
+   - Time spent on assessments
+   - Completion rate
+
+4. Category Report:
+   - BPKH vs Produsen comparison
+   - Category-wise statistics
+   - Top performers per category
+
+5. Audit Trail Report:
+   - All system activities
+   - User actions log
+   - Data changes history
+
+EXPORT FORMATS:
+- Excel (.xlsx): Full data with formatting
+- PDF: Professional report layout
+- CSV: Raw data for analysis
+- JSON: API-friendly format
+
+TEKNOLOGI:
+- Laravel Excel for Excel export
+- DomPDF for PDF generation
+- Blade templates for layouts
+- Queue jobs for large exports
+
+================================================================================
+9. TECHNICAL SPECIFICATIONS
+================================================================================
+
+TECHNOLOGY STACK:
+- Framework: Laravel 11.x
+- Frontend: Blade Templates, Bootstrap 5
+- Database: MySQL
+- JavaScript: jQuery, DataTables, Chart.js
+- Icons: Boxicons
+- Authentication: Laravel Breeze/Sanctum
+- Permissions: Spatie Laravel Permission
+
+DATABASE TABLES:
+1. users - User management
+2. roles - User roles
+3. permissions - User permissions
+4. bpkh_forms - BPKH form submissions
+5. produsen_forms - Produsen form submissions
+6. bpkh_presentasi_assesment - BPKH presentation scores
+7. produsen_presentasi_assesment - Produsen presentation scores
+8. bpkh_exhibitions - BPKH exhibition data
+9. produsen_exhibitions - Produsen exhibition data
+10. record_presentasi_assesment - Presentation audit trail
+11. record_exhibition_assesments - Exhibition audit trail
+
+KEY FEATURES:
+- Responsive Design (Mobile-friendly)
+- Real-time Calculations
+- Multi-user Concurrent Access
+- Role-based Access Control
+- Comprehensive Audit Trail
+- Data Validation & Sanitization
+- Secure Authentication
+- Export Capabilities
+- Search & Filter
+- Pagination
+- Sorting
+
+SECURITY FEATURES:
+- CSRF Protection
+- SQL Injection Prevention
+- XSS Protection
+- Password Hashing (bcrypt)
+- Session Management
+- Role-based Middleware
+- Input Validation
+- Secure File Upload
+
+PERFORMANCE OPTIMIZATIONS:
+- Database Indexing
+- Query Optimization
+- Eager Loading
+- Caching (Redis/Memcached)
+- Asset Minification
+- Lazy Loading
+- Pagination
+
+================================================================================
+10. WORKFLOW SUMMARY
+================================================================================
+
+COMPLETE ASSESSMENT FLOW:
+
+1. REGISTRATION & SETUP:
+   - Admin creates user accounts
+   - Assign roles (Admin/Juri/Viewer)
+   - Setup categories (BPKH/Produsen)
+
+2. FORM SUBMISSION (45%):
+   - Participants submit forms
+   - Admin/Assessor review
+   - Assessor gives scores per aspect
+   - System calculates weighted score (45%)
+   - Mark nominees
+
+3. PRESENTATION ASSESSMENT (35%):
+   - Admin assigns juries to sessions
+   - Participants present
+   - Multiple juries score independently
+   - System averages jury scores
+   - Apply 35% weight
+   - Record in audit trail
+
+4. EXHIBITION ASSESSMENT (20%):
+   - Admin assigns juries to exhibition
+   - Juries visit booths
+   - Multiple juries score independently
+   - System averages jury scores
+   - Apply 20% weight
+   - Record in audit trail
+
+5. FINAL RESULTS:
+   - System combines all 3 stages
+   - Calculate: Form(45%) + Presentation(35%) + Exhibition(20%)
+   - Validate: Check if ≥3 juries for Presentation & Exhibition
+   - Display ranking with visual indicators
+   - Mark final/not final status
+   - Generate reports
+
+6. REPORTING & EXPORT:
+   - View comprehensive results
+   - Export in multiple formats
+   - Generate certificates
+   - Archive data
+
+================================================================================
+END OF DOCUMENTATION
+================================================================================
+
+Last Updated: October 21, 2025
+Version: 1.0
+Application: SIGAP Awards Assessment System
