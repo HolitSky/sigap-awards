@@ -154,19 +154,24 @@ class PresentationSessionController extends Controller
     }
     
     /**
-     * Update order of participants
+     * Update order of participants (supports moving between sessions)
      */
     public function updateOrder(Request $request)
     {
         $request->validate([
             'type' => 'required|in:bpkh,produsen',
-            'items' => 'required|array'
+            'items' => 'required|array',
+            'session_name' => 'required|string'
         ]);
         
         $model = $request->type === 'bpkh' ? BpkhPresentationSession::class : ProdusenPresentationSession::class;
         
-        foreach ($request->items as $item) {
-            $model::where('id', $item['id'])->update(['order' => $item['order']]);
+        // Update session_name and order for all items
+        foreach ($request->items as $index => $item) {
+            $model::where('id', $item['id'])->update([
+                'session_name' => $request->session_name,
+                'order' => $index + 1
+            ]);
         }
         
         return response()->json(['success' => true, 'message' => 'Urutan berhasil diupdate']);

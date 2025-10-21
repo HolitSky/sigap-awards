@@ -1,5 +1,33 @@
 @extends('dashboard.layouts.app')
 @section('title', 'Manajemen Sesi Presentasi')
+
+@push('styles')
+<style>
+    .sortable-ghost {
+        opacity: 0.4;
+        background: #f8f9fa;
+    }
+    .sortable-drag {
+        opacity: 0.8;
+        cursor: move;
+    }
+    .list-group-item {
+        cursor: move;
+        transition: all 0.3s ease;
+    }
+    .list-group-item:hover {
+        background-color: #f8f9fa;
+    }
+    .drag-handle {
+        cursor: grab;
+        color: #6c757d;
+    }
+    .drag-handle:active {
+        cursor: grabbing;
+    }
+</style>
+@endpush
+
 @section('content')
 
 <div class="page-content">
@@ -70,10 +98,11 @@
                                         </div>
                                         <div class="card-body">
                                             @if(isset($bpkhSessions[$sessionName]) && $bpkhSessions[$sessionName]->count() > 0)
-                                                <ul class="list-group list-group-flush">
+                                                <ul class="list-group list-group-flush sortable-bpkh" data-session="{{ $sessionName }}">
                                                     @foreach($bpkhSessions[$sessionName] as $participant)
-                                                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center px-0" data-id="{{ $participant->id }}">
                                                             <span>
+                                                                <i class="mdi mdi-drag-vertical drag-handle me-2"></i>
                                                                 <i class="mdi mdi-account-circle text-info me-2"></i>
                                                                 {{ $participant->nama_bpkh }}
                                                             </span>
@@ -162,10 +191,11 @@
                                         </div>
                                         <div class="card-body">
                                             @if(isset($produsenSessions[$sessionName]) && $produsenSessions[$sessionName]->count() > 0)
-                                                <ul class="list-group list-group-flush">
+                                                <ul class="list-group list-group-flush sortable-produsen" data-session="{{ $sessionName }}">
                                                     @foreach($produsenSessions[$sessionName] as $participant)
-                                                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center px-0" data-id="{{ $participant->id }}">
                                                             <span>
+                                                                <i class="mdi mdi-drag-vertical drag-handle me-2"></i>
                                                                 <i class="mdi mdi-office-building text-success me-2"></i>
                                                                 {{ $participant->nama_instansi }}
                                                             </span>
@@ -476,6 +506,128 @@ $(document).ready(function() {
             }
         });
     });
+
+    // ===== Drag & Drop with SortableJS =====
+    // Initialize Sortable for BPKH lists
+    document.querySelectorAll('.sortable-bpkh').forEach(function(el) {
+        new Sortable(el, {
+            group: 'bpkh-sessions', // Allow dragging between BPKH sessions
+            animation: 150,
+            handle: '.drag-handle',
+            ghostClass: 'sortable-ghost',
+            dragClass: 'sortable-drag',
+            onEnd: function(evt) {
+                const sessionName = evt.to.dataset.session;
+                const items = [];
+                
+                // Get all items in the new session
+                evt.to.querySelectorAll('li').forEach(function(li, index) {
+                    items.push({
+                        id: li.dataset.id,
+                        order: index + 1
+                    });
+                });
+                
+                // Send AJAX request to update order
+                fetch('{{ route('dashboard.presentation-session.update-order') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        type: 'bpkh',
+                        session_name: sessionName,
+                        items: items
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Urutan peserta berhasil diupdate',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: 'Terjadi kesalahan saat mengupdate urutan'
+                    });
+                    // Reload page on error
+                    setTimeout(() => location.reload(), 1500);
+                });
+            }
+        });
+    });
+
+    // Initialize Sortable for Produsen lists
+    document.querySelectorAll('.sortable-produsen').forEach(function(el) {
+        new Sortable(el, {
+            group: 'produsen-sessions', // Allow dragging between Produsen sessions
+            animation: 150,
+            handle: '.drag-handle',
+            ghostClass: 'sortable-ghost',
+            dragClass: 'sortable-drag',
+            onEnd: function(evt) {
+                const sessionName = evt.to.dataset.session;
+                const items = [];
+                
+                // Get all items in the new session
+                evt.to.querySelectorAll('li').forEach(function(li, index) {
+                    items.push({
+                        id: li.dataset.id,
+                        order: index + 1
+                    });
+                });
+                
+                // Send AJAX request to update order
+                fetch('{{ route('dashboard.presentation-session.update-order') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        type: 'produsen',
+                        session_name: sessionName,
+                        items: items
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Urutan peserta berhasil diupdate',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: 'Terjadi kesalahan saat mengupdate urutan'
+                    });
+                    // Reload page on error
+                    setTimeout(() => location.reload(), 1500);
+                });
+            }
+        });
+    });
 });
 </script>
+
+<!-- SortableJS Library -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 @endpush
