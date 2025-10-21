@@ -33,7 +33,7 @@
     }
 
     .cv-juri-wrapper {
-        padding: 60px 20px 80px;
+        padding: 40px 20px 60px;
         width: 100%;
         max-width: 100%;
         overflow-x: hidden;
@@ -44,7 +44,7 @@
 
     .cv-juri-header {
         text-align: center;
-        margin-bottom: 40px;
+        margin-bottom: 30px;
         animation: fadeInDown 0.8s ease-out;
     }
 
@@ -73,12 +73,12 @@
     }
 
     .pdf-viewer-container {
-        max-width: 1200px;
-        margin: 0 auto 60px;
+        max-width: 1400px;
+        margin: 0 auto 40px;
         background: rgba(255, 255, 255, 0.1);
         backdrop-filter: blur(10px);
         border-radius: 16px;
-        padding: 24px;
+        padding: 20px;
         border: 1px solid rgba(255, 255, 255, 0.2);
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         animation: fadeInUp 0.8s ease-out;
@@ -163,7 +163,8 @@
         background: white;
         border-radius: 12px;
         overflow: auto;
-        max-height: 80vh;
+        min-height: 85vh;
+        max-height: 90vh;
         display: flex;
         justify-content: center;
         align-items: flex-start;
@@ -307,6 +308,9 @@
                         <span class="pdf-page-info"><span id="zoom-level">100</span>%</span>
                         <button id="zoom-in" class="pdf-zoom-btn">+</button>
                     </div>
+                    <a href="{{ asset($pdfPath) }}" download="CV Juri SIGAP Award 2025.pdf" class="pdf-btn" style="text-decoration: none;">
+                        <span>&#8595;</span> Download PDF
+                    </a>
                 </div>
             </div>
 
