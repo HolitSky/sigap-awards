@@ -57,8 +57,31 @@
                                 <span>
                                     <i class="mdi mdi-numeric-{{ $index + 1 }}-circle me-2"></i>
                                     <strong>{{ $form->nama_instansi }}</strong>
-                                    @if(!empty($userAssessments[$form->respondent_id]))
+                                    @php
+                                        $assessment = $userAssessments[$form->respondent_id] ?? null;
+                                        $isComplete = false;
+                                        
+                                        if ($assessment) {
+                                            // Check if all aspek scores are filled
+                                            $allScoresFilled = true;
+                                            foreach(array_keys($aspekPenilaian) as $key) {
+                                                if (empty($assessment['aspek_scores'][$key])) {
+                                                    $allScoresFilled = false;
+                                                    break;
+                                                }
+                                            }
+                                            
+                                            // Check if rekomendasi is filled
+                                            $rekomendasiFilled = !empty($assessment['rekomendasi']);
+                                            
+                                            $isComplete = $allScoresFilled && $rekomendasiFilled;
+                                        }
+                                    @endphp
+                                    
+                                    @if($isComplete)
                                         <span class="badge bg-success ms-2"><i class="mdi mdi-check"></i> Sudah Dinilai</span>
+                                    @elseif($assessment)
+                                        <span class="badge bg-info ms-2"><i class="mdi mdi-pencil"></i> Belum Lengkap</span>
                                     @else
                                         <span class="badge bg-warning ms-2"><i class="mdi mdi-alert-circle-outline"></i> Belum Dinilai</span>
                                     @endif
