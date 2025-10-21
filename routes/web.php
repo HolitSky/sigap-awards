@@ -49,6 +49,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Detail & Nilai BPKH
     Route::get('/form-bpkh', [BpkhFormController::class, 'index'])->name('dashboard.form.bpkh.index');
+    Route::get('/form-bpkh/export/excel', [BpkhFormController::class, 'exportExcel'])->name('dashboard.form.bpkh.export.excel');
+    Route::get('/form-bpkh/export/csv', [BpkhFormController::class, 'exportCsv'])->name('dashboard.form.bpkh.export.csv');
+    Route::get('/form-bpkh/export/pdf', [BpkhFormController::class, 'exportPdf'])->name('dashboard.form.bpkh.export.pdf');
     Route::get('/form-bpkh/{respondentId}', [BpkhFormController::class, 'show'])->name('dashboard.form.bpkh.show');
     Route::get('/form-bpkh/{respondentId}/nilai', [BpkhFormController::class, 'editScore'])->name('dashboard.form.bpkh.score.edit');
     Route::post('/form-bpkh/{respondentId}/nilai', [BpkhFormController::class, 'updateScore'])->name('dashboard.form.bpkh.score.update');
@@ -57,6 +60,9 @@ Route::middleware(['auth'])->group(function () {
 
     // Detail & Nilai Produsen DG
     Route::get('/form-produsen-dg', [ProdusenFormController::class, 'index'])->name('dashboard.form.produsen-dg.index');
+    Route::get('/form-produsen-dg/export/excel', [ProdusenFormController::class, 'exportExcel'])->name('dashboard.form.produsen-dg.export.excel');
+    Route::get('/form-produsen-dg/export/csv', [ProdusenFormController::class, 'exportCsv'])->name('dashboard.form.produsen-dg.export.csv');
+    Route::get('/form-produsen-dg/export/pdf', [ProdusenFormController::class, 'exportPdf'])->name('dashboard.form.produsen-dg.export.pdf');
     Route::get('/form-produsen-dg/{respondentId}', [ProdusenFormController::class, 'show'])->name('dashboard.form.produsen-dg.show');
     Route::get('/form-produsen-dg/{respondentId}/nilai', [ProdusenFormController::class, 'editScore'])->name('dashboard.form.produsen-dg.score.edit');
     Route::post('/form-produsen-dg/{respondentId}/nilai', [ProdusenFormController::class, 'updateScore'])->name('dashboard.form.produsen-dg.score.update');

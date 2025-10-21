@@ -30,6 +30,21 @@
                                         </div>
                                     </form>
 
+                                    <!-- Export Buttons -->
+                                    <div class="mb-3">
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ route('dashboard.form.bpkh.export.excel', ['q' => request('q')]) }}" class="btn btn-success">
+                                                <i class="mdi mdi-file-excel me-1"></i> Export Excel
+                                            </a>
+                                            <a href="{{ route('dashboard.form.bpkh.export.csv', ['q' => request('q')]) }}" class="btn btn-info">
+                                                <i class="mdi mdi-file-delimited me-1"></i> Export CSV
+                                            </a>
+                                            <a href="{{ route('dashboard.form.bpkh.export.pdf', ['q' => request('q')]) }}" class="btn btn-danger">
+                                                <i class="mdi mdi-file-pdf me-1"></i> Export PDF
+                                            </a>
+                                        </div>
+                                    </div>
+
                                     <h4 class="card-title">Tujuan</h4>
                                     <p class="card-title-desc">Form Penilaian (FP) ini adalah salah satu dari sejumlah alat analisis dalam metodologi SIGAP Award 2025 untuk implementasi IIG (Infrastruktur Informasi Geospasial) Kehutanan menggunakan Kerangka Kerja Informasi Geospasial Terintegrasi - Integrated Geospatial Information Framework (IGIF). Tujuan utama FP adalah untuk mengumpulkan informasi yang diperlukan guna menyelesaikan penilaian dasar (kondisi saat ini) dari pengembangan IIG Kehutanan.
                                     </p>

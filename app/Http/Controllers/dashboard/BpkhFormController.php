@@ -8,6 +8,9 @@ use App\Models\BpkhForm;
 use App\Models\RecordUserAssesment;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+use App\Exports\BpkhFormExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 
 class BpkhFormController extends Controller
@@ -197,5 +200,62 @@ class BpkhFormController extends Controller
               'success' => true,
               'data' => $records
           ]);
+      }
+
+      // Export to Excel
+      public function exportExcel(Request $request)
+      {
+          $term = $request->string('q')->toString();
+          $query = BpkhForm::query()->search($term)
+              ->orderBy('nominasi', 'desc')
+              ->orderByRaw('nilai_bobot_total IS NULL ASC')
+              ->orderBy('nilai_bobot_total', 'desc')
+              ->orderBy('sheet_row_number','asc')
+              ->orderBy('respondent_id','asc');
+          
+          return Excel::download(new BpkhFormExport($query), 'form-bpkh-' . date('Y-m-d') . '.xlsx');
+      }
+
+      // Export to CSV
+      public function exportCsv(Request $request)
+      {
+          $term = $request->string('q')->toString();
+          $query = BpkhForm::query()->search($term)
+              ->orderBy('nominasi', 'desc')
+              ->orderByRaw('nilai_bobot_total IS NULL ASC')
+              ->orderBy('nilai_bobot_total', 'desc')
+              ->orderBy('sheet_row_number','asc')
+              ->orderBy('respondent_id','asc');
+          
+          return Excel::download(new BpkhFormExport($query), 'form-bpkh-' . date('Y-m-d') . '.csv');
+      }
+
+      // Export to PDF
+      public function exportPdf(Request $request)
+      {
+          $term = $request->string('q')->toString();
+          $forms = BpkhForm::query()->search($term)
+              ->orderBy('nominasi', 'desc')
+              ->orderByRaw('nilai_bobot_total IS NULL ASC')
+              ->orderBy('nilai_bobot_total', 'desc')
+              ->orderBy('sheet_row_number','asc')
+              ->orderBy('respondent_id','asc')
+              ->get();
+          
+          $statusLabels = [
+              'pending'   => 'Pending',
+              'in_review' => 'Dalam Review',
+              'scored'    => 'Sudah Final',
+          ];
+          
+          $forms->transform(function ($form) use ($statusLabels) {
+              $form->status_label = $statusLabels[$form->status_nilai] ?? $form->status_nilai;
+              return $form;
+          });
+          
+          $pdf = Pdf::loadView('dashboard.pages.form.bpkh.pdf', compact('forms'))
+              ->setPaper('a4', 'landscape');
+          
+          return $pdf->download('form-bpkh-' . date('Y-m-d') . '.pdf');
       }
 }
