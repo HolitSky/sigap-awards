@@ -36,6 +36,7 @@
                                             <p class="card-title-desc mb-0">Daftar penilaian presentasi untuk Produsen DG yang sudah masuk nominasi dan dalam tahap presentasi.</p>
                                         </div>
                                         <div class="d-flex gap-2 align-items-center">
+                                            @if(auth()->user()->role !== 'admin-view')
                                             <div class="btn-group" role="group">
                                                 @foreach($sessions as $sessionName => $participants)
                                                     @php
@@ -54,13 +55,16 @@
                                                     Penilaian Kolektif (<span id="selected-count">0</span>)
                                                 </button>
                                             </div>
+                                            @endif
                                         </div>
                                     </div>
 
                                     <table id="datatable" class="table table-bordered dt-responsive nowrap w-100">
                                         <thead>
                                         <tr>
+                                            @if(auth()->user()->role !== 'admin-view')
                                             <th><input type="checkbox" id="select-all" class="form-check-input"></th>
+                                            @endif
                                             <th>No</th>
                                             <th>Nama Instansi</th>
                                             <th>Nama Petugas</th>
@@ -74,7 +78,9 @@
                                         <tbody>
                                             @forelse(($forms ?? []) as $form)
                                                 <tr>
+                                                    @if(auth()->user()->role !== 'admin-view')
                                                     <td><input type="checkbox" class="form-check-input participant-checkbox" data-id="{{ $form->respondent_id }}" data-name="{{ $form->nama_instansi }}"></td>
+                                                    @endif
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $form->nama_instansi }}</td>
                                                     <td>{{ $form->nama_petugas }}</td>
@@ -101,13 +107,15 @@
                                                     <td>
                                                         <div class="btn-group">
                                                             <a class="btn btn-sm btn-outline-info" href="{{ route('dashboard.presentation.produsen.show', $form->respondent_id) }}">Detail</a>
+                                                            @if(auth()->user()->role !== 'admin-view')
                                                             <a class="btn btn-sm btn-primary" href="{{ route('dashboard.presentation.produsen.edit', $form->respondent_id) }}">Nilai Presentasi</a>
+                                                            @endif
                                                         </div>
                                                     </td>
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="9" class="text-center">Tidak ada data</td>
+                                                    <td colspan="{{ auth()->user()->role !== 'admin-view' ? '9' : '8' }}" class="text-center">Tidak ada data</td>
                                                 </tr>
                                             @endforelse
                                         </tbody>
@@ -216,6 +224,68 @@
         vertical-align: middle;
     }
 
+    /* Admin-view specific styles (without checkbox) */
+    @media screen {
+        body.admin-view-role #datatable th:nth-child(1),
+        body.admin-view-role #datatable td:nth-child(1) {
+            width: 45px !important;
+            max-width: 45px !important;
+            text-align: center;
+        }
+
+        body.admin-view-role #datatable th:nth-child(2),
+        body.admin-view-role #datatable td:nth-child(2) {
+            width: 240px !important;
+            max-width: 240px !important;
+            word-wrap: break-word;
+            white-space: normal;
+            overflow-wrap: break-word;
+        }
+
+        body.admin-view-role #datatable th:nth-child(3),
+        body.admin-view-role #datatable td:nth-child(3) {
+            width: 180px !important;
+            max-width: 180px !important;
+            word-wrap: break-word;
+            white-space: normal;
+            overflow-wrap: break-word;
+        }
+
+        body.admin-view-role #datatable th:nth-child(4),
+        body.admin-view-role #datatable td:nth-child(4) {
+            width: 80px !important;
+            max-width: 80px !important;
+            text-align: center;
+        }
+
+        body.admin-view-role #datatable th:nth-child(5),
+        body.admin-view-role #datatable td:nth-child(5) {
+            width: 85px !important;
+            max-width: 85px !important;
+            text-align: center;
+        }
+
+        body.admin-view-role #datatable th:nth-child(6),
+        body.admin-view-role #datatable td:nth-child(6) {
+            width: 90px !important;
+            max-width: 90px !important;
+            text-align: center;
+        }
+
+        body.admin-view-role #datatable th:nth-child(7),
+        body.admin-view-role #datatable td:nth-child(7) {
+            width: 110px !important;
+            max-width: 110px !important;
+            text-align: center;
+        }
+
+        body.admin-view-role #datatable th:nth-child(8),
+        body.admin-view-role #datatable td:nth-child(8) {
+            width: 155px !important;
+            max-width: 155px !important;
+        }
+    }
+
     /* Session button active state */
     .session-select.active {
         background-color: #556ee6 !important;
@@ -252,13 +322,26 @@ $(document).ready(function() {
         $('#datatable').DataTable().destroy();
     }
 
-    // Re-initialize with custom options
-    $('#datatable').DataTable({
-        lengthMenu: [[10, 15, 25, 50, -1], [10, 15, 25, 50, "All"]],
-        pageLength: 15,
-        responsive: true,
-        order: [[1, 'asc']],
-        columnDefs: [
+    // Check if user is admin-view
+    const isAdminView = {{ auth()->user()->role === 'admin-view' ? 'true' : 'false' }};
+    
+    // Configure columns based on role
+    let columnDefs = [];
+    if (isAdminView) {
+        // Without checkbox column
+        columnDefs = [
+            { width: "5%", targets: 0 },   // No
+            { width: "22%", targets: 1 },  // Nama Instansi
+            { width: "18%", targets: 2 },  // Nama Petugas
+            { width: "10%", targets: 3 },   // Total Juri
+            { width: "10%", targets: 4 },   // Nilai Final
+            { width: "10%", targets: 5 },   // Nilai Bobot
+            { width: "12%", targets: 6 },  // Kategori
+            { width: "13%", targets: 7 }   // Action
+        ];
+    } else {
+        // With checkbox column
+        columnDefs = [
             { width: "3%", targets: 0, orderable: false },   // Checkbox
             { width: "4%", targets: 1 },   // No
             { width: "22%", targets: 2 },  // Nama Instansi
@@ -268,7 +351,16 @@ $(document).ready(function() {
             { width: "9%", targets: 6 },   // Nilai Bobot
             { width: "11%", targets: 7 },  // Kategori
             { width: "17%", targets: 8 }   // Action
-        ],
+        ];
+    }
+
+    // Re-initialize with custom options
+    $('#datatable').DataTable({
+        lengthMenu: [[10, 15, 25, 50, -1], [10, 15, 25, 50, "All"]],
+        pageLength: 15,
+        responsive: true,
+        order: [[isAdminView ? 0 : 1, 'asc']],
+        columnDefs: columnDefs,
         autoWidth: false
     });
 

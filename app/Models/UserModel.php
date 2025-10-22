@@ -22,6 +22,7 @@ class UserModel extends Authenticatable
 
     public const ROLE_SUPERADMIN = 'superadmin';
     public const ROLE_ADMIN      = 'admin';
+    public const ROLE_ADMIN_VIEW = 'admin-view';
     public const ROLE_PANITIA    = 'panitia';
     public const ROLE_PESERTA    = 'peserta';
 

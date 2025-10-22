@@ -36,6 +36,7 @@
                                             <p class="card-title-desc mb-0">Daftar penilaian exhibition/poster untuk Produsen DG.</p>
                                         </div>
                                         <div class="d-flex gap-2 align-items-center">
+                                            @if(auth()->user()->role !== 'admin-view')
                                             <div class="btn-group" role="group">
                                                 @foreach($sessions as $sessionName => $participants)
                                                     @php
@@ -54,13 +55,16 @@
                                                     Penilaian Kolektif (<span id="selected-count">0</span>)
                                                 </button>
                                             </div>
+                                            @endif
                                         </div>
                                     </div>
 
                                     <table id="datatable-exhibition-produsen" class="table table-bordered dt-responsive nowrap w-100">
                                         <thead>
                                         <tr>
+                                            @if(auth()->user()->role !== 'admin-view')
                                             <th><input type="checkbox" id="select-all" class="form-check-input"></th>
+                                            @endif
                                             <th>No</th>
                                             <th>Nama Instansi</th>
                                             <th>Nama Petugas</th>
@@ -74,7 +78,9 @@
                                         <tbody>
                                             @forelse(($forms ?? []) as $form)
                                                 <tr>
+                                                    @if(auth()->user()->role !== 'admin-view')
                                                     <td><input type="checkbox" class="form-check-input participant-checkbox" data-id="{{ $form->respondent_id }}" data-name="{{ $form->nama_instansi }}"></td>
+                                                    @endif
                                                     <td>{{ $loop->iteration }}</td>
                                                     <td>{{ $form->nama_instansi }}</td>
                                                     <td>{{ $form->nama_petugas }}</td>
@@ -101,13 +107,15 @@
                                                     <td>
                                                         <div class="btn-group">
                                                             <a class="btn btn-sm btn-outline-info" href="{{ route('dashboard.exhibition.produsen.show', $form->respondent_id) }}">Detail</a>
+                                                            @if(auth()->user()->role !== 'admin-view')
                                                             <a class="btn btn-sm btn-primary" href="{{ route('dashboard.exhibition.produsen.edit', $form->respondent_id) }}">Nilai Exhibition</a>
+                                                            @endif
                                                         </div>
                                                     </td>
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="9" class="text-center">Tidak ada data</td>
+                                                    <td colspan="{{ auth()->user()->role !== 'admin-view' ? '9' : '8' }}" class="text-center">Tidak ada data</td>
                                                 </tr>
                                             @endforelse
                                         </tbody>
@@ -151,6 +159,24 @@
             word-wrap: break-word !important;
             overflow: hidden;
             text-overflow: ellipsis;
+        }
+
+        /* Admin-view specific styles (without checkbox) */
+        body.admin-view-role #datatable-exhibition-produsen th:nth-child(1) { width: 5% !important; min-width: 40px; text-align: center; }
+        body.admin-view-role #datatable-exhibition-produsen th:nth-child(2) { width: 22% !important; max-width: 250px; }
+        body.admin-view-role #datatable-exhibition-produsen th:nth-child(3) { width: 15% !important; max-width: 180px; }
+        body.admin-view-role #datatable-exhibition-produsen th:nth-child(4) { width: 10% !important; text-align: center; }
+        body.admin-view-role #datatable-exhibition-produsen th:nth-child(5) { width: 10% !important; text-align: center; }
+        body.admin-view-role #datatable-exhibition-produsen th:nth-child(6) { width: 12% !important; text-align: center; }
+        body.admin-view-role #datatable-exhibition-produsen th:nth-child(7) { width: 12% !important; text-align: center; }
+        body.admin-view-role #datatable-exhibition-produsen th:nth-child(8) { width: 14% !important; }
+        
+        body.admin-view-role #datatable-exhibition-produsen td:nth-child(1) { text-align: center; }
+        body.admin-view-role #datatable-exhibition-produsen td:nth-child(2),
+        body.admin-view-role #datatable-exhibition-produsen td:nth-child(3) {
+            white-space: normal !important;
+            word-wrap: break-word !important;
+            overflow-wrap: break-word !important;
         }
         
         /* Session button active state */
@@ -199,10 +225,26 @@ $(document).ready(function () {
     // Stop default datatables.init.js from initializing this table
     $('#datatable-exhibition-produsen').addClass('dt-custom-init');
 
-    var table = $("#datatable-exhibition-produsen").DataTable({
-        responsive: true,
-        order: [[1, 'asc']],
-        columnDefs: [
+    // Check if user is admin-view
+    const isAdminView = {{ auth()->user()->role === 'admin-view' ? 'true' : 'false' }};
+    
+    // Configure columns based on role
+    let columnDefs = [];
+    if (isAdminView) {
+        // Without checkbox column
+        columnDefs = [
+            { width: "5%", targets: 0 },   // No
+            { width: "20%", targets: 1 },  // Nama Instansi
+            { width: "15%", targets: 2 },  // Nama Petugas
+            { width: "10%", targets: 3 },   // Jumlah Juri
+            { width: "10%", targets: 4 },   // Nilai Final
+            { width: "12%", targets: 5 },  // Nilai Bobot
+            { width: "12%", targets: 6 },  // Kategori
+            { width: "16%", targets: 7, orderable: false }   // Action
+        ];
+    } else {
+        // With checkbox column
+        columnDefs = [
             { width: "3%", targets: 0, orderable: false },   // Checkbox
             { width: "3%", targets: 1 },   // No
             { width: "18%", targets: 2 },  // Nama Instansi
@@ -212,7 +254,13 @@ $(document).ready(function () {
             { width: "10%", targets: 6 },  // Nilai Bobot
             { width: "10%", targets: 7 },  // Kategori
             { width: "24%", targets: 8, orderable: false }   // Action
-        ],
+        ];
+    }
+
+    var table = $("#datatable-exhibition-produsen").DataTable({
+        responsive: true,
+        order: [[isAdminView ? 0 : 1, 'asc']],
+        columnDefs: columnDefs,
         autoWidth: false,
         language: {
             search: "Cari:",

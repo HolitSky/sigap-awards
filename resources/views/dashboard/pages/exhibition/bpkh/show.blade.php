@@ -54,9 +54,11 @@
                             </div>
                         @endif
 
+                        @if(auth()->user()->role !== 'admin-view')
                         <a href="{{ route('dashboard.exhibition.bpkh.edit', $form->respondent_id) }}" class="btn btn-primary">
                             Nilai / Edit Penilaian
                         </a>
+                        @endif
                         <a href="{{ route('dashboard.exhibition.bpkh.index') }}" class="btn btn-secondary">
                             Kembali ke Daftar
                         </a>

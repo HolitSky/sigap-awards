@@ -56,8 +56,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/form-bpkh/export/csv-detail', [BpkhFormController::class, 'exportCsvDetail'])->name('dashboard.form.bpkh.export.csv-detail');
     Route::get('/form-bpkh/export/pdf-detail', [BpkhFormController::class, 'exportPdfDetail'])->name('dashboard.form.bpkh.export.pdf-detail');
     Route::get('/form-bpkh/{respondentId}', [BpkhFormController::class, 'show'])->name('dashboard.form.bpkh.show');
-    Route::get('/form-bpkh/{respondentId}/nilai', [BpkhFormController::class, 'editScore'])->name('dashboard.form.bpkh.score.edit');
-    Route::post('/form-bpkh/{respondentId}/nilai', [BpkhFormController::class, 'updateScore'])->name('dashboard.form.bpkh.score.update');
+    Route::get('/form-bpkh/{respondentId}/nilai', [BpkhFormController::class, 'editScore'])->name('dashboard.form.bpkh.score.edit')->middleware('prevent.admin.view');
+    Route::post('/form-bpkh/{respondentId}/nilai', [BpkhFormController::class, 'updateScore'])->name('dashboard.form.bpkh.score.update')->middleware('prevent.admin.view');
     Route::get('/form-bpkh/{respondentId}/history', [BpkhFormController::class, 'getAssessmentHistory'])->name('dashboard.form.bpkh.history');
 
 
@@ -70,45 +70,45 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/form-produsen-dg/export/csv-detail', [ProdusenFormController::class, 'exportCsvDetail'])->name('dashboard.form.produsen-dg.export.csv-detail');
     Route::get('/form-produsen-dg/export/pdf-detail', [ProdusenFormController::class, 'exportPdfDetail'])->name('dashboard.form.produsen-dg.export.pdf-detail');
     Route::get('/form-produsen-dg/{respondentId}', [ProdusenFormController::class, 'show'])->name('dashboard.form.produsen-dg.show');
-    Route::get('/form-produsen-dg/{respondentId}/nilai', [ProdusenFormController::class, 'editScore'])->name('dashboard.form.produsen-dg.score.edit');
-    Route::post('/form-produsen-dg/{respondentId}/nilai', [ProdusenFormController::class, 'updateScore'])->name('dashboard.form.produsen-dg.score.update');
+    Route::get('/form-produsen-dg/{respondentId}/nilai', [ProdusenFormController::class, 'editScore'])->name('dashboard.form.produsen-dg.score.edit')->middleware('prevent.admin.view');
+    Route::post('/form-produsen-dg/{respondentId}/nilai', [ProdusenFormController::class, 'updateScore'])->name('dashboard.form.produsen-dg.score.update')->middleware('prevent.admin.view');
     Route::get('/form-produsen-dg/{respondentId}/history', [ProdusenFormController::class, 'getAssessmentHistory'])->name('dashboard.form.produsen-dg.history');
 
     // Penilaian Presentasi BPKH
     Route::get('/presentation-bpkh', [BpkhPresentationController::class, 'index'])->name('dashboard.presentation.bpkh.index');
     // Bulk Scoring BPKH (must be BEFORE dynamic routes)
-    Route::get('/presentation-bpkh/bulk-score', [BpkhPresentationController::class, 'bulkScoreForm'])->name('dashboard.presentation.bpkh.bulk-score');
-    Route::post('/presentation-bpkh/bulk-score', [BpkhPresentationController::class, 'bulkScoreStore'])->name('dashboard.presentation.bpkh.bulk-score.store');
+    Route::get('/presentation-bpkh/bulk-score', [BpkhPresentationController::class, 'bulkScoreForm'])->name('dashboard.presentation.bpkh.bulk-score')->middleware('prevent.admin.view');
+    Route::post('/presentation-bpkh/bulk-score', [BpkhPresentationController::class, 'bulkScoreStore'])->name('dashboard.presentation.bpkh.bulk-score.store')->middleware('prevent.admin.view');
     Route::get('/presentation-bpkh/{respondentId}', [BpkhPresentationController::class, 'show'])->name('dashboard.presentation.bpkh.show');
-    Route::get('/presentation-bpkh/{respondentId}/nilai', [BpkhPresentationController::class, 'edit'])->name('dashboard.presentation.bpkh.edit');
-    Route::post('/presentation-bpkh/{respondentId}/nilai', [BpkhPresentationController::class, 'update'])->name('dashboard.presentation.bpkh.update');
+    Route::get('/presentation-bpkh/{respondentId}/nilai', [BpkhPresentationController::class, 'edit'])->name('dashboard.presentation.bpkh.edit')->middleware('prevent.admin.view');
+    Route::post('/presentation-bpkh/{respondentId}/nilai', [BpkhPresentationController::class, 'update'])->name('dashboard.presentation.bpkh.update')->middleware('prevent.admin.view');
     Route::get('/presentation-bpkh/{respondentId}/history', [BpkhPresentationController::class, 'history'])->name('dashboard.presentation.bpkh.history');
 
     // Penilaian Presentasi Produsen DG
     Route::get('/presentation-produsen-dg', [ProdusenPresentationController::class, 'index'])->name('dashboard.presentation.produsen.index');
     // Bulk Scoring Produsen (must be BEFORE dynamic routes)
-    Route::get('/presentation-produsen-dg/bulk-score', [ProdusenPresentationController::class, 'bulkScoreForm'])->name('dashboard.presentation.produsen.bulk-score');
-    Route::post('/presentation-produsen-dg/bulk-score', [ProdusenPresentationController::class, 'bulkScoreStore'])->name('dashboard.presentation.produsen.bulk-score.store');
+    Route::get('/presentation-produsen-dg/bulk-score', [ProdusenPresentationController::class, 'bulkScoreForm'])->name('dashboard.presentation.produsen.bulk-score')->middleware('prevent.admin.view');
+    Route::post('/presentation-produsen-dg/bulk-score', [ProdusenPresentationController::class, 'bulkScoreStore'])->name('dashboard.presentation.produsen.bulk-score.store')->middleware('prevent.admin.view');
     Route::get('/presentation-produsen-dg/{respondentId}', [ProdusenPresentationController::class, 'show'])->name('dashboard.presentation.produsen.show');
-    Route::get('/presentation-produsen-dg/{respondentId}/nilai', [ProdusenPresentationController::class, 'edit'])->name('dashboard.presentation.produsen.edit');
-    Route::post('/presentation-produsen-dg/{respondentId}/nilai', [ProdusenPresentationController::class, 'update'])->name('dashboard.presentation.produsen.update');
+    Route::get('/presentation-produsen-dg/{respondentId}/nilai', [ProdusenPresentationController::class, 'edit'])->name('dashboard.presentation.produsen.edit')->middleware('prevent.admin.view');
+    Route::post('/presentation-produsen-dg/{respondentId}/nilai', [ProdusenPresentationController::class, 'update'])->name('dashboard.presentation.produsen.update')->middleware('prevent.admin.view');
     Route::get('/presentation-produsen-dg/{respondentId}/history', [ProdusenPresentationController::class, 'history'])->name('dashboard.presentation.produsen.history');
 
     // Penilaian Exhibition/Poster BPKH
     Route::get('/exhibition-bpkh', [BpkhExhibitionController::class, 'index'])->name('dashboard.exhibition.bpkh.index');
-    Route::get('/exhibition-bpkh/bulk-score', [BpkhExhibitionController::class, 'bulkScoreForm'])->name('dashboard.exhibition.bpkh.bulk-score');
-    Route::post('/exhibition-bpkh/bulk-score', [BpkhExhibitionController::class, 'bulkScoreStore'])->name('dashboard.exhibition.bpkh.bulk-score.store');
+    Route::get('/exhibition-bpkh/bulk-score', [BpkhExhibitionController::class, 'bulkScoreForm'])->name('dashboard.exhibition.bpkh.bulk-score')->middleware('prevent.admin.view');
+    Route::post('/exhibition-bpkh/bulk-score', [BpkhExhibitionController::class, 'bulkScoreStore'])->name('dashboard.exhibition.bpkh.bulk-score.store')->middleware('prevent.admin.view');
     Route::get('/exhibition-bpkh/{respondentId}', [BpkhExhibitionController::class, 'show'])->name('dashboard.exhibition.bpkh.show');
-    Route::get('/exhibition-bpkh/{respondentId}/nilai', [BpkhExhibitionController::class, 'edit'])->name('dashboard.exhibition.bpkh.edit');
-    Route::post('/exhibition-bpkh/{respondentId}/nilai', [BpkhExhibitionController::class, 'update'])->name('dashboard.exhibition.bpkh.update');
+    Route::get('/exhibition-bpkh/{respondentId}/nilai', [BpkhExhibitionController::class, 'edit'])->name('dashboard.exhibition.bpkh.edit')->middleware('prevent.admin.view');
+    Route::post('/exhibition-bpkh/{respondentId}/nilai', [BpkhExhibitionController::class, 'update'])->name('dashboard.exhibition.bpkh.update')->middleware('prevent.admin.view');
 
     // Penilaian Exhibition/Poster Produsen DG
     Route::get('/exhibition-produsen-dg', [ProdusenExhibitionController::class, 'index'])->name('dashboard.exhibition.produsen.index');
-    Route::get('/exhibition-produsen-dg/bulk-score', [ProdusenExhibitionController::class, 'bulkScoreForm'])->name('dashboard.exhibition.produsen.bulk-score');
-    Route::post('/exhibition-produsen-dg/bulk-score', [ProdusenExhibitionController::class, 'bulkScoreStore'])->name('dashboard.exhibition.produsen.bulk-score.store');
+    Route::get('/exhibition-produsen-dg/bulk-score', [ProdusenExhibitionController::class, 'bulkScoreForm'])->name('dashboard.exhibition.produsen.bulk-score')->middleware('prevent.admin.view');
+    Route::post('/exhibition-produsen-dg/bulk-score', [ProdusenExhibitionController::class, 'bulkScoreStore'])->name('dashboard.exhibition.produsen.bulk-score.store')->middleware('prevent.admin.view');
     Route::get('/exhibition-produsen-dg/{respondentId}', [ProdusenExhibitionController::class, 'show'])->name('dashboard.exhibition.produsen.show');
-    Route::get('/exhibition-produsen-dg/{respondentId}/nilai', [ProdusenExhibitionController::class, 'edit'])->name('dashboard.exhibition.produsen.edit');
-    Route::post('/exhibition-produsen-dg/{respondentId}/nilai', [ProdusenExhibitionController::class, 'update'])->name('dashboard.exhibition.produsen.update');
+    Route::get('/exhibition-produsen-dg/{respondentId}/nilai', [ProdusenExhibitionController::class, 'edit'])->name('dashboard.exhibition.produsen.edit')->middleware('prevent.admin.view');
+    Route::post('/exhibition-produsen-dg/{respondentId}/nilai', [ProdusenExhibitionController::class, 'update'])->name('dashboard.exhibition.produsen.update')->middleware('prevent.admin.view');
 
     // User Management Routes (Admin & Superadmin only)
     Route::middleware(['role:admin,superadmin'])->group(function () {

@@ -111,7 +111,9 @@
                                                     <td>
                                                         <div class="btn-group">
                                                             <a class="btn btn-sm btn-outline-primary" href="{{ route('dashboard.form.bpkh.show', $form->respondent_id) }}">Lihat Detail</a>
+                                                            @if(auth()->user()->role !== 'admin-view')
                                                             <a class="btn btn-sm btn-primary" href="{{ route('dashboard.form.bpkh.score.edit', $form->respondent_id) }}">Nilai Ulang Form</a>
+                                                            @endif
                                                         </div>
                                                     </td>
                                                 </tr>

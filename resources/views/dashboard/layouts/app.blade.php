@@ -36,7 +36,7 @@
         @stack('styles')
     </head>
 
-    <body data-sidebar="dark">
+    <body data-sidebar="dark" class="{{ auth()->user()->role === 'admin-view' ? 'admin-view-role' : '' }}">
 
     <!-- <body data-layout="horizontal" data-topbar="dark"> -->
 

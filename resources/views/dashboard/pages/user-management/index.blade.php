@@ -253,6 +253,7 @@
                         <select class="form-select" id="editRole" required>
                             {{-- <option value="peserta">Peserta</option> --}}
                             <option value="panitia">Juri</option>
+                            <option value="admin-view">Admin View (Read Only)</option>
                             @if(auth()->user()->role === 'superadmin')
                             <option value="admin">Admin</option>
                             <option value="superadmin">Superadmin</option>
@@ -313,6 +314,7 @@
                         <select class="form-select" id="addRole" required>
                             {{-- <option value="peserta">Peserta</option> --}}
                             <option value="panitia">Juri</option>
+                            <option value="admin-view">Admin View (Read Only)</option>
                             @if(auth()->user()->role === 'superadmin')
                             <option value="admin">Admin</option>
                             <option value="superadmin">Superadmin</option>

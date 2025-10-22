@@ -37,6 +37,7 @@ class UserManagementController extends Controller
             UserModel::ROLE_PANITIA => 'Juri',
             UserModel::ROLE_PESERTA => 'Peserta',
             UserModel::ROLE_ADMIN => 'Admin',
+            UserModel::ROLE_ADMIN_VIEW => 'Admin View (Read Only)',
             UserModel::ROLE_SUPERADMIN => 'Superadmin',
             default => ucfirst($role),
         };
@@ -108,7 +109,7 @@ class UserManagementController extends Controller
             'email'    => ['required','email','max:150','unique:users,email'],
             'password' => ['required','string','min:8'],
             'role'     => ['nullable', Rule::in([
-                UserModel::ROLE_PESERTA, UserModel::ROLE_PANITIA, UserModel::ROLE_ADMIN, UserModel::ROLE_SUPERADMIN
+                UserModel::ROLE_PESERTA, UserModel::ROLE_PANITIA, UserModel::ROLE_ADMIN_VIEW, UserModel::ROLE_ADMIN, UserModel::ROLE_SUPERADMIN
             ])],
         ]);
 
@@ -140,7 +141,7 @@ class UserManagementController extends Controller
 
         $request->validate([
             'role' => ['required', Rule::in([
-                UserModel::ROLE_PESERTA, UserModel::ROLE_PANITIA, UserModel::ROLE_ADMIN, UserModel::ROLE_SUPERADMIN
+                UserModel::ROLE_PESERTA, UserModel::ROLE_PANITIA, UserModel::ROLE_ADMIN_VIEW, UserModel::ROLE_ADMIN, UserModel::ROLE_SUPERADMIN
             ])],
         ]);
 
@@ -170,7 +171,7 @@ class UserManagementController extends Controller
             'email'    => ['required','email','max:150', Rule::unique('users','email')->ignore($user->id)],
             'password' => ['nullable','string','min:8'],
             'role'     => ['required', Rule::in([
-                UserModel::ROLE_PESERTA, UserModel::ROLE_PANITIA, UserModel::ROLE_ADMIN, UserModel::ROLE_SUPERADMIN
+                UserModel::ROLE_PESERTA, UserModel::ROLE_PANITIA, UserModel::ROLE_ADMIN_VIEW, UserModel::ROLE_ADMIN, UserModel::ROLE_SUPERADMIN
             ])],
         ]);
 

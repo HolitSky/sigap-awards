@@ -53,9 +53,11 @@
                             <div><strong>Website</strong>: @if($form->website)<a href="{{ str_starts_with($form->website, 'http') ? $form->website : 'https://'.$form->website }}" target="_blank">{{ $form->website }}</a>@else - @endif</div>
                         </div>
 
+                        @if(auth()->user()->role !== 'admin-view')
                         <div class="mb-3">
                             <a href="{{ route('dashboard.form.bpkh.score.edit', $form->respondent_id) }}" class="btn btn-primary">Nilai Ulang Form</a>
                         </div>
+                        @endif
 
                         @php
                             // Build entries once for aggregation
