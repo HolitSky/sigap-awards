@@ -390,7 +390,9 @@
 </div>
 <!-- End Page-content -->
 
+@if(auth()->user()->role !== 'admin-view')
 @include('dashboard.layouts.components.info_modal')
+@endif
 @endsection
 
 @push('scripts')

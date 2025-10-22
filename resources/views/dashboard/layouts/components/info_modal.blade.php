@@ -39,6 +39,42 @@
 }
 </style>
 
+@php
+    // Definisi teks untuk berbagai jenis halaman
+    $infoTexts = [
+        'form' => [
+            'title' => 'Selamat datang, Juri Sigap Award!',
+            'subtitle' => 'Silakan melanjutkan penilaian form yang masuk dan verifikasi data pendukung.'
+        ],
+        'presentation_exhibition' => [
+            'title' => 'Selamat datang, Juri Sigap Award!',
+            'subtitle' => 'Silakan melanjutkan penilaian presentasi dan exhibition/poster yang telah dijadwalkan.'
+        ],
+        'dashboard' => [
+            'title' => 'Selamat datang, Juri Sigap Award!',
+            'subtitle' => 'Silakan melanjutkan penilaian presentasi dan exhibition/poster yang telah dijadwalkan.'
+        ]
+    ];
+
+    // Deteksi jenis halaman dari route name atau parameter yang dikirim
+    $currentRoute = request()->route()->getName();
+    $modalType = $infoModalType ?? 'dashboard'; // default dashboard (gunakan teks presentation/exhibition)
+
+    // Jika tidak ada parameter, deteksi dari route
+    if (!isset($infoModalType)) {
+        if (str_contains($currentRoute, 'form')) {
+            $modalType = 'form';
+        } elseif (str_contains($currentRoute, 'presentation') || str_contains($currentRoute, 'exhibition')) {
+            $modalType = 'presentation_exhibition';
+        } elseif (str_contains($currentRoute, 'dashboard')) {
+            $modalType = 'dashboard';
+        }
+    }
+
+    $modalTitle = $infoTexts[$modalType]['title'];
+    $modalSubtitle = $infoTexts[$modalType]['subtitle'];
+@endphp
+
 <!-- infodashboardModal -->
 <div class="modal fade" id="subscribeModal" tabindex="-1" aria-labelledby="subscribeModalLabel" aria-hidden="true">
    <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 700px;">
@@ -49,8 +85,8 @@
            <div class="modal-body p-4 pb-2">
                <div class="text-center">
                    <img src="{{ asset('sigap-assets/images/image-info-for-poster.png') }}" class="img-fluid mb-4" style="max-width: 100%; height: auto; max-height: 350px; object-fit: contain;" alt="Informasi poster" loading="lazy">
-                   <h1 class="reminder-title">Selamat datang, Juri/Admin Sigap Award!</h1>
-                   <h3 class="reminder-subtitle">Silakan melanjutkan penilaian form yang masuk dan verifikasi data pendukung.</h3>
+                   <h1 class="reminder-title">{{ $modalTitle }}</h1>
+                   <h3 class="reminder-subtitle">{{ $modalSubtitle }}</h3>
                </div>
            </div>
            <div class="modal-footer border-top-0 justify-content-center pb-4">
