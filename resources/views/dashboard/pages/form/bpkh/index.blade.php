@@ -33,15 +33,29 @@
                                     <!-- Export Buttons -->
                                     <div class="mb-3">
                                         <div class="btn-group" role="group">
-                                            <a href="{{ route('dashboard.form.bpkh.export.excel', ['q' => request('q')]) }}" class="btn btn-success">
+                                            <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown">
                                                 <i class="mdi mdi-file-excel me-1"></i> Export Excel
-                                            </a>
-                                            <a href="{{ route('dashboard.form.bpkh.export.csv', ['q' => request('q')]) }}" class="btn btn-info">
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="{{ route('dashboard.form.bpkh.export.excel', ['q' => request('q')]) }}">Excel (Summary)</a></li>
+                                                <li><a class="dropdown-item" href="{{ route('dashboard.form.bpkh.export.excel-detail', ['q' => request('q')]) }}" onclick="showExportLoading(event, this.href)">Excel Detail (dengan Metadata)</a></li>
+                                            </ul>
+                                            
+                                            <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown">
                                                 <i class="mdi mdi-file-delimited me-1"></i> Export CSV
-                                            </a>
-                                            <a href="{{ route('dashboard.form.bpkh.export.pdf', ['q' => request('q')]) }}" class="btn btn-danger">
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="{{ route('dashboard.form.bpkh.export.csv', ['q' => request('q')]) }}">CSV (Summary)</a></li>
+                                                <li><a class="dropdown-item" href="{{ route('dashboard.form.bpkh.export.csv-detail', ['q' => request('q')]) }}" onclick="showExportLoading(event, this.href)">CSV Detail (dengan Metadata)</a></li>
+                                            </ul>
+                                            
+                                            <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown">
                                                 <i class="mdi mdi-file-pdf me-1"></i> Export PDF
-                                            </a>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="{{ route('dashboard.form.bpkh.export.pdf', ['q' => request('q')]) }}">PDF (Summary)</a></li>
+                                                <li><a class="dropdown-item" href="{{ route('dashboard.form.bpkh.export.pdf-detail', ['q' => request('q')]) }}" onclick="showExportLoading(event, this.href)">PDF Detail (dengan Metadata)</a></li>
+                                            </ul>
                                         </div>
                                     </div>
 
@@ -237,5 +251,29 @@ $(document).ready(function() {
         autoWidth: false
     });
 });
+
+// Export PDF Detail Loading
+function showExportLoading(event, url) {
+    event.preventDefault();
+    
+    Swal.fire({
+        title: 'Sedang Memproses...',
+        html: '<div class="mb-3"><i class="mdi mdi-loading mdi-spin" style="font-size: 48px; color: #f39c12;"></i></div>' +
+              '<p>Mohon tunggu, sedang membuat PDF Detail dengan metadata lengkap.</p>' +
+              '<p class="text-muted small">Proses ini mungkin memakan waktu beberapa detik tergantung jumlah data.</p>',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        showConfirmButton: false,
+        didOpen: () => {
+            // Trigger download directly
+            window.location.href = url;
+            
+            // Keep loading popup open longer to cover the save dialog
+            setTimeout(() => {
+                Swal.close();
+            }, 5000);
+        }
+    });
+}
 </script>
 @endpush

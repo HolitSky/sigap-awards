@@ -9,6 +9,7 @@ use App\Models\RecordUserAssesment;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use App\Exports\BpkhFormExport;
+use App\Exports\BpkhFormDetailExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -257,5 +258,62 @@ class BpkhFormController extends Controller
               ->setPaper('a4', 'landscape');
           
           return $pdf->download('form-bpkh-' . date('Y-m-d') . '.pdf');
+      }
+
+      // Export to PDF Detail (with full metadata)
+      public function exportPdfDetail(Request $request)
+      {
+          $term = $request->string('q')->toString();
+          $forms = BpkhForm::query()->search($term)
+              ->orderBy('nominasi', 'desc')
+              ->orderByRaw('nilai_bobot_total IS NULL ASC')
+              ->orderBy('nilai_bobot_total', 'desc')
+              ->orderBy('sheet_row_number','asc')
+              ->orderBy('respondent_id','asc')
+              ->get();
+          
+          $statusLabels = [
+              'pending'   => 'Pending',
+              'in_review' => 'Dalam Review',
+              'scored'    => 'Sudah Final',
+          ];
+          
+          $forms->transform(function ($form) use ($statusLabels) {
+              $form->status_label = $statusLabels[$form->status_nilai] ?? $form->status_nilai;
+              return $form;
+          });
+          
+          $pdf = Pdf::loadView('dashboard.pages.form.bpkh.pdf-detail', compact('forms'))
+              ->setPaper('a4', 'landscape');
+          
+          return $pdf->download('form-bpkh-detail-' . date('Y-m-d') . '.pdf');
+      }
+
+      // Export to Excel Detail (with metadata columns)
+      public function exportExcelDetail(Request $request)
+      {
+          $term = $request->string('q')->toString();
+          $query = BpkhForm::query()->search($term)
+              ->orderBy('nominasi', 'desc')
+              ->orderByRaw('nilai_bobot_total IS NULL ASC')
+              ->orderBy('nilai_bobot_total', 'desc')
+              ->orderBy('sheet_row_number','asc')
+              ->orderBy('respondent_id','asc');
+          
+          return Excel::download(new BpkhFormDetailExport($query), 'form-bpkh-detail-' . date('Y-m-d') . '.xlsx');
+      }
+
+      // Export to CSV Detail (with metadata columns)
+      public function exportCsvDetail(Request $request)
+      {
+          $term = $request->string('q')->toString();
+          $query = BpkhForm::query()->search($term)
+              ->orderBy('nominasi', 'desc')
+              ->orderByRaw('nilai_bobot_total IS NULL ASC')
+              ->orderBy('nilai_bobot_total', 'desc')
+              ->orderBy('sheet_row_number','asc')
+              ->orderBy('respondent_id','asc');
+          
+          return Excel::download(new BpkhFormDetailExport($query), 'form-bpkh-detail-' . date('Y-m-d') . '.csv');
       }
 }
