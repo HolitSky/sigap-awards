@@ -233,4 +233,34 @@ class PresentationSessionController extends Controller
         
         return back()->with('success', 'Konfigurasi sesi berhasil dihapus');
     }
+
+    /**
+     * Update session box order
+     */
+    public function updateSessionOrder(Request $request)
+    {
+        $request->validate([
+            'type' => 'required|in:bpkh,produsen',
+            'sessions' => 'required|array',
+            'sessions.*.id' => 'required|integer',
+            'sessions.*.order' => 'required|integer'
+        ]);
+
+        try {
+            foreach ($request->sessions as $session) {
+                PresentationSessionConfig::where('id', $session['id'])
+                    ->update(['order' => $session['order']]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Urutan sesi berhasil diupdate'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengupdate urutan sesi: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

@@ -25,6 +25,31 @@
     .drag-handle:active {
         cursor: grabbing;
     }
+    
+    /* Session box drag handle */
+    .session-drag-handle {
+        cursor: grab;
+        opacity: 0.8;
+        transition: opacity 0.2s;
+    }
+    .session-drag-handle:hover {
+        opacity: 1;
+    }
+    .session-drag-handle:active {
+        cursor: grabbing;
+    }
+    
+    /* Session box item */
+    .session-box-item {
+        transition: all 0.3s ease;
+    }
+    .session-box-item.sortable-ghost {
+        opacity: 0.5;
+    }
+    .session-box-item.sortable-drag {
+        opacity: 0.9;
+        transform: scale(1.02);
+    }
 </style>
 @endpush
 
@@ -81,15 +106,18 @@
                         </form>
 
                         <!-- Sessions Display -->
-                        <div class="row">
+                        <div class="row sortable-session-boxes-bpkh">
                             @foreach($bpkhSessionConfigs as $config)
                                 @php
                                     $sessionName = $config->session_name;
                                 @endphp
-                                <div class="col-md-4 mb-3">
+                                <div class="col-md-4 mb-3 session-box-item" data-session-id="{{ $config->id }}">
                                     <div class="card border">
                                         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                                            <h5 class="mb-0"><i class="mdi mdi-calendar-text me-2"></i>{{ $sessionName }}</h5>
+                                            <div class="d-flex align-items-center">
+                                                <i class="mdi mdi-drag-vertical session-drag-handle me-2" style="cursor: grab; font-size: 1.2rem;"></i>
+                                                <h5 class="mb-0"><i class="mdi mdi-calendar-text me-2"></i>{{ $sessionName }}</h5>
+                                            </div>
                                             <button type="button" class="btn btn-sm btn-light btn-delete-session-config" 
                                                     data-id="{{ $config->id }}"
                                                     data-name="{{ $sessionName }}">
@@ -99,10 +127,11 @@
                                         <div class="card-body">
                                             @if(isset($bpkhSessions[$sessionName]) && $bpkhSessions[$sessionName]->count() > 0)
                                                 <ul class="list-group list-group-flush sortable-bpkh" data-session="{{ $sessionName }}">
-                                                    @foreach($bpkhSessions[$sessionName] as $participant)
+                                                    @foreach($bpkhSessions[$sessionName] as $index => $participant)
                                                         <li class="list-group-item d-flex justify-content-between align-items-center px-0" data-id="{{ $participant->id }}">
                                                             <span>
                                                                 <i class="mdi mdi-drag-vertical drag-handle me-2"></i>
+                                                                <span class="badge bg-primary me-2">{{ $index + 1 }}</span>
                                                                 <i class="mdi mdi-account-circle text-info me-2"></i>
                                                                 {{ $participant->nama_bpkh }}
                                                             </span>
@@ -174,15 +203,18 @@
                         </form>
 
                         <!-- Sessions Display -->
-                        <div class="row">
+                        <div class="row sortable-session-boxes-produsen">
                             @foreach($produsenSessionConfigs as $config)
                                 @php
                                     $sessionName = $config->session_name;
                                 @endphp
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-6 mb-3 session-box-item" data-session-id="{{ $config->id }}">
                                     <div class="card border">
                                         <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
-                                            <h5 class="mb-0"><i class="mdi mdi-calendar-text me-2"></i>{{ $sessionName }}</h5>
+                                            <div class="d-flex align-items-center">
+                                                <i class="mdi mdi-drag-vertical session-drag-handle me-2" style="cursor: grab; font-size: 1.2rem;"></i>
+                                                <h5 class="mb-0"><i class="mdi mdi-calendar-text me-2"></i>{{ $sessionName }}</h5>
+                                            </div>
                                             <button type="button" class="btn btn-sm btn-light btn-delete-session-config" 
                                                     data-id="{{ $config->id }}"
                                                     data-name="{{ $sessionName }}">
@@ -192,10 +224,11 @@
                                         <div class="card-body">
                                             @if(isset($produsenSessions[$sessionName]) && $produsenSessions[$sessionName]->count() > 0)
                                                 <ul class="list-group list-group-flush sortable-produsen" data-session="{{ $sessionName }}">
-                                                    @foreach($produsenSessions[$sessionName] as $participant)
+                                                    @foreach($produsenSessions[$sessionName] as $index => $participant)
                                                         <li class="list-group-item d-flex justify-content-between align-items-center px-0" data-id="{{ $participant->id }}">
                                                             <span>
                                                                 <i class="mdi mdi-drag-vertical drag-handle me-2"></i>
+                                                                <span class="badge bg-success me-2">{{ $index + 1 }}</span>
                                                                 <i class="mdi mdi-office-building text-success me-2"></i>
                                                                 {{ $participant->nama_instansi }}
                                                             </span>
@@ -507,6 +540,16 @@ $(document).ready(function() {
         });
     });
 
+    // Function to update badge numbers
+    function updateBadgeNumbers(container) {
+        container.querySelectorAll('li').forEach(function(li, index) {
+            const badge = li.querySelector('.badge');
+            if (badge) {
+                badge.textContent = index + 1;
+            }
+        });
+    }
+
     // ===== Drag & Drop with SortableJS =====
     // Initialize Sortable for BPKH lists
     document.querySelectorAll('.sortable-bpkh').forEach(function(el) {
@@ -519,6 +562,12 @@ $(document).ready(function() {
             onEnd: function(evt) {
                 const sessionName = evt.to.dataset.session;
                 const items = [];
+                
+                // Update badge numbers in both source and target containers
+                updateBadgeNumbers(evt.to);
+                if (evt.from !== evt.to) {
+                    updateBadgeNumbers(evt.from);
+                }
                 
                 // Get all items in the new session
                 evt.to.querySelectorAll('li').forEach(function(li, index) {
@@ -579,6 +628,12 @@ $(document).ready(function() {
                 const sessionName = evt.to.dataset.session;
                 const items = [];
                 
+                // Update badge numbers in both source and target containers
+                updateBadgeNumbers(evt.to);
+                if (evt.from !== evt.to) {
+                    updateBadgeNumbers(evt.from);
+                }
+                
                 // Get all items in the new session
                 evt.to.querySelectorAll('li').forEach(function(li, index) {
                     items.push({
@@ -625,6 +680,115 @@ $(document).ready(function() {
             }
         });
     });
+
+    // ===== Drag & Drop for Session Boxes =====
+    // Initialize Sortable for BPKH session boxes
+    const bpkhSessionBoxContainer = document.querySelector('.sortable-session-boxes-bpkh');
+    if (bpkhSessionBoxContainer) {
+        new Sortable(bpkhSessionBoxContainer, {
+            animation: 200,
+            handle: '.session-drag-handle',
+            ghostClass: 'sortable-ghost',
+            dragClass: 'sortable-drag',
+            onEnd: function(evt) {
+                const sessionIds = [];
+                bpkhSessionBoxContainer.querySelectorAll('.session-box-item').forEach(function(item, index) {
+                    sessionIds.push({
+                        id: item.dataset.sessionId,
+                        order: index + 1
+                    });
+                });
+                
+                // Send AJAX request to update session box order
+                fetch('{{ route('dashboard.presentation-session.update-session-order') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        type: 'bpkh',
+                        sessions: sessionIds
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Urutan sesi berhasil diupdate',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: 'Terjadi kesalahan saat mengupdate urutan sesi'
+                    });
+                    setTimeout(() => location.reload(), 1500);
+                });
+            }
+        });
+    }
+
+    // Initialize Sortable for Produsen session boxes
+    const produsenSessionBoxContainer = document.querySelector('.sortable-session-boxes-produsen');
+    if (produsenSessionBoxContainer) {
+        new Sortable(produsenSessionBoxContainer, {
+            animation: 200,
+            handle: '.session-drag-handle',
+            ghostClass: 'sortable-ghost',
+            dragClass: 'sortable-drag',
+            onEnd: function(evt) {
+                const sessionIds = [];
+                produsenSessionBoxContainer.querySelectorAll('.session-box-item').forEach(function(item, index) {
+                    sessionIds.push({
+                        id: item.dataset.sessionId,
+                        order: index + 1
+                    });
+                });
+                
+                // Send AJAX request to update session box order
+                fetch('{{ route('dashboard.presentation-session.update-session-order') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        type: 'produsen',
+                        sessions: sessionIds
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Urutan sesi berhasil diupdate',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: 'Terjadi kesalahan saat mengupdate urutan sesi'
+                    });
+                    setTimeout(() => location.reload(), 1500);
+                });
+            }
+        });
+    }
 });
 </script>
 
