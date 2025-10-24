@@ -248,16 +248,16 @@
 
                             /* Main Menu Button */
                             .main-menu-button {
-                                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                background: linear-gradient(135deg, #8b9bff 0%, #9b7dd4 100%);
                                 color: white;
                                 border: none;
                                 padding: 20px 40px;
-                                border-radius: 16px;
+                                border-radius: 25px;
                                 font-size: 1.5em;
                                 font-weight: bold;
                                 cursor: pointer;
                                 transition: all 0.3s ease;
-                                box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+                                box-shadow: 0 4px 15px rgba(139, 155, 255, 0.25);
                                 display: flex;
                                 align-items: center;
                                 justify-content: center;
@@ -265,15 +265,24 @@
                                 width: 100%;
                                 max-width: 400px;
                                 margin: 0 auto;
+                                border: 2px solid rgba(255, 255, 255, 0.3);
+                                outline: none;
                             }
 
                             .main-menu-button:hover {
                                 transform: translateY(-3px);
-                                box-shadow: 0 12px 32px rgba(102, 126, 234, 0.4);
+                                box-shadow: 0 8px 25px rgba(139, 155, 255, 0.35);
+                                background: linear-gradient(135deg, #a5b5ff 0%, #b599e4 100%);
+                                border: 2px solid rgba(255, 255, 255, 0.5);
                             }
 
                             .main-menu-button:active {
                                 transform: translateY(-1px);
+                            }
+
+                            .main-menu-button:focus {
+                                outline: none;
+                                box-shadow: 0 4px 15px rgba(139, 155, 255, 0.25);
                             }
 
                             /* Menu Modal Styles */
@@ -447,6 +456,29 @@
                         </div>
                     </div>
 
+                    <!-- Modal Upload Poster -->
+                    <div id="uploadPosterModal" class="modal-overlay" style="display: none;">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>Upload Poster</h3>
+                                <span class="modal-close-poster">&times;</span>
+                            </div>
+                            <div class="modal-body">
+                                <p style="margin-bottom: 20px;">Pilih kategori untuk upload poster:</p>
+                                <div style="display: flex; flex-direction: column; gap: 15px;">
+                                    <a href="https://form.sigap-award.site/upload-poster-bpkh" target="_blank"
+                                       style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 30px; border-radius: 25px; text-decoration: none; font-weight: bold; text-align: center; transition: all 0.3s ease;">
+                                        🖼️ BPKH
+                                    </a>
+                                    <a href="https://form.sigap-award.site/upload-poster-produsen" target="_blank"
+                                       style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 15px 30px; border-radius: 25px; text-decoration: none; font-weight: bold; text-align: center; transition: all 0.3s ease;">
+                                        🖼️ Produsen
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Modal Upload Presentasi -->
                     <div id="uploadPresentasiModal" class="modal-overlay" style="display: none;">
                         <div class="modal-content">
@@ -478,22 +510,26 @@
                                 <button class="menu-modal-close" onclick="closeMenuModal()">&times;</button>
                             </div>
                             <div class="menu-list">
-                                <a href="{{ route('announcement') }}" class="menu-item">
-                                    <span class="menu-item-icon">📢</span>
-                                    <span>Pengumuman: List Peserta Tahap Presentasi</span>
+                                 <a href="javascript:void(0);" onclick="closeMenuModal(); showUploadPosterModal();" class="menu-item">
+                                    <span class="menu-item-icon">🖼️</span>
+                                    <span>Upload Poster SIGAP Award 2025</span>
                                 </a>
-                                {{-- <a href="{{ route('result-presentation') }}" class="menu-item">
+                                <a href="{{ route('result-presentation') }}" class="menu-item">
                                     <span class="menu-item-icon">📑</span>
                                     <span>Rekapan Presentasi Peserta</span>
-                                </a> --}}
+                                </a>
                                 <a href="{{ route('cv-juri') }}" class="menu-item">
                                     <span class="menu-item-icon">👨‍⚖️</span>
                                     <span>Lihat CV Juri SIGAP Award 2025</span>
                                 </a>
-                                <a href="javascript:void(0);" onclick="closeMenuModal(); showUploadPresentasiModal();" class="menu-item">
+                                <a href="{{ route('announcement') }}" class="menu-item">
+                                    <span class="menu-item-icon">📢</span>
+                                    <span>Pengumuman: List Peserta Tahap Presentasi</span>
+                                </a>
+                                {{-- <a href="javascript:void(0);" onclick="closeMenuModal(); showUploadPresentasiModal();" class="menu-item">
                                     <span class="menu-item-icon">📤</span>
                                     <span>Upload Presentasi SIGAP Award 2025</span>
-                                </a>
+                                </a> --}}
                             </div>
                         </div>
                     </div>
@@ -600,6 +636,36 @@
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' && modal.classList.contains('show')) {
                 hideModal();
+            }
+        });
+
+        // Upload Poster Modal Functions
+        const uploadPosterModal = document.getElementById('uploadPosterModal');
+        const closePosterBtn = document.querySelector('.modal-close-poster');
+
+        window.showUploadPosterModal = function() {
+            uploadPosterModal.style.display = 'flex';
+            setTimeout(() => {
+                uploadPosterModal.classList.add('show');
+            }, 10);
+        }
+
+        window.hideUploadPosterModal = function() {
+            uploadPosterModal.classList.remove('show');
+            setTimeout(() => {
+                uploadPosterModal.style.display = 'none';
+            }, 300);
+        }
+
+        // Close poster modal events
+        if (closePosterBtn) {
+            closePosterBtn.addEventListener('click', hideUploadPosterModal);
+        }
+
+        // Close poster modal when clicking outside
+        uploadPosterModal.addEventListener('click', function(e) {
+            if (e.target === uploadPosterModal) {
+                hideUploadPosterModal();
             }
         });
 
