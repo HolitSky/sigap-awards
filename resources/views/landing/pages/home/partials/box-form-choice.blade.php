@@ -514,9 +514,13 @@
                                     <span class="menu-item-icon">🖼️</span>
                                     <span>Upload Poster SIGAP Award 2025</span>
                                 </a>
+                                <a href="{{ route('poster-criteria') }}" class="menu-item">
+                                    <span class="menu-item-icon">📋</span>
+                                    <span>Kriteria Poster SIGAP Award 2025</span>
+                                </a>
                                 <a href="{{ route('result-presentation') }}" class="menu-item">
                                     <span class="menu-item-icon">📑</span>
-                                    <span>Rekapan Presentasi Peserta</span>
+                                    <span>Rekapan Presentasi Peserta Sigap Award 2025</span>
                                 </a>
                                 <a href="{{ route('cv-juri') }}" class="menu-item">
                                     <span class="menu-item-icon">👨‍⚖️</span>

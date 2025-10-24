@@ -99,4 +99,16 @@ class HomeController extends Controller
 
         return view('landing.pages.home.cv-juri', compact('launchStart', 'launchFinish', 'pdfPath'));
     }
+
+    public function posterCriteria()
+    {
+        // Konfigurasi launch date dari Controller
+        $launchStart = Carbon::create(2025, 10, 3, 0, 0, 0);
+        $launchFinish = Carbon::create(2025, 10, 17, 0, 0, 0);
+
+        // Path ke PDF file
+        $pdfPath = 'sigap-assets/pdf/Kriteria Poster SIGAP Award 2025.pdf';
+
+        return view('landing.pages.home.poster-criteria', compact('launchStart', 'launchFinish', 'pdfPath'));
+    }
 }

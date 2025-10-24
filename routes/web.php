@@ -27,6 +27,8 @@ Route::get('/result-presentation', [HomeController::class, 'resultPresentation']
 
 Route::get('/cv-juri', [HomeController::class, 'cvJuri'])->name('cv-juri');
 
+Route::get('/poster-criteria', [HomeController::class, 'posterCriteria'])->name('poster-criteria');
+
 // Auth Routes (Guest only - redirect to dashboard if already logged in)
 Route::middleware(['guest'])->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
