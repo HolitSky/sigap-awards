@@ -482,10 +482,10 @@
                                     <span class="menu-item-icon">📢</span>
                                     <span>Pengumuman: List Peserta Tahap Presentasi</span>
                                 </a>
-                                <a href="{{ route('result-presentation') }}" class="menu-item">
+                                {{-- <a href="{{ route('result-presentation') }}" class="menu-item">
                                     <span class="menu-item-icon">📑</span>
                                     <span>Rekapan Presentasi Peserta</span>
-                                </a>
+                                </a> --}}
                                 <a href="{{ route('cv-juri') }}" class="menu-item">
                                     <span class="menu-item-icon">👨‍⚖️</span>
                                     <span>Lihat CV Juri SIGAP Award 2025</span>
