@@ -21,6 +21,9 @@ Route::get('/thanks-for-submit', [HomeController::class, 'thanksForSubmit'])->na
 
 Route::get('/announcement', [HomeController::class, 'announcement'])->name('announcement');
 
+// Result of presentation (Google Sheets tables)
+Route::get('/result-presentation', [HomeController::class, 'resultPresentation'])->name('result-presentation');
+
 Route::get('/cv-juri', [HomeController::class, 'cvJuri'])->name('cv-juri');
 
 // Auth Routes (Guest only - redirect to dashboard if already logged in)

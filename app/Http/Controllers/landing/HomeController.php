@@ -80,6 +80,14 @@ class HomeController extends Controller
         return view('landing.pages.home.announcement', compact('announcements', 'launchStart', 'launchFinish'));
     }
 
+    public function resultPresentation()
+    {
+        // Opsional: tetap konsisten dengan halaman lain yang pakai launch date
+        $launchStart = Carbon::create(2025, 10, 3, 0, 0, 0);
+        $launchFinish = Carbon::create(2025, 10, 17, 0, 0, 0);
+        return view('landing.pages.home.result-presentation', compact('launchStart', 'launchFinish'));
+    }
+
     public function cvJuri()
     {
         // Konfigurasi launch date dari Controller
