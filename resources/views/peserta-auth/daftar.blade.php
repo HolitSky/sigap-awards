@@ -348,6 +348,28 @@
                                 </div>
                             </div>
 
+                            <!-- CAPTCHA -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="mb-3">
+                                        <label class="form-label">CAPTCHA <span class="text-danger">*</span></label>
+                                        <div class="d-flex align-items-center gap-2 mb-2">
+                                            <img src="{{ session('peserta_captcha_image') }}" alt="CAPTCHA" id="captchaImage" 
+                                                 style="border: 1px solid rgba(255,255,255,0.3); border-radius: 4px;">
+                                            <button type="button" class="btn btn-light btn-sm" onclick="refreshCaptcha()" title="Refresh CAPTCHA">
+                                                <i class="mdi mdi-refresh"></i>
+                                            </button>
+                                        </div>
+                                        <input type="text" class="form-control @error('captcha') is-invalid @enderror" 
+                                               name="captcha" placeholder="Masukkan hasil perhitungan" 
+                                               autocomplete="off" required>
+                                        @error('captcha')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="mt-4 d-grid">
                                 <button class="btn btn-primary waves-effect waves-light" type="submit">
                                     Daftar Sekarang
@@ -493,6 +515,18 @@
         fileInput.value = '';
         fileName.textContent = 'Belum ada file dipilih';
         previewContainer.style.display = 'none';
+    }
+
+    // Refresh CAPTCHA function
+    function refreshCaptcha() {
+        fetch('{{ route("peserta.refresh-captcha") }}')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('captchaImage').src = data.captcha;
+            })
+            .catch(error => {
+                console.error('Error refreshing CAPTCHA:', error);
+            });
     }
 </script>
 @endpush

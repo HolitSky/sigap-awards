@@ -43,6 +43,7 @@ Route::middleware(['guest:peserta'])->prefix('peserta')->group(function () {
     Route::post('/login', [PesertaAuthController::class, 'login'])->name('peserta.login.post');
     Route::get('/daftar', [PesertaAuthController::class, 'showRegisterForm'])->name('peserta.register');
     Route::post('/daftar', [PesertaAuthController::class, 'register'])->name('peserta.register.post');
+    Route::get('/refresh-captcha', [PesertaAuthController::class, 'refreshCaptcha'])->name('peserta.refresh-captcha');
 });
 
 // Peserta Logout route (authenticated peserta only)

@@ -181,6 +181,24 @@
                                 @enderror
                             </div>
 
+                            <!-- CAPTCHA -->
+                            <div class="mb-3">
+                                <label class="form-label">CAPTCHA <span class="text-danger">*</span></label>
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <img src="{{ session('peserta_captcha_image') }}" alt="CAPTCHA" id="captchaImage" 
+                                         style="border: 1px solid rgba(255,255,255,0.3); border-radius: 4px;">
+                                    <button type="button" class="btn btn-light btn-sm" onclick="refreshCaptcha()" title="Refresh CAPTCHA">
+                                        <i class="mdi mdi-refresh"></i>
+                                    </button>
+                                </div>
+                                <input type="text" class="form-control @error('captcha') is-invalid @enderror" 
+                                       name="captcha" placeholder="Masukkan hasil perhitungan" 
+                                       autocomplete="off" required>
+                                @error('captcha')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+
                             <div class="form-check mb-3">
                                 <input class="form-check-input" type="checkbox" id="remember" name="remember">
                                 <label class="form-check-label" for="remember">
@@ -204,10 +222,42 @@
             </div>
             <div class="mt-5 text-center">
                 <div>
-                    <p class="copyright-text">© <script>document.write(new Date().getFullYear())</script> IPSDH - Kementerian Kehutanan | All Rights Reserved</p>
+                    <p class="copyright-text">  <script>document.write(new Date().getFullYear())</script> IPSDH - Kementerian Kehutanan | All Rights Reserved</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    // Toggle password visibility
+    document.getElementById('togglePasswordBtn').addEventListener('click', function() {
+        const passwordInput = document.querySelector('input[name="password"]');
+        const icon = this.querySelector('i');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.remove('mdi-eye-outline');
+            icon.classList.add('mdi-eye-off-outline');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.remove('mdi-eye-off-outline');
+            icon.classList.add('mdi-eye-outline');
+        }
+    });
+
+    // Refresh CAPTCHA function
+    function refreshCaptcha() {
+        fetch('{{ route("peserta.refresh-captcha") }}')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('captchaImage').src = data.captcha;
+            })
+            .catch(error => {
+                console.error('Error refreshing CAPTCHA:', error);
+            });
+    }
+</script>
+@endpush
 @endsection
