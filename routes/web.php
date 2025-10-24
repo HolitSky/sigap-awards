@@ -14,6 +14,7 @@ use App\Http\Controllers\dashboard\ProdusenPresentationController;
 use App\Http\Controllers\dashboard\BpkhExhibitionController;
 use App\Http\Controllers\dashboard\ProdusenExhibitionController;
 use App\Http\Controllers\dashboard\PresentationSessionController;
+use App\Http\Controllers\DashboardPeserta\AuthController as PesertaAuthController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -35,6 +36,22 @@ Route::middleware(['guest'])->group(function () {
 
 // Logout route (authenticated users only)
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+
+// Peserta Auth Routes (Guest only - redirect if already logged in)
+Route::middleware(['guest:peserta'])->prefix('peserta')->group(function () {
+    Route::get('/login', [PesertaAuthController::class, 'showLoginForm'])->name('peserta.login');
+    Route::post('/login', [PesertaAuthController::class, 'login'])->name('peserta.login.post');
+    Route::get('/daftar', [PesertaAuthController::class, 'showRegisterForm'])->name('peserta.register');
+    Route::post('/daftar', [PesertaAuthController::class, 'register'])->name('peserta.register.post');
+});
+
+// Peserta Logout route (authenticated peserta only)
+Route::post('/peserta/logout', [PesertaAuthController::class, 'logout'])->name('peserta.logout')->middleware('auth:peserta');
+
+// Peserta Dashboard Routes (Protected with peserta guard)
+Route::middleware(['auth:peserta'])->prefix('peserta')->group(function () {
+    Route::get('/dashboard', [PesertaAuthController::class, 'dashboard'])->name('peserta.dashboard');
+});
 
 // Dashboard Routes (Protected)
 Route::middleware(['auth'])->group(function () {

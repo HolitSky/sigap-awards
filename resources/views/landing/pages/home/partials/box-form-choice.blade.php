@@ -7,7 +7,7 @@
                                 backdrop-filter: blur(5px);
                                 -webkit-backdrop-filter: blur(5px);
                                 border: 1px solid rgba(255, 255, 255, 0.3);
-                                padding: 20px;
+                                padding: 10px;
                                 margin: 20px 0;
                                 text-align: center;
                                 transition: transform 0.3s ease;
@@ -28,9 +28,9 @@
                                 justify-content: center;
                                 align-items: center;
                                 gap: 20px;
-                                margin-bottom: 1px;
+                                margin-bottom: 20px;
                                 position: relative;
-                                bottom: 7%;
+                                flex-shrink: 0;
                             }
                             .logo-container img {
                                 height: 100px;
@@ -40,13 +40,52 @@
                             }
                             .glass-container {
                                 position: relative;
-                                bottom: 10%;
+                                bottom: 0;
+                                max-height: calc(100% - 140px);
+                                overflow-y: auto;
+                                overflow-x: hidden;
+                                padding-right: 5px;
+                                padding-bottom: 10px;
+                                flex: 1;
+                                /* Custom scrollbar */
+                                scrollbar-width: thin;
+                                scrollbar-color: rgba(255, 255, 255, 0.5) transparent;
+                            }
+
+                            /* Webkit scrollbar styling */
+                            .glass-container::-webkit-scrollbar {
+                                width: 6px;
+                            }
+
+                            .glass-container::-webkit-scrollbar-track {
+                                background: rgba(255, 255, 255, 0.1);
+                                border-radius: 10px;
+                            }
+
+                            .glass-container::-webkit-scrollbar-thumb {
+                                background: rgba(255, 255, 255, 0.5);
+                                border-radius: 10px;
+                            }
+
+                            .glass-container::-webkit-scrollbar-thumb:hover {
+                                background: rgba(255, 255, 255, 0.7);
                             }
 
                             .notify-user__content {
                                 max-width: 100%;
                                 overflow: hidden;
                                 box-sizing: border-box;
+                                max-height: calc(100% - 16px);
+                                display: flex;
+                                flex-direction: column;
+                                padding: 3em 4em !important;
+                                position: relative;
+                            }
+
+                            /* Ensure content stays within ::after border */
+                            .notify-user__content > * {
+                                position: relative;
+                                z-index: 1;
                             }
                             @media (max-width: 1200px) {
                                     .glass-cards-container {
@@ -58,6 +97,9 @@
                                     font-size: 1.2em;
                                     padding: 10px !important;
                                 }
+                                .notify-user__content {
+                                    padding: 2.5em 3em !important;
+                                }
                             }
 
                             @media (max-width: 920px) {
@@ -68,11 +110,30 @@
                                     font-size: 1.2em;
                                     padding: 10px !important;
                                 }
+                                .notify-user__content {
+                                    padding: 2em 2.5em !important;
+                                }
+                                .logo-container img {
+                                    height: 80px;
+                                }
                             }
 
                             @media (max-width: 420px) {
                                     .round-player {
                                         top: 60% !important;
+                                    }
+                                    .notify-user__content {
+                                        padding: 1.5em 2em !important;
+                                    }
+                                    .logo-container {
+                                        margin-bottom: 15px;
+                                    }
+                                    .logo-container img {
+                                        height: 60px;
+                                    }
+                                    .glass-card a {
+                                        font-size: 1em;
+                                        padding: 12px !important;
                                     }
                             }
 
@@ -184,6 +245,164 @@
                             .modal-btn-open:hover {
                                 box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
                             }
+
+                            /* Main Menu Button */
+                            .main-menu-button {
+                                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                color: white;
+                                border: none;
+                                padding: 20px 40px;
+                                border-radius: 16px;
+                                font-size: 1.5em;
+                                font-weight: bold;
+                                cursor: pointer;
+                                transition: all 0.3s ease;
+                                box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                gap: 12px;
+                                width: 100%;
+                                max-width: 400px;
+                                margin: 0 auto;
+                            }
+
+                            .main-menu-button:hover {
+                                transform: translateY(-3px);
+                                box-shadow: 0 12px 32px rgba(102, 126, 234, 0.4);
+                            }
+
+                            .main-menu-button:active {
+                                transform: translateY(-1px);
+                            }
+
+                            /* Menu Modal Styles */
+                            .menu-modal {
+                                position: fixed;
+                                top: 0;
+                                left: 0;
+                                width: 100%;
+                                height: 100%;
+                                background: rgba(0, 0, 0, 0.7);
+                                backdrop-filter: blur(8px);
+                                z-index: 10000;
+                                display: none;
+                                justify-content: center;
+                                align-items: center;
+                                opacity: 0;
+                                transition: opacity 0.3s ease;
+                            }
+
+                            .menu-modal.show {
+                                display: flex;
+                                opacity: 1;
+                            }
+
+                            .menu-modal-content {
+                                background: rgba(255, 255, 255, 0.95);
+                                border-radius: 20px;
+                                padding: 32px;
+                                max-width: 600px;
+                                width: 90%;
+                                max-height: 80vh;
+                                overflow-y: auto;
+                                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                                transform: scale(0.9);
+                                transition: transform 0.3s ease;
+                            }
+
+                            .menu-modal.show .menu-modal-content {
+                                transform: scale(1);
+                            }
+
+                            .menu-modal-header {
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                margin-bottom: 24px;
+                                padding-bottom: 16px;
+                                border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+                            }
+
+                            .menu-modal-title {
+                                font-size: 1.8em;
+                                font-weight: bold;
+                                color: #333;
+                                margin: 0;
+                            }
+
+                            .menu-modal-close {
+                                background: none;
+                                border: none;
+                                font-size: 32px;
+                                color: #666;
+                                cursor: pointer;
+                                width: 40px;
+                                height: 40px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                border-radius: 50%;
+                                transition: all 0.3s ease;
+                            }
+
+                            .menu-modal-close:hover {
+                                background: rgba(0, 0, 0, 0.1);
+                                color: #333;
+                            }
+
+                            .menu-list {
+                                display: flex;
+                                flex-direction: column;
+                                gap: 12px;
+                            }
+
+                            .menu-item {
+                                background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+                                border: 2px solid rgba(102, 126, 234, 0.2);
+                                border-radius: 12px;
+                                padding: 16px 20px;
+                                text-decoration: none;
+                                color: #333;
+                                font-size: 1.1em;
+                                font-weight: 600;
+                                transition: all 0.3s ease;
+                                display: flex;
+                                align-items: center;
+                                gap: 12px;
+                            }
+
+                            .menu-item:hover {
+                                background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+                                border-color: rgba(102, 126, 234, 0.4);
+                                transform: translateX(8px);
+                            }
+
+                            .menu-item-icon {
+                                font-size: 1.5em;
+                                flex-shrink: 0;
+                            }
+
+                            @media (max-width: 768px) {
+                                .main-menu-button {
+                                    font-size: 1.2em;
+                                    padding: 16px 32px;
+                                }
+
+                                .menu-modal-content {
+                                    padding: 24px;
+                                    width: 95%;
+                                }
+
+                                .menu-modal-title {
+                                    font-size: 1.4em;
+                                }
+
+                                .menu-item {
+                                    font-size: 1em;
+                                    padding: 14px 16px;
+                                }
+                            }
                         </style>
 @endpush
 
@@ -203,51 +422,11 @@
                             <img src="{{ asset('sigap-assets/images/m4cr-logo.png') }}" alt="Logo M4CR">
                         </div>
                         <div class="glass-container">
-                        <!-- Start Menu Produsen Data Geospasial -->
-
-                        {{-- <div class="glass-card">
-                            <a href="javascript:void(0);">
-                                Form Produsen Data Geospasial
-                            </a>
-                        </div> --}}
-
-                        <!-- End Menu Produsen Data Geospasial -->
-
-                        <!-- Start Menu BPKH -->
-
-                        {{-- <div class="glass-card">
-                            <a href="javascript:void(0);">
-                                Form Balai Pemantapan Kawasan Hutan (BPKH)
-                            </a>
-                        </div> --}}
-
-                         <!-- End Menu BPKH -->
-
-
-                         <!-- Start Menu Pengumuman List Masuk Tahap Presentasi -->
-                         <div class="glass-card">
-                            <a href="{{ route('announcement') }}">
-                                Pengumuman : List Peserta Tahap Presentasi
-                            </a>
-                        </div>
-                        <!-- End Menu Pengumuman List Masuk Tahap Presentasi -->
-
-                         <!-- Start Menu CV Juri -->
-                         <div class="glass-card">
-                            <a href="{{ route('cv-juri') }}">
-                                Lihat CV Juri SIGAP Award 2025
-                            </a>
-                        </div>
-                        <!-- End Menu CV Juri -->
-
-                        <!-- Start Menu Upload Presentasi -->
-                         <div class="glass-card">
-                            <a href="javascript:void(0);" onclick="showUploadPresentasiModal()">
-                                Upload Presentasi SIGAP Award 2025
-                            </a>
-                        </div>
-                        <!-- End Menu Upload Presentasi -->
-
+                            <!-- Main Menu Button -->
+                            <button class="main-menu-button" onclick="showMenuModal()">
+                                <span class="menu-item-icon">📋</span>
+                                <span>Menu SIGAP Award 2025</span>
+                            </button>
                         </div>
                     </div>
 
@@ -287,6 +466,34 @@
                                         🏭 Produsen
                                     </a>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Menu Modal -->
+                    <div id="menuModal" class="menu-modal">
+                        <div class="menu-modal-content">
+                            <div class="menu-modal-header">
+                                <h3 class="menu-modal-title">Menu SIGAP Award 2025</h3>
+                                <button class="menu-modal-close" onclick="closeMenuModal()">&times;</button>
+                            </div>
+                            <div class="menu-list">
+                                <a href="{{ route('announcement') }}" class="menu-item">
+                                    <span class="menu-item-icon">📢</span>
+                                    <span>Pengumuman: List Peserta Tahap Presentasi</span>
+                                </a>
+                                <a href="{{ route('result-presentation') }}" class="menu-item">
+                                    <span class="menu-item-icon">📑</span>
+                                    <span>Rekapan Presentasi Peserta</span>
+                                </a>
+                                <a href="{{ route('cv-juri') }}" class="menu-item">
+                                    <span class="menu-item-icon">👨‍⚖️</span>
+                                    <span>Lihat CV Juri SIGAP Award 2025</span>
+                                </a>
+                                <a href="javascript:void(0);" onclick="closeMenuModal(); showUploadPresentasiModal();" class="menu-item">
+                                    <span class="menu-item-icon">📤</span>
+                                    <span>Upload Presentasi SIGAP Award 2025</span>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -430,6 +637,33 @@
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' && uploadModal.classList.contains('show')) {
                 hideUploadPresentasiModal();
+            }
+        });
+
+        // Menu Modal Functions
+        const menuModal = document.getElementById('menuModal');
+
+        window.showMenuModal = function() {
+            menuModal.classList.add('show');
+            document.body.style.overflow = 'hidden'; // Prevent background scroll
+        }
+
+        window.closeMenuModal = function() {
+            menuModal.classList.remove('show');
+            document.body.style.overflow = ''; // Restore scroll
+        }
+
+        // Close menu modal when clicking outside
+        menuModal.addEventListener('click', function(e) {
+            if (e.target === menuModal) {
+                closeMenuModal();
+            }
+        });
+
+        // Close menu modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && menuModal.classList.contains('show')) {
+                closeMenuModal();
             }
         });
     });

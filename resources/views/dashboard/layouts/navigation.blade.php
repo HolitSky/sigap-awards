@@ -130,6 +130,14 @@
                     </a>
                 </li>
 
+
+                <li>
+                    <a href="javascript:void(0);" class="waves-effect">
+                        <i class="mdi mdi-calendar-clock"></i>
+                        <span key="t-forms">Manajemen Tanggal Ticket</span>
+                    </a>
+                </li>
+
             </ul>
             @endcan
 
