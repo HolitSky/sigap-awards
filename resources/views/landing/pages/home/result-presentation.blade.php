@@ -367,6 +367,127 @@
     .sheet-link:hover { text-decoration: underline; }
     td.col-no { width: 56px; }
     td.is-empty, td.loading { text-align: center; color: rgba(255,255,255,0.8); font-style: italic; }
+
+    /* Mobile expand button - hidden by default on desktop */
+    .expand-btn {
+        display: none !important;
+        background: var(--sigap-color);
+        color: white;
+        border: none;
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        line-height: 1;
+        transition: all 0.3s ease;
+        padding: 0;
+        flex-shrink: 0;
+    }
+    .expand-btn:hover {
+        opacity: 0.8;
+    }
+    .expand-btn.expanded {
+        background: #e74c3c;
+    }
+
+    /* Mobile hidden columns - visible by default on desktop */
+    .mobile-hidden {
+        display: table-cell;
+    }
+
+    /* Mobile responsive table */
+    @media (max-width: 768px) {
+        .table-wrapper {
+            overflow-x: visible;
+        }
+
+        table.sheet-table {
+            display: block;
+        }
+
+        table.sheet-table thead {
+            display: none;
+        }
+
+        table.sheet-table tbody {
+            display: block;
+        }
+
+        table.sheet-table tbody tr {
+            display: block;
+            margin-bottom: 16px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 52px 12px 12px 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+        }
+
+        table.sheet-table tbody tr:hover {
+            background: rgba(255,255,255,0.08);
+        }
+
+        table.sheet-table tbody td {
+            display: block;
+            padding: 8px 0;
+            border: none;
+            text-align: left;
+        }
+
+        table.sheet-table tbody td:before {
+            content: attr(data-label);
+            font-weight: 700;
+            display: block;
+            margin-bottom: 4px;
+            color: rgba(255,255,255,0.7);
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        table.sheet-table tbody td.col-no {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            background: var(--sigap-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        table.sheet-table tbody td.col-no:before {
+            display: none;
+        }
+
+        /* Hidden columns by default on mobile */
+        .mobile-hidden {
+            display: none !important;
+        }
+
+        tr.expanded .mobile-hidden {
+            display: block !important;
+        }
+
+        .expand-btn {
+            display: inline-block !important;
+            position: absolute;
+            top: 12px;
+            left: 12px;
+        }
+
+        /* Remove expand button from empty/loading rows */
+        table.sheet-table tbody tr:has(.loading) .expand-btn,
+        table.sheet-table tbody tr:has(.is-empty) .expand-btn {
+            display: none !important;
+        }
+    }
 </style>
 @endpush
 
@@ -478,17 +599,34 @@ document.addEventListener('DOMContentLoaded', function () {
             count++;
 
             const tr = document.createElement('tr');
+            
+            // Expand button for mobile
+            const expandBtn = document.createElement('button');
+            expandBtn.className = 'expand-btn';
+            expandBtn.innerHTML = '+';
+            expandBtn.onclick = function() {
+                tr.classList.toggle('expanded');
+                expandBtn.classList.toggle('expanded');
+                expandBtn.innerHTML = tr.classList.contains('expanded') ? '−' : '+';
+            };
+            tr.appendChild(expandBtn);
+
             const tdNo = document.createElement('td');
             tdNo.className = 'col-no';
             tdNo.textContent = String(count);
 
             const tdName = document.createElement('td');
             tdName.textContent = name;
+            tdName.setAttribute('data-label', mapping.nameKey);
 
             const tdOfficer = document.createElement('td');
+            tdOfficer.className = 'mobile-hidden';
             tdOfficer.textContent = officer;
+            tdOfficer.setAttribute('data-label', mapping.officerKey);
 
             const tdFile = document.createElement('td');
+            tdFile.className = 'mobile-hidden';
+            tdFile.setAttribute('data-label', mapping.fileKey);
             if (file && /^https?:\/\//i.test(file)) {
                 const a = document.createElement('a');
                 a.href = file; a.target = '_blank'; a.rel = 'noopener';
