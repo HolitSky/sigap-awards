@@ -566,9 +566,39 @@ COMPLETE ASSESSMENT FLOW:
    - Archive data
 
 ================================================================================
+11. CHANGELOG (RECENT UPDATES)
+================================================================================
+
+DATE: October 24–25, 2025
+
+1) Landing Menu & UX
+- Added "Upload Poster SIGAP Award 2025" single entry with modal selector (BPKH/Produsen)
+- Updated main menu button styling (lighter gradient, soft shadow, rounded border, improved hover)
+
+2) Poster Criteria Page
+- Halaman baru "Kriteria Poster SIGAP Award 2025"
+- Viewer PDF interaktif (prev/next, zoom, download)
+- Otomatis menyesuaikan tinggi 1 halaman (tanpa scroll), responsif
+
+3) Result Presentation (Public) – Mobile Responsive Table
+- Mobile breakpoint (≤768px) converts rows into cards
+- Default shows only key column (Nama); other columns hidden by default
+- Added expandable (+/−) button to reveal hidden columns (Petugas, File Presentasi)
+- Badge number positioned at top-right; proper spacing to avoid overlap
+
+4) Registration Validation (Peserta)
+- Conditional validation for `bpkh_id` and `produsen_id` based on selected `kategori`
+- Prevents invalid exists-check when the other field is empty
+
+5) Minor Content Updates
+- Menu order and labels adjusted (e.g., Rekapan Presentasi label)
+
+Notes: All changes are backward compatible and affect only landing pages and peserta registration validation.
+
+================================================================================
 END OF DOCUMENTATION
 ================================================================================
 
-Last Updated: October 21, 2025
-Version: 1.0
+Last Updated: October 25, 2025
+Version: 1.1
 Application: SIGAP Awards Assessment System
