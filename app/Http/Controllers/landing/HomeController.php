@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\landing;
 
 use App\Http\Controllers\Controller;
+use App\Models\LaunchDate;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -12,12 +13,16 @@ class HomeController extends Controller
     {
         // Konfigurasi launch date dari Controller
         $launchStart = Carbon::create(2025, 10, 3, 0, 0, 0);
-        $launchFinish = Carbon::create(2025, 10, 17, 0, 0, 0);
+        $launchFinish = Carbon::create(2025, 11, 20, 0, 0, 0);
 
-        // Konfigurasi range date untuk Tahap Presentasi
-        $rangeDate = true; // Set true untuk menampilkan range tanggal
-        $rangeDateStart = Carbon::create(2025, 10, 23, 0, 0, 0); // Tanggal mulai presentasi
-        $rangeDateEnd = Carbon::create(2025, 10, 24, 0, 0, 0);   // Tanggal selesai presentasi
+        // Get active launch date from database (dynamic)
+        $launchDate = LaunchDate::getActiveLaunchDate();
+        
+        // Fallback to default if no active launch date
+        $rangeDate = $launchDate ? $launchDate->is_range_date : false;
+        $rangeDateStart = $launchDate && $launchDate->is_range_date ? $launchDate->start_date : Carbon::create(2025, 10, 23, 0, 0, 0);
+        $rangeDateEnd = $launchDate && $launchDate->is_range_date ? $launchDate->end_date : Carbon::create(2025, 10, 24, 0, 0, 0);
+        $singleDate = $launchDate && !$launchDate->is_range_date ? $launchDate->single_date : null;
 
         // Load team data dari JSON
         $teamDataPath = public_path('sigap-assets/static/team-data.json');
@@ -27,7 +32,7 @@ class HomeController extends Controller
         $journalDataPath = public_path('sigap-assets/static/journal-data.json');
         $journalData = json_decode(file_get_contents($journalDataPath), true);
 
-        return view('landing.pages.home.index', compact('launchStart', 'launchFinish', 'teamData', 'journalData', 'rangeDate', 'rangeDateStart', 'rangeDateEnd'));
+        return view('landing.pages.home.index', compact('launchStart', 'launchFinish', 'teamData', 'journalData', 'rangeDate', 'rangeDateStart', 'rangeDateEnd', 'singleDate', 'launchDate'));
     }
 
     public function voteMenu(Request $request)

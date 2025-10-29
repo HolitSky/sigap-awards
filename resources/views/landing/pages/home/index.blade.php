@@ -165,7 +165,8 @@
         finishDate: @json(optional($launchFinish)->locale('en')->isoFormat('MMMM D, YYYY 00:00:00')) ?? 'October 10, 2025 00:00:00',
         rangeDate: {{ isset($rangeDate) && $rangeDate ? 'true' : 'false' }},
         rangeDateStart: @json(optional($rangeDateStart)->locale('en')->isoFormat('MMMM D, YYYY 00:00:00')) ?? 'October 22, 2025 00:00:00',
-        rangeDateEnd: @json(optional($rangeDateEnd)->locale('en')->isoFormat('MMMM D, YYYY 00:00:00')) ?? 'October 24, 2025 00:00:00'
+        rangeDateEnd: @json(optional($rangeDateEnd)->locale('en')->isoFormat('MMMM D, YYYY 00:00:00')) ?? 'October 24, 2025 00:00:00',
+        launchTitle: @json(optional($launchDate)->title) ?? 'Penganugerahan Sigap Award'
     };
     
     console.log('LAUNCH_DATES config:', window.LAUNCH_DATES);
@@ -190,7 +191,7 @@
                     
                     // Only update if current value is wrong
                     if (calendarDate.textContent.trim() !== displayDate) {
-                        calendarLabel.textContent = 'Tahap Presentasi';
+                        calendarLabel.textContent = window.LAUNCH_DATES.launchTitle || 'Penganugerahan Sigap Award';
                         calendarDate.textContent = displayDate;
                         calendarMonth.textContent = monthName.charAt(0).toUpperCase() + monthName.slice(1);
                         calendarDate.setAttribute('datetime', isoDate);

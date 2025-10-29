@@ -131,14 +131,24 @@
                 </li>
 
 
-                <li>
-                    <a href="javascript:void(0);" class="waves-effect">
-                        <i class="mdi mdi-calendar-clock"></i>
-                        <span key="t-forms">Manajemen Tanggal Ticket</span>
+            </ul>
+
+
+             <ul class="metismenu list-unstyled" id="side-menu">
+                <li class="menu-title" key="t-menu">CMS</li>
+
+
+                 <li>
+                    <a href="{{ route('dashboard.cms.launch-date.index') }}" class="waves-effect">
+                        <i class="mdi mdi-calendar-range"></i>
+                        <span key="t-forms">Launch Date</span>
                     </a>
                 </li>
 
+
+
             </ul>
+
             @endcan
 
 

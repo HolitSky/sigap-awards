@@ -14,6 +14,7 @@ use App\Http\Controllers\dashboard\ProdusenPresentationController;
 use App\Http\Controllers\dashboard\BpkhExhibitionController;
 use App\Http\Controllers\dashboard\ProdusenExhibitionController;
 use App\Http\Controllers\dashboard\PresentationSessionController;
+use App\Http\Controllers\dashboard\CmsController;
 use App\Http\Controllers\DashboardPeserta\AuthController as PesertaAuthController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -158,6 +159,13 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/presentation-session/update-session-order', [PresentationSessionController::class, 'updateSessionOrder'])->name('dashboard.presentation-session.update-session-order');
         Route::post('/presentation-session/config', [PresentationSessionController::class, 'storeSessionConfig'])->name('dashboard.presentation-session.config.store');
         Route::delete('/presentation-session/config/{id}', [PresentationSessionController::class, 'destroySessionConfig'])->name('dashboard.presentation-session.config.destroy');
+        
+        // CMS Launch Date Routes (Superadmin only)
+        Route::get('/cms/launch-date', [CmsController::class, 'launchDateIndex'])->name('dashboard.cms.launch-date.index');
+        Route::post('/cms/launch-date', [CmsController::class, 'launchDateStore'])->name('dashboard.cms.launch-date.store');
+        Route::put('/cms/launch-date/{id}', [CmsController::class, 'launchDateUpdate'])->name('dashboard.cms.launch-date.update');
+        Route::delete('/cms/launch-date/{id}', [CmsController::class, 'launchDateDestroy'])->name('dashboard.cms.launch-date.destroy');
+        Route::post('/cms/launch-date/update-order', [CmsController::class, 'launchDateUpdateOrder'])->name('dashboard.cms.launch-date.update-order');
     });
 
 });

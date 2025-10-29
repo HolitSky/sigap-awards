@@ -177,12 +177,20 @@
 
         <script>
         $(document).ready(function() {
-            // Check for success message (login/logout)
+            // Check for success message (login/logout/general)
 
             @if(session('success'))
+                @php
+                    $title = 'Berhasil!';
+                    if(session('auth_action') === 'logout') {
+                        $title = 'Logout Berhasil!';
+                    } elseif(session('auth_action') === 'login') {
+                        $title = 'Login Berhasil!';
+                    }
+                @endphp
                 Swal.fire({
                     icon: 'success',
-                    title: '{{ session('auth_action') === 'logout' ? 'Logout Berhasil!' : 'Login Berhasil!' }}',
+                    title: '{{ $title }}',
                     text: '{{ session('success') }}',
                     timer: 3000,
                     showConfirmButton: false,

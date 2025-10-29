@@ -47,12 +47,20 @@
                                 </div>
                                 <div class="launch-date__calendar">
                                     <div class="launch-date__calendar-content">
-                                        {{-- RANGE DATE MODE AKTIF --}}
-                                        <span class="launch-date__calendar-label">Tahap Presentasi</span>
-                                        <time class="launch-date__calendar-date" datetime="2025-10-23">
-                                            23-24
-                                        </time>
-                                        <p class="launch-date__calendar-month">Oktober</p>
+                                        @if(isset($launchDate) && $launchDate)
+                                            <span class="launch-date__calendar-label">{{ $launchDate->title ?? 'No Title' }}</span>
+                                            <time class="launch-date__calendar-date" datetime="{{ $launchDate->datetime ?? '' }}">
+                                                {{ $launchDate->formatted_date ?? '-' }}
+                                            </time>
+                                            <p class="launch-date__calendar-month">{{ $launchDate->month_name ?? '-' }}</p>
+                                        @else
+                                            {{-- FALLBACK: Default static content --}}
+                                            <span class="launch-date__calendar-label">Sigap Award</span>
+                                            <time class="launch-date__calendar-date" datetime="2025-10-23">
+                                                23-24
+                                            </time>
+                                            <p class="launch-date__calendar-month">Oktober</p>
+                                        @endif
                                     </div>
                                     <div class="launch-date__calendar-left-part"></div>
                                     <div class="launch-date__calendar-right-part"></div>
