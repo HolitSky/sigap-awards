@@ -4,6 +4,7 @@ namespace App\Http\Controllers\landing;
 
 use App\Http\Controllers\Controller;
 use App\Models\LaunchDate;
+use App\Models\ModalInfo;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -24,6 +25,10 @@ class HomeController extends Controller
         $rangeDateEnd = $launchDate && $launchDate->is_range_date ? $launchDate->end_date : Carbon::create(2025, 10, 24, 0, 0, 0);
         $singleDate = $launchDate && !$launchDate->is_range_date ? $launchDate->single_date : null;
 
+        // Get active modal infos from database (dynamic)
+        $reminderModal = ModalInfo::getActiveReminderModal();
+        $welcomeModal = ModalInfo::getActiveWelcomeModal();
+
         // Load team data dari JSON
         $teamDataPath = public_path('sigap-assets/static/team-data.json');
         $teamData = json_decode(file_get_contents($teamDataPath), true);
@@ -32,7 +37,7 @@ class HomeController extends Controller
         $journalDataPath = public_path('sigap-assets/static/journal-data.json');
         $journalData = json_decode(file_get_contents($journalDataPath), true);
 
-        return view('landing.pages.home.index', compact('launchStart', 'launchFinish', 'teamData', 'journalData', 'rangeDate', 'rangeDateStart', 'rangeDateEnd', 'singleDate', 'launchDate'));
+        return view('landing.pages.home.index', compact('launchStart', 'launchFinish', 'teamData', 'journalData', 'rangeDate', 'rangeDateStart', 'rangeDateEnd', 'singleDate', 'launchDate', 'reminderModal', 'welcomeModal'));
     }
 
     public function voteMenu(Request $request)

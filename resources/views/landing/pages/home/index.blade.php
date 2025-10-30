@@ -9,32 +9,38 @@
     @include('landing.pages.home.partials.box-journal')
 </div>
 
-<!-- Default Welcome Modal -->
+<!-- Welcome Modal (Dynamic from CMS) -->
+@if(isset($welcomeModal) && $welcomeModal && $welcomeModal->is_show)
 <div id="welcomeModal" class="modal-overlay" style="display: none;">
     <div class="modal-content">
         <div class="modal-header">
-            <h3>Selamat Datang di SIGAP Award 2025</h3>
+            <h3>{{ $welcomeModal->title }}</h3>
             <span class="modal-close">&times;</span>
         </div>
         <div class="modal-body">
-            <p id="welcome-intro-text">Pilih formulir sesuai dengan kategori Anda:</p>
+            <p id="welcome-intro-text">{{ $welcomeModal->intro_text }}</p>
             <div style="margin: 20px 0; text-align: left;">
-                <div class="category-option form-option" data-form-type="produsen" style="padding: 10px; background: rgba(40, 167, 69, 0.1); border-radius: 8px; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;">
-                    <strong>📊 Produsen Data Geospasial</strong><br>
-                    <small style="color: #666;">Untuk perusahaan/organisasi produsen data geospasial</small>
-                </div>
-                <br class="form-option">
-                <div class="category-option form-option" data-form-type="bpkh" style="margin-bottom: 15px; padding: 10px; background: rgba(102, 126, 234, 0.1); border-radius: 8px; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;">
-                    <strong>🏢 Balai Pemantapan Kawasan Hutan (BPKH)</strong><br>
-                    <small style="color: #666;">Untuk instansi BPKH yang ingin berpartisipasi</small>
-                </div>
-                <div class="category-option" data-action="vote" style="padding: 10px; background: rgba(234, 84, 85, 0.08); border-radius: 8px; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;">
-                    <strong>🗳️ Voting Pengelola IGT 2025</strong><br>
-                    <small style="color: #666;">Menuju halaman voting 2025</small>
-                </div>
+                @if($welcomeModal->meta_links && is_array($welcomeModal->meta_links))
+                    @foreach($welcomeModal->meta_links as $link)
+                        @if($link['is_active'] ?? true)
+                            <div class="category-option" 
+                                 data-link="{{ $link['link_url'] ?? '#' }}"
+                                 style="padding: 10px; background: {{ $link['bg_color'] ?? 'rgba(0,0,0,0.05)' }}; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent; margin-bottom: 10px;">
+                                <strong>{{ $link['icon'] ?? '📌' }} {{ $link['title'] ?? 'Link' }}</strong><br>
+                                <small style="color: #666;">{{ $link['subtitle'] ?? '' }}</small>
+                            </div>
+                        @endif
+                    @endforeach
+                @else
+                    {{-- Fallback jika meta_links kosong --}}
+                    <div class="category-option" data-link="https://form.sigap-award.site/voting2025" style="padding: 10px; background: rgba(234, 84, 85, 0.08); border-radius: 8px; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;">
+                        <strong>🗳️ Voting Pengelola IGT 2025</strong><br>
+                        <small style="color: #666;">Menuju halaman voting 2025</small>
+                    </div>
+                @endif
             </div>
             <p id="welcome-footer-text" style="font-size: 0.9em; color: #888; margin-top: 15px;">
-                Klik pada kategori di atas atau kartu formulir untuk memulai pengisian.
+                {!! nl2br(e($welcomeModal->footer_text)) !!}
             </p>
         </div>
         <div class="modal-footer">
@@ -42,6 +48,7 @@
         </div>
     </div>
 </div>
+@endif
 
 @include('landing.pages.home.partials.reminder-modal')
 
@@ -235,133 +242,80 @@
 
     // Welcome Modal Auto Show
     document.addEventListener('DOMContentLoaded', function() {
-        // Configuration
-        const form_close = true; // Set to true when forms are closed
-
         const welcomeModal = document.getElementById('welcomeModal');
-        const welcomeCloseBtn = document.getElementById('welcome-close');
-        const welcomeModalClose = welcomeModal.querySelector('.modal-close');
-        const categoryOptions = document.querySelectorAll('.category-option');
-        const introText = document.getElementById('welcome-intro-text');
-        const footerText = document.getElementById('welcome-footer-text');
-        const formOptions = document.querySelectorAll('.form-option');
+        
+        // If welcome modal exists, initialize it
+        if (welcomeModal) {
+            const welcomeCloseBtn = document.getElementById('welcome-close');
+            const welcomeModalClose = welcomeModal.querySelector('.modal-close');
+            const categoryOptions = document.querySelectorAll('.category-option');
 
-        // Function to show welcome modal
-        function showWelcomeModal() {
-            // Update modal content based on form_close status
-            if (form_close) {
-                // Forms are closed - focus on voting
-                introText.textContent = 'Terima kasih atas partisipasi Anda dalam pengisian form penilaian SIGAP Award 2025! 🙏🏻';
-                footerText.innerHTML = '<strong style="color: #ea5455;">Silahkan melakukan voting untuk memilih Pengelola IGT terbaik tahun 2025! 🗳️✨</strong>';
-                
-                // Hide form options
-                formOptions.forEach(option => {
-                    option.style.display = 'none';
-                });
-            } else {
-                // Forms are open - show all options
-                introText.textContent = 'Pilih formulir sesuai dengan kategori Anda:';
-                footerText.textContent = 'Klik pada kategori di atas atau kartu formulir untuk memulai pengisian.';
-                
-                // Show form options
-                formOptions.forEach(option => {
-                    option.style.display = '';
-                });
+            // Function to show welcome modal
+            function showWelcomeModal() {
+                welcomeModal.style.display = 'flex';
+                setTimeout(() => {
+                    welcomeModal.classList.add('show');
+                }, 10);
+                // schedule reminder 3s after welcome shown
+                setTimeout(() => {
+                    if (typeof window.showReminderModal === 'function') {
+                        window.showReminderModal();
+                    }
+                }, 3000);
             }
 
-            welcomeModal.style.display = 'flex';
+            // Function to hide welcome modal
+            function hideWelcomeModal() {
+                welcomeModal.classList.remove('show');
+                setTimeout(() => {
+                    welcomeModal.style.display = 'none';
+                }, 300);
+            }
+
+            // Show modal after a short delay to ensure page is fully loaded
             setTimeout(() => {
-                welcomeModal.classList.add('show');
-            }, 10);
-            // schedule reminder 3s after welcome shown
+                showWelcomeModal();
+            }, 3000); // 3 second delay to show welcome
+
+            // Add click events to category options
+            categoryOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const link = this.getAttribute('data-link');
+                    
+                    if (link) {
+                        hideWelcomeModal();
+                        setTimeout(() => {
+                            window.open(link, '_blank');
+                        }, 350);
+                    }
+                });
+            });
+
+            // Close modal events
+            welcomeCloseBtn.addEventListener('click', hideWelcomeModal);
+            welcomeModalClose.addEventListener('click', hideWelcomeModal);
+
+            // Close modal when clicking outside
+            welcomeModal.addEventListener('click', function(e) {
+                if (e.target === welcomeModal) {
+                    hideWelcomeModal();
+                }
+            });
+
+            // Close modal with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && welcomeModal.classList.contains('show')) {
+                    hideWelcomeModal();
+                }
+            });
+        } else {
+            // If welcome modal doesn't exist, trigger reminder modal directly
             setTimeout(() => {
                 if (typeof window.showReminderModal === 'function') {
                     window.showReminderModal();
                 }
-            }, 3000);
+            }, 3000); // Show reminder after 3 seconds if no welcome modal
         }
-
-        // Function to hide welcome modal
-        function hideWelcomeModal() {
-            welcomeModal.classList.remove('show');
-            setTimeout(() => {
-                welcomeModal.style.display = 'none';
-            }, 300);
-        }
-
-        // Function to trigger form modal (from box-form-choice)
-        function triggerFormModal(formType) {
-            // Hide welcome modal first
-            hideWelcomeModal();
-
-            // Wait for welcome modal to close, then trigger form modal
-            setTimeout(() => {
-                // Check if the form modal functions exist (from box-form-choice)
-                if (typeof showModal === 'function') {
-                    showModal(formType);
-                } else {
-                    // If showModal doesn't exist yet, wait a bit more and try again
-                    setTimeout(() => {
-                        if (typeof showModal === 'function') {
-                            showModal(formType);
-                        } else {
-                            console.log('Form modal not available yet');
-                        }
-                    }, 500);
-                }
-            }, 350); // Wait for welcome modal close animation
-        }
-
-        // Function to trigger Voting confirmation/link
-        function triggerVoting() {
-            hideWelcomeModal();
-            setTimeout(() => {
-                const voteBtn = document.getElementById('openVoteConfirm');
-                if (voteBtn) {
-                    voteBtn.click();
-                } else {
-                    window.open('https://form.sigap-award.site/voting2025', '_blank');
-                }
-            }, 350);
-        }
-
-        // Show modal after a short delay to ensure page is fully loaded
-        setTimeout(() => {
-            showWelcomeModal();
-        }, 3000); // 3 second delay to show welcome
-
-        // Add click events to category options
-        categoryOptions.forEach(option => {
-            option.addEventListener('click', function() {
-                const formType = this.getAttribute('data-form-type');
-                const action = this.getAttribute('data-action');
-                if (action === 'vote') {
-                    triggerVoting();
-                    return;
-                }
-                if (formType) {
-                    triggerFormModal(formType);
-                }
-            });
-        });
-
-        // Close modal events
-        welcomeCloseBtn.addEventListener('click', hideWelcomeModal);
-        welcomeModalClose.addEventListener('click', hideWelcomeModal);
-
-        // Close modal when clicking outside
-        welcomeModal.addEventListener('click', function(e) {
-            if (e.target === welcomeModal) {
-                hideWelcomeModal();
-            }
-        });
-
-        // Close modal with Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && welcomeModal.classList.contains('show')) {
-                hideWelcomeModal();
-            }
-        });
     });
 
     // Image Modal Functions

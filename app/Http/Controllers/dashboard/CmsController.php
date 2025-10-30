@@ -4,6 +4,7 @@ namespace App\Http\Controllers\dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\LaunchDate;
+use App\Models\ModalInfo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -152,5 +153,80 @@ class CmsController extends Controller
             'success' => true,
             'message' => 'Urutan berhasil diupdate'
         ]);
+    }
+
+    /**
+     * Display modal info management page
+     */
+    public function modalInfoIndex()
+    {
+        $title = 'Manajemen Modal Info';
+        $pageTitle = 'Manajemen Modal Info';
+        $breadcrumbs = [
+            ['name' => 'Dashboard', 'url' => route('dashboard.index')],
+            ['name' => 'CMS', 'url' => '#'],
+            ['name' => 'Modal Info', 'active' => true]
+        ];
+        
+        $modalInfos = ModalInfo::orderBy('id')->get();
+        return view('dashboard.pages.cms.modal-info.index', compact('modalInfos', 'title', 'pageTitle', 'breadcrumbs'));
+    }
+
+    /**
+     * Update modal info
+     */
+    public function modalInfoUpdate(Request $request, $id)
+    {
+        $modalInfo = ModalInfo::findOrFail($id);
+
+        // Different validation based on modal type
+        if ($modalInfo->modal_type === 'reminder') {
+            $validator = Validator::make($request->all(), [
+                'title' => 'required|string|min:4|max:100',
+                'subtitle' => 'required|string|min:10|max:200'
+            ]);
+        } else { // welcome modal
+            $validator = Validator::make($request->all(), [
+                'title' => 'required|string|min:4|max:100',
+                'intro_text' => 'required|string|min:10|max:200',
+                'footer_text' => 'required|string|min:10|max:200'
+            ]);
+        }
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // Update based on modal type
+        if ($modalInfo->modal_type === 'reminder') {
+            $modalInfo->update([
+                'title' => $request->title,
+                'subtitle' => $request->subtitle,
+                'is_show' => $request->has('is_show') ? true : false
+            ]);
+        } else { // welcome modal
+            // Process meta_links JSON
+            $metaLinks = [];
+            if ($request->has('meta_links')) {
+                $links = json_decode($request->meta_links, true);
+                if (is_array($links)) {
+                    $metaLinks = $links;
+                }
+            }
+            
+            $modalInfo->update([
+                'title' => $request->title,
+                'intro_text' => $request->intro_text,
+                'footer_text' => $request->footer_text,
+                'show_form_options' => $request->has('show_form_options') ? true : false,
+                'meta_links' => $metaLinks,
+                'is_show' => $request->has('is_show') ? true : false
+            ]);
+        }
+
+        return redirect()->route('dashboard.cms.modal-info.index')
+            ->with('success', 'Modal info berhasil diupdate');
     }
 }

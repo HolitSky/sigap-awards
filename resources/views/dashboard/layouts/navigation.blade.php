@@ -145,6 +145,13 @@
                     </a>
                 </li>
 
+                 <li>
+                    <a href="{{ route('dashboard.cms.modal-info.index') }}" class="waves-effect">
+                        <i class="mdi mdi-information-outline"></i>
+                        <span key="t-forms">Modal Info</span>
+                    </a>
+                </li>
+
 
 
             </ul>

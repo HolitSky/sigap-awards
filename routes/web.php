@@ -166,6 +166,10 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/cms/launch-date/{id}', [CmsController::class, 'launchDateUpdate'])->name('dashboard.cms.launch-date.update');
         Route::delete('/cms/launch-date/{id}', [CmsController::class, 'launchDateDestroy'])->name('dashboard.cms.launch-date.destroy');
         Route::post('/cms/launch-date/update-order', [CmsController::class, 'launchDateUpdateOrder'])->name('dashboard.cms.launch-date.update-order');
+        
+        // CMS Modal Info Routes (Superadmin only)
+        Route::get('/cms/modal-info', [CmsController::class, 'modalInfoIndex'])->name('dashboard.cms.modal-info.index');
+        Route::put('/cms/modal-info/{id}', [CmsController::class, 'modalInfoUpdate'])->name('dashboard.cms.modal-info.update');
     });
 
 });

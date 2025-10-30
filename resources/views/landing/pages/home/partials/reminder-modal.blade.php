@@ -38,7 +38,8 @@
 </style>
 @endpush
 
-<!-- Reminder Modal -->
+<!-- Reminder Modal (Only show if reminderModal exists and is_show = true) -->
+@if(isset($reminderModal) && $reminderModal && $reminderModal->is_show)
 <div id="reminderModal" class="modal-overlay modal-reminder" style="display: none;">
     <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="reminderTitle">
         <div class="modal-header">
@@ -46,10 +47,8 @@
         </div>
         <div class="modal-body">
             <img src="{{ asset('sigap-assets/images/image-info-for-poster.png') }}" class="reminder-image" alt="Informasi poster" loading="lazy">
-            <h1 id="reminderTitle" class="reminder-title">Hai #SobatGeoSPESIAL !</h1>
-            {{-- <h3 class="reminder-subtitle">Jangan lupa segera isi kuesioner dan data dukung serta desain poster juga ya!</h3> --}}
-            {{-- <h3 class="reminder-subtitle">Terima kasih telah berpartisipasi dalam pengisian form penilaian SIGAP Award 2025 🙏🏻😁 <br> <br> Nantikan pengumuman resmi dari kami. Sampai jumpa di Bali! 🛕🏝️🌺🏖️</h3> --}}
-            <h3 class="reminder-subtitle">Terima kasih telah berpartisipasi dalam SIGAP Award 2025 🙏🏻😁 <br> <br> Nantikan pengumuman resmi dari kami! 📃ℹ️</h3>
+            <h1 id="reminderTitle" class="reminder-title">{{ $reminderModal->title }}</h1>
+            <h3 class="reminder-subtitle">{!! nl2br(e($reminderModal->subtitle)) !!}</h3>
         </div>
         <div class="modal-footer">
             <button type="button" class="modal-btn-close" aria-label="Tutup">Tutup</button>
@@ -91,5 +90,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 @endpush
+@endif
 
 
