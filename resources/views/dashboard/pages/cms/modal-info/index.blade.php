@@ -46,6 +46,16 @@
     .pickr {
         display: inline-block;
     }
+    
+    /* Link preview card styling */
+    .link-preview-card {
+        transition: all 0.3s ease;
+    }
+    .link-preview-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border-color: rgba(102, 126, 234, 0.3) !important;
+    }
 </style>
 @endpush
 
@@ -474,6 +484,13 @@ $(document).ready(function() {
                                 <label class="form-check-label small">Aktif</label>
                             </div>
                         </div>
+                        <div class="col-12 mb-2">
+                            <label class="form-label small">Preview:</label>
+                            <div class="link-preview-card" data-index="${index}" style="padding: 10px; background: ${link.bg_color || 'rgba(0,0,0,0.05)'}; border-radius: 8px; border: 2px solid transparent; cursor: pointer; transition: all 0.3s ease;">
+                                <strong>${link.icon || '📌'} ${link.title || 'Link Title'}</strong><br>
+                                <small style="color: #666;">${link.subtitle || 'Link subtitle'}</small>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
@@ -488,6 +505,7 @@ $(document).ready(function() {
             const field = linkClass.replace('link-', '').replace(/-/g, '_');
             metaLinksArray[index][field] = $(this).val();
             updateMetaLinksInput();
+            updatePreviewCard(index);
         });
 
         $('.link-is-active').on('change', function() {
@@ -508,6 +526,20 @@ $(document).ready(function() {
 
     function updateMetaLinksInput() {
         $('#metaLinksInput').val(JSON.stringify(metaLinksArray));
+    }
+
+    function updatePreviewCard(index) {
+        const link = metaLinksArray[index];
+        const previewCard = $(`.link-preview-card[data-index="${index}"]`);
+        
+        // Update background color
+        previewCard.css('background', link.bg_color || 'rgba(0,0,0,0.05)');
+        
+        // Update content
+        previewCard.html(`
+            <strong>${link.icon || '📌'} ${link.title || 'Link Title'}</strong><br>
+            <small style="color: #666;">${link.subtitle || 'Link subtitle'}</small>
+        `);
     }
 
     // Initialize color pickers for all color preview buttons
@@ -559,6 +591,7 @@ $(document).ready(function() {
                 $(`.color-picker-btn[data-index="${index}"]`).css('background', rgbaString);
                 
                 updateMetaLinksInput();
+                updatePreviewCard(index);
                 pickr.hide();
             });
 
