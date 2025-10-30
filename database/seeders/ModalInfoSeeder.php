@@ -57,7 +57,7 @@ class ModalInfoSeeder extends Seeder
         ModalInfo::create([
             'modal_type' => 'reminder',
             'title' => 'Hai #SobatGeoSPESIAL !',
-            'subtitle' => 'Saatnya unggah poster Anda! Terima kasih atas dukungan di SIGAP Awards 2025. 🙏🏻 Tetap pantau pengumuman resmi dari kami!',
+            'subtitle' => 'Saatnya unggah poster Anda! Tetap pantau pengumuman resmi dari kami!😁🙏🏻',
             'intro_text' => null,
             'footer_text' => null,
             'show_form_options' => false,
