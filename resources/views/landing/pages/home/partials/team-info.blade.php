@@ -1,6 +1,47 @@
 @push('styles')
 <!-- GLightbox CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
+<style>
+    /* Floating animation for desktop (up & down) */
+    @keyframes floating {
+        0% {
+            transform: translateY(0px);
+        }
+        50% {
+            transform: translateY(-20px);
+        }
+        100% {
+            transform: translateY(0px);
+        }
+    }
+
+    /* Floating animation for mobile (left & right) */
+    @keyframes floatingHorizontal {
+        0% {
+            transform: translateX(0px);
+        }
+        50% {
+            transform: translateX(-15px);
+        }
+        100% {
+            transform: translateX(0px);
+        }
+    }
+
+    /* Mobile: horizontal floating (< 768px) */
+    @media (max-width: 767px) {
+        .about-team__image img {
+            animation: floatingHorizontal 3s ease-in-out infinite;
+        }
+    }
+
+    /* Desktop/Laptop: vertical floating (≥ 768px) */
+    @media (min-width: 768px) {
+        .about-team__image img {
+            animation: floating 3s ease-in-out infinite;
+        }
+    }
+</style>
 @endpush
 
 <div class="box about-team">
