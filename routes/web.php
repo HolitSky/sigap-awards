@@ -123,6 +123,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/exhibition-bpkh/bulk-score', [BpkhExhibitionController::class, 'bulkScoreForm'])->name('dashboard.exhibition.bpkh.bulk-score')->middleware('prevent.admin.view');
     Route::post('/exhibition-bpkh/bulk-score', [BpkhExhibitionController::class, 'bulkScoreStore'])->name('dashboard.exhibition.bpkh.bulk-score.store')->middleware('prevent.admin.view');
     Route::get('/exhibition-bpkh/{respondentId}', [BpkhExhibitionController::class, 'show'])->name('dashboard.exhibition.bpkh.show');
+    Route::get('/exhibition-bpkh/{respondentId}/export', [BpkhExhibitionController::class, 'export'])->name('dashboard.exhibition.bpkh.export');
     Route::get('/exhibition-bpkh/{respondentId}/nilai', [BpkhExhibitionController::class, 'edit'])->name('dashboard.exhibition.bpkh.edit')->middleware('prevent.admin.view');
     Route::post('/exhibition-bpkh/{respondentId}/nilai', [BpkhExhibitionController::class, 'update'])->name('dashboard.exhibition.bpkh.update')->middleware('prevent.admin.view');
 
@@ -131,6 +132,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/exhibition-produsen-dg/bulk-score', [ProdusenExhibitionController::class, 'bulkScoreForm'])->name('dashboard.exhibition.produsen.bulk-score')->middleware('prevent.admin.view');
     Route::post('/exhibition-produsen-dg/bulk-score', [ProdusenExhibitionController::class, 'bulkScoreStore'])->name('dashboard.exhibition.produsen.bulk-score.store')->middleware('prevent.admin.view');
     Route::get('/exhibition-produsen-dg/{respondentId}', [ProdusenExhibitionController::class, 'show'])->name('dashboard.exhibition.produsen.show');
+    Route::get('/exhibition-produsen-dg/{respondentId}/export', [ProdusenExhibitionController::class, 'export'])->name('dashboard.exhibition.produsen.export');
     Route::get('/exhibition-produsen-dg/{respondentId}/nilai', [ProdusenExhibitionController::class, 'edit'])->name('dashboard.exhibition.produsen.edit')->middleware('prevent.admin.view');
     Route::post('/exhibition-produsen-dg/{respondentId}/nilai', [ProdusenExhibitionController::class, 'update'])->name('dashboard.exhibition.produsen.update')->middleware('prevent.admin.view');
 

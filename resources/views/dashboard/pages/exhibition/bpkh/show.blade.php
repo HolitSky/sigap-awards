@@ -59,6 +59,31 @@
                             Nilai / Edit Penilaian
                         </a>
                         @endif
+                        
+                        <!-- Export Dropdown -->
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bx bx-download"></i> Export
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><h6 class="dropdown-header">Summary</h6></li>
+                                <li><a class="dropdown-item" href="{{ route('dashboard.exhibition.bpkh.export', ['respondentId' => $form->respondent_id, 'format' => 'excel', 'type' => 'summary']) }}">
+                                    <i class="bx bxs-file-export"></i> Excel Summary
+                                </a></li>
+                                <li><a class="dropdown-item" href="{{ route('dashboard.exhibition.bpkh.export', ['respondentId' => $form->respondent_id, 'format' => 'pdf', 'type' => 'summary']) }}">
+                                    <i class="bx bxs-file-pdf"></i> PDF Summary
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><h6 class="dropdown-header">Detail</h6></li>
+                                <li><a class="dropdown-item" href="{{ route('dashboard.exhibition.bpkh.export', ['respondentId' => $form->respondent_id, 'format' => 'excel', 'type' => 'detail']) }}">
+                                    <i class="bx bxs-file-export"></i> Excel Detail
+                                </a></li>
+                                <li><a class="dropdown-item" href="{{ route('dashboard.exhibition.bpkh.export', ['respondentId' => $form->respondent_id, 'format' => 'pdf', 'type' => 'detail']) }}">
+                                    <i class="bx bxs-file-pdf"></i> PDF Detail
+                                </a></li>
+                            </ul>
+                        </div>
+                        
                         <a href="{{ route('dashboard.exhibition.bpkh.index') }}" class="btn btn-secondary">
                             Kembali ke Daftar
                         </a>

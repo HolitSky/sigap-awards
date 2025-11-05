@@ -9,6 +9,9 @@ use App\Models\RecordExhibitionAssesment;
 use App\Models\BpkhPresentationSession;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Response;
 
 class BpkhExhibitionController extends Controller
 {
@@ -475,5 +478,167 @@ class BpkhExhibitionController extends Controller
                 ->withErrors(['error' => 'Gagal menyimpan penilaian: ' . $e->getMessage()])
                 ->withInput();
         }
+    }
+    
+    /**
+     * Export exhibition assessment data
+     */
+    public function export(Request $request, string $respondentId)
+    {
+        $format = $request->query('format', 'excel'); // excel, pdf
+        $type = $request->query('type', 'summary'); // summary, detail
+        
+        $form = BpkhExhibition::where('respondent_id', $respondentId)->firstOrFail();
+        
+        $fileName = 'Exhibition_BPKH_' . $form->nama_bpkh . '_' . date('Y-m-d');
+        
+        if ($format === 'excel') {
+            return $this->exportExcel($form, $type, $fileName);
+        } elseif ($format === 'pdf') {
+            return $this->exportPdf($form, $type, $fileName);
+        }
+        
+        return back()->withErrors(['error' => 'Format tidak valid']);
+    }
+    
+    /**
+     * Export to CSV
+     */
+    protected function exportCsv($form, $type, $fileName)
+    {
+        $data = $this->prepareExportData($form, $type);
+        
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '.csv"',
+        ];
+        
+        $callback = function() use ($data) {
+            $file = fopen('php://output', 'w');
+            
+            // Add BOM for UTF-8
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+            
+            // Write headers
+            fputcsv($file, array_keys($data[0]));
+            
+            // Write data
+            foreach ($data as $row) {
+                fputcsv($file, $row);
+            }
+            
+            fclose($file);
+        };
+        
+        return Response::stream($callback, 200, $headers);
+    }
+    
+    /**
+     * Export to Excel
+     */
+    protected function exportExcel($form, $type, $fileName)
+    {
+        $data = $this->prepareExportData($form, $type);
+        
+        return Excel::download(new class($data) implements \Maatwebsite\Excel\Concerns\FromArray, \Maatwebsite\Excel\Concerns\WithHeadings {
+            protected $data;
+            
+            public function __construct($data)
+            {
+                $this->data = $data;
+            }
+            
+            public function array(): array
+            {
+                return array_map(function($row) {
+                    return array_values($row);
+                }, $this->data);
+            }
+            
+            public function headings(): array
+            {
+                return array_keys($this->data[0]);
+            }
+        }, $fileName . '.xlsx');
+    }
+    
+    /**
+     * Export to PDF
+     */
+    protected function exportPdf($form, $type, $fileName)
+    {
+        $data = $this->prepareExportData($form, $type);
+        
+        $pdf = Pdf::loadView('dashboard.pages.exhibition.exports.pdf', [
+            'form' => $form,
+            'data' => $data,
+            'type' => $type,
+            'title' => 'Penilaian Exhibition BPKH - ' . $form->nama_bpkh
+        ]);
+        
+        return $pdf->download($fileName . '.pdf');
+    }
+    
+    /**
+     * Prepare data for export
+     */
+    protected function prepareExportData($form, $type)
+    {
+        $data = [];
+        
+        if ($type === 'summary') {
+            // Summary export - one row per jury
+            foreach ($form->penilaian_per_juri ?? [] as $penilaian) {
+                $data[] = [
+                    'Nama BPKH' => $form->nama_bpkh,
+                    'Petugas' => $form->petugas_bpkh,
+                    'Nama Juri' => $penilaian['user_name'] ?? 'N/A',
+                    'Nilai Akhir Juri' => number_format($penilaian['nilai_akhir_user'] ?? 0, 2),
+                    'Rekomendasi' => $penilaian['rekomendasi'] ?? '-',
+                    'Catatan' => $penilaian['catatan'] ?? $penilaian['catatan_juri'] ?? '-',
+                    'Waktu Penilaian' => isset($penilaian['assessed_at']) ? \Carbon\Carbon::parse($penilaian['assessed_at'])->format('d/m/Y H:i') : '-',
+                    'Nilai Final' => number_format($form->nilai_final ?? 0, 2),
+                    'Bobot Exhibition' => $form->bobot_exhibition . '%',
+                    'Nilai Final Dengan Bobot' => number_format($form->nilai_final_dengan_bobot ?? 0, 2),
+                    'Kategori' => $form->kategori_penilaian ?? '-',
+                ];
+            }
+        } else {
+            // Detail export - one row per jury with aspect scores
+            foreach ($form->penilaian_per_juri ?? [] as $penilaian) {
+                $userId = $penilaian['user_id'];
+                $aspekScores = $form->aspek_penilaian[$userId] ?? [];
+                
+                $data[] = [
+                    'Nama BPKH' => $form->nama_bpkh,
+                    'Petugas' => $form->petugas_bpkh,
+                    'Nama Juri' => $penilaian['user_name'] ?? 'N/A',
+                    'Kesesuaian Materi (30%)' => $aspekScores['kesesuaian_materi'] ?? '-',
+                    'Kejelasan Informasi (25%)' => $aspekScores['kejelasan_informasi'] ?? '-',
+                    'Kualitas Visual (20%)' => $aspekScores['kualitas_visual'] ?? '-',
+                    'Inovasi Kreativitas (15%)' => $aspekScores['inovasi_kreativitas'] ?? '-',
+                    'Relevansi Tema (10%)' => $aspekScores['relevansi_tema'] ?? '-',
+                    'Nilai Akhir Juri' => number_format($penilaian['nilai_akhir_user'] ?? 0, 2),
+                    'Rekomendasi' => $penilaian['rekomendasi'] ?? '-',
+                    'Catatan' => $penilaian['catatan'] ?? $penilaian['catatan_juri'] ?? '-',
+                    'Waktu Penilaian' => isset($penilaian['assessed_at']) ? \Carbon\Carbon::parse($penilaian['assessed_at'])->format('d/m/Y H:i') : '-',
+                    'Nilai Final' => number_format($form->nilai_final ?? 0, 2),
+                    'Bobot Exhibition' => $form->bobot_exhibition . '%',
+                    'Nilai Final Dengan Bobot' => number_format($form->nilai_final_dengan_bobot ?? 0, 2),
+                    'Kategori' => $form->kategori_penilaian ?? '-',
+                ];
+            }
+        }
+        
+        // If no jury data, add basic info
+        if (empty($data)) {
+            $data[] = [
+                'Nama BPKH' => $form->nama_bpkh,
+                'Petugas' => $form->petugas_bpkh,
+                'Status' => 'Belum ada penilaian',
+            ];
+        }
+        
+        return $data;
     }
 }
