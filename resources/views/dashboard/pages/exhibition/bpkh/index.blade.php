@@ -36,6 +36,21 @@
                                             <p class="card-title-desc mb-0">Daftar penilaian exhibition/poster untuk BPKH.</p>
                                         </div>
                                         <div class="d-flex gap-2 align-items-center">
+                                            <!-- Export All Dropdown -->
+                                            <div class="btn-group" role="group">
+                                                <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="bx bx-download"></i> Export Semua
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="{{ route('dashboard.exhibition.bpkh.export-all', ['format' => 'excel']) }}">
+                                                        <i class="bx bxs-file-export"></i> Excel
+                                                    </a></li>
+                                                    <li><a class="dropdown-item" href="{{ route('dashboard.exhibition.bpkh.export-all', ['format' => 'pdf']) }}">
+                                                        <i class="bx bxs-file-pdf"></i> PDF
+                                                    </a></li>
+                                                </ul>
+                                            </div>
+                                            
                                             @if(auth()->user()->role !== 'admin-view')
                                             <div class="btn-group" role="group">
                                                 @foreach($sessions as $sessionName => $participants)

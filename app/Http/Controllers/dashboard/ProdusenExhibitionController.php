@@ -481,6 +481,82 @@ class ProdusenExhibitionController extends Controller
     }
     
     /**
+     * Export all exhibition assessment data
+     */
+    public function exportAll(Request $request)
+    {
+        $format = $request->query('format', 'excel'); // excel, pdf
+        
+        $forms = ProdusenExhibition::orderBy('nama_instansi')->get();
+        
+        $fileName = 'Exhibition_Produsen_All_' . date('Y-m-d');
+        
+        // Prepare data for all forms
+        $data = [];
+        foreach ($forms as $form) {
+            foreach ($form->penilaian_per_juri ?? [] as $penilaian) {
+                $userId = $penilaian['user_id'];
+                $aspekScores = $form->aspek_penilaian[$userId] ?? [];
+                
+                $data[] = [
+                    'Nama Instansi' => $form->nama_instansi,
+                    'Penanggung Jawab' => $form->penanggung_jawab,
+                    'Nama Juri' => $penilaian['user_name'] ?? 'N/A',
+                    'Kesesuaian Materi (30%)' => $aspekScores['kesesuaian_materi'] ?? '-',
+                    'Kejelasan Informasi (25%)' => $aspekScores['kejelasan_informasi'] ?? '-',
+                    'Kualitas Visual (20%)' => $aspekScores['kualitas_visual'] ?? '-',
+                    'Inovasi Kreativitas (15%)' => $aspekScores['inovasi_kreativitas'] ?? '-',
+                    'Relevansi Tema (10%)' => $aspekScores['relevansi_tema'] ?? '-',
+                    'Nilai Akhir Juri' => number_format($penilaian['nilai_akhir_user'] ?? 0, 2),
+                    'Rekomendasi' => $penilaian['rekomendasi'] ?? '-',
+                    'Catatan' => $penilaian['catatan'] ?? $penilaian['catatan_juri'] ?? '-',
+                    'Waktu Penilaian' => isset($penilaian['assessed_at']) ? \Carbon\Carbon::parse($penilaian['assessed_at'])->format('d/m/Y H:i') : '-',
+                    'Nilai Final' => number_format($form->nilai_final ?? 0, 2),
+                    'Bobot Exhibition' => $form->bobot_exhibition . '%',
+                    'Nilai Final Dengan Bobot' => number_format($form->nilai_final_dengan_bobot ?? 0, 2),
+                    'Kategori' => $form->kategori_penilaian ?? '-',
+                ];
+            }
+        }
+        
+        if (empty($data)) {
+            return back()->withErrors(['error' => 'Tidak ada data untuk diekspor']);
+        }
+        
+        if ($format === 'excel') {
+            return Excel::download(new class($data) implements \Maatwebsite\Excel\Concerns\FromArray, \Maatwebsite\Excel\Concerns\WithHeadings {
+                protected $data;
+                
+                public function __construct($data)
+                {
+                    $this->data = $data;
+                }
+                
+                public function array(): array
+                {
+                    return array_map(function($row) {
+                        return array_values($row);
+                    }, $this->data);
+                }
+                
+                public function headings(): array
+                {
+                    return array_keys($this->data[0]);
+                }
+            }, $fileName . '.xlsx');
+        } elseif ($format === 'pdf') {
+            $pdf = Pdf::loadView('dashboard.pages.exhibition.exports.pdf-all', [
+                'data' => $data,
+                'title' => 'Penilaian Exhibition Produsen DG - Semua Data'
+            ])->setPaper('a4', 'landscape');
+            
+            return $pdf->download($fileName . '.pdf');
+        }
+        
+        return back()->withErrors(['error' => 'Format tidak valid']);
+    }
+    
+    /**
      * Export exhibition assessment data
      */
     public function export(Request $request, string $respondentId)

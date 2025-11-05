@@ -120,6 +120,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Penilaian Exhibition/Poster BPKH
     Route::get('/exhibition-bpkh', [BpkhExhibitionController::class, 'index'])->name('dashboard.exhibition.bpkh.index');
+    Route::get('/exhibition-bpkh/export-all', [BpkhExhibitionController::class, 'exportAll'])->name('dashboard.exhibition.bpkh.export-all');
     Route::get('/exhibition-bpkh/bulk-score', [BpkhExhibitionController::class, 'bulkScoreForm'])->name('dashboard.exhibition.bpkh.bulk-score')->middleware('prevent.admin.view');
     Route::post('/exhibition-bpkh/bulk-score', [BpkhExhibitionController::class, 'bulkScoreStore'])->name('dashboard.exhibition.bpkh.bulk-score.store')->middleware('prevent.admin.view');
     Route::get('/exhibition-bpkh/{respondentId}', [BpkhExhibitionController::class, 'show'])->name('dashboard.exhibition.bpkh.show');
@@ -129,6 +130,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Penilaian Exhibition/Poster Produsen DG
     Route::get('/exhibition-produsen-dg', [ProdusenExhibitionController::class, 'index'])->name('dashboard.exhibition.produsen.index');
+    Route::get('/exhibition-produsen-dg/export-all', [ProdusenExhibitionController::class, 'exportAll'])->name('dashboard.exhibition.produsen.export-all');
     Route::get('/exhibition-produsen-dg/bulk-score', [ProdusenExhibitionController::class, 'bulkScoreForm'])->name('dashboard.exhibition.produsen.bulk-score')->middleware('prevent.admin.view');
     Route::post('/exhibition-produsen-dg/bulk-score', [ProdusenExhibitionController::class, 'bulkScoreStore'])->name('dashboard.exhibition.produsen.bulk-score.store')->middleware('prevent.admin.view');
     Route::get('/exhibition-produsen-dg/{respondentId}', [ProdusenExhibitionController::class, 'show'])->name('dashboard.exhibition.produsen.show');
