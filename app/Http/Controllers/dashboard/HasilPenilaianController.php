@@ -112,6 +112,173 @@ class HasilPenilaianController extends Controller
     }
     
     /**
+     * Poster/Exhibition Final Results (Combined BPKH & Produsen)
+     */
+    public function posterIndex()
+    {
+        $title = 'Hasil Penilaian Final Poster/Exhibition';
+        
+        // Get BPKH Exhibition Scores
+        $hasilBpkh = BpkhForm::select(
+            'bpkh_forms.respondent_id',
+            'bpkh_forms.nama_bpkh as nama',
+            'bpkh_forms.petugas_bpkh as petugas',
+            DB::raw('"BPKH" as kategori'),
+            DB::raw('COALESCE((
+                SELECT nilai_final_dengan_bobot
+                FROM bpkh_exhibitions
+                WHERE bpkh_exhibitions.respondent_id = bpkh_forms.respondent_id
+            ), 0) as nilai_exhibition'),
+            DB::raw('(
+                SELECT COUNT(DISTINCT user_id)
+                FROM record_exhibition_assesments rea
+                JOIN bpkh_exhibitions be ON rea.exhibition_id = be.id
+                WHERE be.respondent_id = bpkh_forms.respondent_id
+                AND rea.exhibition_type = "bpkh"
+            ) as total_juri_exhibition')
+        )
+        ->where('nominasi', true)
+        ->get();
+        
+        // Get Produsen Exhibition Scores
+        $hasilProdusen = ProdusenForm::select(
+            'produsen_forms.respondent_id',
+            'produsen_forms.nama_instansi as nama',
+            'produsen_forms.nama_petugas as petugas',
+            DB::raw('"Produsen" as kategori'),
+            DB::raw('COALESCE((
+                SELECT nilai_final_dengan_bobot
+                FROM produsen_exhibitions
+                WHERE produsen_exhibitions.respondent_id = produsen_forms.respondent_id
+            ), 0) as nilai_exhibition'),
+            DB::raw('(
+                SELECT COUNT(DISTINCT user_id)
+                FROM record_exhibition_assesments rea
+                JOIN produsen_exhibitions pe ON rea.exhibition_id = pe.id
+                WHERE pe.respondent_id = produsen_forms.respondent_id
+                AND rea.exhibition_type = "produsen"
+            ) as total_juri_exhibition')
+        )
+        ->where('nominasi', true)
+        ->get();
+        
+        // Merge and sort by exhibition score
+        $hasilPoster = $hasilBpkh->concat($hasilProdusen)
+            ->sortByDesc('nilai_exhibition')
+            ->values();
+        
+        return view('dashboard.pages.hasil.poster_index', compact('title', 'hasilPoster'));
+    }
+    
+    /**
+     * Export Poster/Exhibition results
+     */
+    public function exportPoster(Request $request)
+    {
+        $format = $request->query('format', 'excel'); // excel, pdf
+        
+        // Get BPKH Exhibition Scores
+        $hasilBpkh = BpkhForm::select(
+            'bpkh_forms.respondent_id',
+            'bpkh_forms.nama_bpkh as nama',
+            'bpkh_forms.petugas_bpkh as petugas',
+            DB::raw('"BPKH" as kategori'),
+            DB::raw('COALESCE((
+                SELECT nilai_final_dengan_bobot
+                FROM bpkh_exhibitions
+                WHERE bpkh_exhibitions.respondent_id = bpkh_forms.respondent_id
+            ), 0) as nilai_exhibition'),
+            DB::raw('(
+                SELECT COUNT(DISTINCT user_id)
+                FROM record_exhibition_assesments rea
+                JOIN bpkh_exhibitions be ON rea.exhibition_id = be.id
+                WHERE be.respondent_id = bpkh_forms.respondent_id
+                AND rea.exhibition_type = "bpkh"
+            ) as total_juri_exhibition')
+        )
+        ->where('nominasi', true)
+        ->get();
+        
+        // Get Produsen Exhibition Scores
+        $hasilProdusen = ProdusenForm::select(
+            'produsen_forms.respondent_id',
+            'produsen_forms.nama_instansi as nama',
+            'produsen_forms.nama_petugas as petugas',
+            DB::raw('"Produsen" as kategori'),
+            DB::raw('COALESCE((
+                SELECT nilai_final_dengan_bobot
+                FROM produsen_exhibitions
+                WHERE produsen_exhibitions.respondent_id = produsen_forms.respondent_id
+            ), 0) as nilai_exhibition'),
+            DB::raw('(
+                SELECT COUNT(DISTINCT user_id)
+                FROM record_exhibition_assesments rea
+                JOIN produsen_exhibitions pe ON rea.exhibition_id = pe.id
+                WHERE pe.respondent_id = produsen_forms.respondent_id
+                AND rea.exhibition_type = "produsen"
+            ) as total_juri_exhibition')
+        )
+        ->where('nominasi', true)
+        ->get();
+        
+        // Merge and sort
+        $hasilPoster = $hasilBpkh->concat($hasilProdusen)
+            ->sortByDesc('nilai_exhibition')
+            ->values();
+        
+        // Prepare data for export
+        $data = [];
+        foreach ($hasilPoster as $index => $item) {
+            $data[] = [
+                'Rank' => $index + 1,
+                'Kategori' => $item->kategori,
+                'Nama' => $item->nama,
+                'Petugas' => $item->petugas,
+                'Nilai Exhibition' => number_format($item->nilai_exhibition, 2),
+                'Juri Penilai Exhibition' => $item->total_juri_exhibition ?? 0,
+            ];
+        }
+        
+        if (empty($data)) {
+            return back()->withErrors(['error' => 'Tidak ada data untuk diekspor']);
+        }
+        
+        $fileName = 'Hasil_Poster_Exhibition_' . date('Y-m-d');
+        
+        if ($format === 'excel') {
+            return Excel::download(new class($data) implements \Maatwebsite\Excel\Concerns\FromArray, \Maatwebsite\Excel\Concerns\WithHeadings {
+                protected $data;
+                
+                public function __construct($data)
+                {
+                    $this->data = $data;
+                }
+                
+                public function array(): array
+                {
+                    return array_map(function($row) {
+                        return array_values($row);
+                    }, $this->data);
+                }
+                
+                public function headings(): array
+                {
+                    return array_keys($this->data[0]);
+                }
+            }, $fileName . '.xlsx');
+        } elseif ($format === 'pdf') {
+            $pdf = Pdf::loadView('dashboard.pages.hasil.exports.pdf-poster', [
+                'data' => $data,
+                'title' => 'Hasil Penilaian Final Poster/Exhibition'
+            ])->setPaper('a4', 'portrait');
+            
+            return $pdf->download($fileName . '.pdf');
+        }
+        
+        return back()->withErrors(['error' => 'Format tidak valid']);
+    }
+    
+    /**
      * Export BPKH final results
      */
     public function exportBpkh(Request $request)

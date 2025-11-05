@@ -21,7 +21,15 @@
                 <li>
                     <a href="{{ route('dashboard.hasil.index') }}" class="waves-effect">
                         <i class="bx bx-trophy"></i>
-                        <span key="t-dashboards">Hasil Penilaian Final</span>
+                        <span key="t-dashboards">Hasil Penilaian Nominasi</span>
+                    </a>
+                </li>
+
+                <!-- menu hasil poster -->
+                <li>
+                    <a href="{{ route('dashboard.hasil.poster') }}" class="waves-effect">
+                        <i class="bx bx-image"></i>
+                        <span key="t-dashboards">Hasil Penilaian Poster</span>
                     </a>
                 </li>
 
