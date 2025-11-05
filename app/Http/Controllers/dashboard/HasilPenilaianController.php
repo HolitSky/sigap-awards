@@ -118,7 +118,7 @@ class HasilPenilaianController extends Controller
     {
         $title = 'Hasil Penilaian Final Poster/Exhibition';
         
-        // Get BPKH Exhibition Scores
+        // Get BPKH Exhibition Scores (ALL participants)
         $hasilBpkh = BpkhForm::select(
             'bpkh_forms.respondent_id',
             'bpkh_forms.nama_bpkh as nama',
@@ -137,10 +137,9 @@ class HasilPenilaianController extends Controller
                 AND rea.exhibition_type = "bpkh"
             ) as total_juri_exhibition')
         )
-        ->where('nominasi', true)
         ->get();
         
-        // Get Produsen Exhibition Scores
+        // Get Produsen Exhibition Scores (ALL participants)
         $hasilProdusen = ProdusenForm::select(
             'produsen_forms.respondent_id',
             'produsen_forms.nama_instansi as nama',
@@ -159,7 +158,6 @@ class HasilPenilaianController extends Controller
                 AND rea.exhibition_type = "produsen"
             ) as total_juri_exhibition')
         )
-        ->where('nominasi', true)
         ->get();
         
         // Merge and sort by exhibition score
@@ -177,7 +175,7 @@ class HasilPenilaianController extends Controller
     {
         $format = $request->query('format', 'excel'); // excel, pdf
         
-        // Get BPKH Exhibition Scores
+        // Get BPKH Exhibition Scores (ALL participants)
         $hasilBpkh = BpkhForm::select(
             'bpkh_forms.respondent_id',
             'bpkh_forms.nama_bpkh as nama',
@@ -196,10 +194,9 @@ class HasilPenilaianController extends Controller
                 AND rea.exhibition_type = "bpkh"
             ) as total_juri_exhibition')
         )
-        ->where('nominasi', true)
         ->get();
         
-        // Get Produsen Exhibition Scores
+        // Get Produsen Exhibition Scores (ALL participants)
         $hasilProdusen = ProdusenForm::select(
             'produsen_forms.respondent_id',
             'produsen_forms.nama_instansi as nama',
@@ -218,7 +215,6 @@ class HasilPenilaianController extends Controller
                 AND rea.exhibition_type = "produsen"
             ) as total_juri_exhibition')
         )
-        ->where('nominasi', true)
         ->get();
         
         // Merge and sort

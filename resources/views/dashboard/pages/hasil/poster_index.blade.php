@@ -30,6 +30,12 @@
         letter-spacing: 0.5px;
     }
 
+    .table-hasil td.wrap-text {
+        white-space: normal !important;
+        word-wrap: break-word;
+        word-break: break-word;
+    }
+
     .nilai-final {
         font-size: 18px;
         font-weight: 700;
@@ -116,20 +122,21 @@
                         <div class="alert alert-info alert-dismissible fade show" role="alert">
                             <i class="bx bx-info-circle me-2"></i>
                             <strong>Informasi:</strong> Tabel ini menampilkan hasil penilaian <strong>Poster/Exhibition</strong> dari BPKH dan Produsen yang sudah dinilai oleh juri.
-                            Nilai yang ditampilkan adalah khusus kategori  exhibition / poster.
+                            Nilai yang ditampilkan adalah khusus kategori exhibition / poster. 
+                            Baris dengan <span class="badge bg-danger">background merah</span> menandakan belum dinilai oleh <strong>minimal 3 juri</strong>.
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
 
                         <div class="table-responsive">
-                            <table id="table-poster" class="table table-bordered table-hover table-hasil dt-responsive nowrap w-100">
+                            <table id="table-poster" class="table table-bordered table-hover table-hasil w-100">
                                 <thead>
                                     <tr>
                                         <th class="text-center" style="width: 40px;">Rank</th>
-                                        <th class="text-center" style="width: 100px;">Kategori</th>
-                                        <th style="width: 200px;">Nama</th>
-                                        <th style="width: 150px;">Petugas</th>
-                                        <th class="text-center" style="width: 120px;">Nilai Exhibition</th>
-                                        <th class="text-center" style="width: 100px;">Juri Penilai</th>
+                                        <th class="text-center" style="width: 80px;">Kategori</th>
+                                        <th style="width: 180px;">Nama</th>
+                                        <th style="width: 120px;">Petugas</th>
+                                        <th class="text-center" style="width: 100px;">Nilai Exhibition</th>
+                                        <th class="text-center" style="width: 90px;">Juri Penilai</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -152,10 +159,10 @@
                                                 <span class="badge bg-success">Produsen</span>
                                             @endif
                                         </td>
-                                        <td>
+                                        <td class="wrap-text">
                                             <strong>{{ $item->nama }}</strong>
                                         </td>
-                                        <td>{{ $item->petugas }}</td>
+                                        <td class="wrap-text">{{ $item->petugas }}</td>
                                         <td class="text-center">
                                             <span class="nilai-final">{{ number_format($item->nilai_exhibition, 2) }}</span>
                                         </td>
@@ -200,6 +207,7 @@ $(document).ready(function() {
         responsive: true,
         pageLength: 25,
         order: [[0, 'asc']], // Sort by rank
+        autoWidth: false,
         language: {
             search: "Cari:",
             lengthMenu: "Tampilkan _MENU_ data",

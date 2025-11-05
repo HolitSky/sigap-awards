@@ -97,13 +97,13 @@
 <body>
     <div class="header">
         <h1>{{ $title }}</h1>
-        <p class="subtitle">Nominees Only - SIGAP Award 2025</p>
+        <p class="subtitle">Poster/Exhibition Category - SIGAP Award 2025</p>
         <p style="font-size: 9px; color: #666;">Dicetak pada: {{ date('d/m/Y H:i') }}</p>
     </div>
 
     <div class="info-box">
-        <strong>Informasi:</strong> Tabel ini menampilkan hasil penilaian Poster/Exhibition dari BPKH dan Produsen yang sudah dinominasikan.<br>
-        Nilai yang ditampilkan adalah nilai exhibition dengan bobot 20%.
+        <strong>Informasi:</strong> Tabel ini menampilkan hasil penilaian Poster/Exhibition dari BPKH dan Produsen yang sudah dinilai oleh juri.<br>
+        Nilai yang ditampilkan adalah khusus kategori exhibition / poster.
     </div>
 
     <table>
@@ -145,7 +145,7 @@
 
     <div class="footer">
         <p><strong>SIGAP Award 2025</strong> - Sistem Informasi Penilaian Poster/Exhibition</p>
-        <p>Total Nominees: {{ count($data) }} | Dokumen ini bersifat rahasia</p>
+        <p>Total Peserta: {{ count($data) }} | Dokumen ini bersifat rahasia</p>
     </div>
 </body>
 </html>
