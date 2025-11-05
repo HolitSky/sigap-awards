@@ -90,11 +90,28 @@
             <div class="col-lg-12 mb-4">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title mb-3">
-                            <i class="bx bx-building me-2 text-primary"></i>Hasil Penilaian Final BPKH
-                            <span class="badge bg-success ms-2">Nominees Only</span>
-                        </h4>
-                        <p class="card-title-desc">Nilai Final = Form (45%) + Presentasi (35%) + Exhibition (20%) | Badge menunjukkan jumlah juri yang sudah menilai</p>
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h4 class="card-title mb-1">
+                                    <i class="bx bx-building me-2 text-primary"></i>Hasil Penilaian Final BPKH
+                                    <span class="badge bg-success ms-2">Nominees Only</span>
+                                </h4>
+                                <p class="card-title-desc mb-0">Nilai Final = Form (45%) + Presentasi (35%) + Exhibition (20%) | Badge menunjukkan jumlah juri yang sudah menilai</p>
+                            </div>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bx bx-download"></i> Export
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{{ route('dashboard.hasil.export-bpkh', ['format' => 'excel']) }}">
+                                        <i class="bx bxs-file-export"></i> Excel
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="{{ route('dashboard.hasil.export-bpkh', ['format' => 'pdf']) }}">
+                                        <i class="bx bxs-file-pdf"></i> PDF
+                                    </a></li>
+                                </ul>
+                            </div>
+                        </div>
                         
                         <div class="alert alert-warning alert-dismissible fade show" role="alert">
                             <i class="bx bx-info-circle me-2"></i>
@@ -174,11 +191,28 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="card-title mb-3">
-                            <i class="bx bx-briefcase me-2 text-success"></i>Hasil Penilaian Final Produsen
-                            <span class="badge bg-success ms-2">Nominees Only</span>
-                        </h4>
-                        <p class="card-title-desc">Nilai Final = Form (45%) + Presentasi (35%) + Exhibition (20%) | Badge menunjukkan jumlah juri yang sudah menilai</p>
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h4 class="card-title mb-1">
+                                    <i class="bx bx-briefcase me-2 text-success"></i>Hasil Penilaian Final Produsen
+                                    <span class="badge bg-success ms-2">Nominees Only</span>
+                                </h4>
+                                <p class="card-title-desc mb-0">Nilai Final = Form (45%) + Presentasi (35%) + Exhibition (20%) | Badge menunjukkan jumlah juri yang sudah menilai</p>
+                            </div>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bx bx-download"></i> Export
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{{ route('dashboard.hasil.export-produsen', ['format' => 'excel']) }}">
+                                        <i class="bx bxs-file-export"></i> Excel
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="{{ route('dashboard.hasil.export-produsen', ['format' => 'pdf']) }}">
+                                        <i class="bx bxs-file-pdf"></i> PDF
+                                    </a></li>
+                                </ul>
+                            </div>
+                        </div>
 
                         <div class="alert alert-warning alert-dismissible fade show" role="alert">
                             <i class="bx bx-info-circle me-2"></i>

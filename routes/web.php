@@ -63,6 +63,8 @@ Route::middleware(['auth'])->group(function () {
 
     // Hasil Penilaian Final
     Route::get('/hasil-penilaian', [\App\Http\Controllers\dashboard\HasilPenilaianController::class, 'index'])->name('dashboard.hasil.index');
+    Route::get('/hasil-penilaian/export-bpkh', [\App\Http\Controllers\dashboard\HasilPenilaianController::class, 'exportBpkh'])->name('dashboard.hasil.export-bpkh');
+    Route::get('/hasil-penilaian/export-produsen', [\App\Http\Controllers\dashboard\HasilPenilaianController::class, 'exportProdusen'])->name('dashboard.hasil.export-produsen');
 
     // Profile Routes
     Route::get('/profile', [UserProfileController::class, 'index'])->name('profile.index');
