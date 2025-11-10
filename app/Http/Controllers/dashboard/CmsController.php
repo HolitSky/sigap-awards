@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\CardBox;
 use App\Models\LaunchDate;
 use App\Models\ModalInfo;
 use Illuminate\Http\Request;
@@ -228,5 +229,152 @@ class CmsController extends Controller
 
         return redirect()->route('dashboard.cms.modal-info.index')
             ->with('success', 'Modal info berhasil diupdate');
+    }
+
+    /**
+     * Display card box management page
+     */
+    public function cardBoxIndex()
+    {
+        $title = 'Manajemen Card Box';
+        $pageTitle = 'Manajemen Card Box';
+        $breadcrumbs = [
+            ['name' => 'Dashboard', 'url' => route('dashboard.index')],
+            ['name' => 'CMS', 'url' => '#'],
+            ['name' => 'Card Box', 'active' => true]
+        ];
+        
+        $cardBoxes = CardBox::ordered()->get();
+        return view('dashboard.pages.cms.card-box.index', compact('cardBoxes', 'title', 'pageTitle', 'breadcrumbs'));
+    }
+
+    /**
+     * Store a new card box
+     */
+    public function cardBoxStore(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string|min:4|max:100',
+            'description' => 'required|string|min:10|max:500',
+            'content_type' => 'required|in:text_only,link,modal',
+            'button_text' => 'required_if:content_type,link,modal|nullable|string|max:50',
+            'link_url' => 'required_if:content_type,link|nullable|url|max:255',
+            'modal_content' => 'required_if:content_type,modal|nullable|string',
+            'order' => 'nullable|integer|min:0'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // Get max order and set new order
+        $maxOrder = CardBox::max('order') ?? -1;
+        $newOrder = $request->order ? (int)$request->order - 1 : ($maxOrder + 1);
+        
+        $isActive = $request->has('is_active') ? true : false;
+
+        // Jika set aktif, nonaktifkan semua card box lain
+        if ($isActive) {
+            CardBox::where('is_active', true)->update(['is_active' => false]);
+        }
+
+        $data = [
+            'title' => $request->title,
+            'description' => $request->description,
+            'content_type' => $request->content_type,
+            'button_text' => in_array($request->content_type, ['link', 'modal']) ? $request->button_text : null,
+            'link_url' => $request->content_type === 'link' ? $request->link_url : null,
+            'modal_content' => $request->content_type === 'modal' ? $request->modal_content : null,
+            'order' => $newOrder,
+            'is_active' => $isActive,
+        ];
+
+        CardBox::create($data);
+
+        return redirect()->route('dashboard.cms.card-box.index')
+            ->with('success', 'Card box berhasil ditambahkan');
+    }
+
+    /**
+     * Update card box
+     */
+    public function cardBoxUpdate(Request $request, $id)
+    {
+        $cardBox = CardBox::findOrFail($id);
+
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string|min:4|max:100',
+            'description' => 'required|string|min:10|max:500',
+            'content_type' => 'required|in:text_only,link,modal',
+            'button_text' => 'required_if:content_type,link,modal|nullable|string|max:50',
+            'link_url' => 'required_if:content_type,link|nullable|url|max:255',
+            'modal_content' => 'required_if:content_type,modal|nullable|string',
+            'order' => 'nullable|integer|min:0'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $isActive = $request->has('is_active') ? true : false;
+
+        // Jika set aktif, nonaktifkan semua card box lain kecuali yang sedang diedit
+        if ($isActive) {
+            CardBox::where('is_active', true)
+                ->where('id', '!=', $id)
+                ->update(['is_active' => false]);
+        }
+
+        $data = [
+            'title' => $request->title,
+            'description' => $request->description,
+            'content_type' => $request->content_type,
+            'button_text' => in_array($request->content_type, ['link', 'modal']) ? $request->button_text : null,
+            'link_url' => $request->content_type === 'link' ? $request->link_url : null,
+            'modal_content' => $request->content_type === 'modal' ? $request->modal_content : null,
+            'order' => $request->order ? (int)$request->order - 1 : 0,
+            'is_active' => $isActive,
+        ];
+
+        $cardBox->update($data);
+
+        return redirect()->route('dashboard.cms.card-box.index')
+            ->with('success', 'Card box berhasil diupdate');
+    }
+
+    /**
+     * Delete card box
+     */
+    public function cardBoxDestroy($id)
+    {
+        $cardBox = CardBox::findOrFail($id);
+        $cardBox->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Card box berhasil dihapus'
+        ]);
+    }
+
+    /**
+     * Update order of card boxes
+     */
+    public function cardBoxUpdateOrder(Request $request)
+    {
+        $orders = $request->input('orders', []);
+
+        foreach ($orders as $order) {
+            CardBox::where('id', $order['id'])
+                ->update(['order' => $order['order']]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Urutan berhasil diupdate'
+        ]);
     }
 }

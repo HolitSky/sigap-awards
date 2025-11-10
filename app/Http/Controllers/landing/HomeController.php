@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\landing;
 
 use App\Http\Controllers\Controller;
+use App\Models\CardBox;
 use App\Models\LaunchDate;
 use App\Models\ModalInfo;
 use Illuminate\Http\Request;
@@ -29,6 +30,9 @@ class HomeController extends Controller
         $reminderModal = ModalInfo::getActiveReminderModal();
         $welcomeModal = ModalInfo::getActiveWelcomeModal();
 
+        // Get active card boxes from database (dynamic)
+        $cardBoxes = CardBox::active()->ordered()->get();
+
         // Load team data dari JSON
         $teamDataPath = public_path('sigap-assets/static/team-data.json');
         $teamData = json_decode(file_get_contents($teamDataPath), true);
@@ -37,7 +41,7 @@ class HomeController extends Controller
         $journalDataPath = public_path('sigap-assets/static/journal-data.json');
         $journalData = json_decode(file_get_contents($journalDataPath), true);
 
-        return view('landing.pages.home.index', compact('launchStart', 'launchFinish', 'teamData', 'journalData', 'rangeDate', 'rangeDateStart', 'rangeDateEnd', 'singleDate', 'launchDate', 'reminderModal', 'welcomeModal'));
+        return view('landing.pages.home.index', compact('launchStart', 'launchFinish', 'teamData', 'journalData', 'rangeDate', 'rangeDateStart', 'rangeDateEnd', 'singleDate', 'launchDate', 'reminderModal', 'welcomeModal', 'cardBoxes'));
     }
 
     public function voteMenu(Request $request)

@@ -180,6 +180,13 @@ Route::middleware(['auth'])->group(function () {
         // CMS Modal Info Routes (Superadmin only)
         Route::get('/cms/modal-info', [CmsController::class, 'modalInfoIndex'])->name('dashboard.cms.modal-info.index');
         Route::put('/cms/modal-info/{id}', [CmsController::class, 'modalInfoUpdate'])->name('dashboard.cms.modal-info.update');
+        
+        // CMS Card Box Routes (Superadmin only)
+        Route::get('/cms/card-box', [CmsController::class, 'cardBoxIndex'])->name('dashboard.cms.card-box.index');
+        Route::post('/cms/card-box', [CmsController::class, 'cardBoxStore'])->name('dashboard.cms.card-box.store');
+        Route::put('/cms/card-box/{id}', [CmsController::class, 'cardBoxUpdate'])->name('dashboard.cms.card-box.update');
+        Route::delete('/cms/card-box/{id}', [CmsController::class, 'cardBoxDestroy'])->name('dashboard.cms.card-box.destroy');
+        Route::post('/cms/card-box/update-order', [CmsController::class, 'cardBoxUpdateOrder'])->name('dashboard.cms.card-box.update-order');
     });
 
 });

@@ -81,15 +81,50 @@
                                 </div>
         --}}
 
+        @forelse($cardBoxes as $cardBox)
+        <div class="vote-menu">
+            <h3 class="vote-menu__title">{{ $cardBox->title }}</h3>
+            <p class="vote-menu__desc">{{ $cardBox->description }}</p>
+            
+            @if($cardBox->content_type === 'text_only')
+                {{-- No button for text only --}}
+            @elseif($cardBox->content_type === 'link')
+                <a href="{{ $cardBox->link_url }}" target="_blank" class="vote-menu__btn">{{ $cardBox->button_text }}</a>
+            @elseif($cardBox->content_type === 'modal')
+                <a href="javascript:void(0);" class="vote-menu__btn open-box-modal" data-modal-id="cardBoxModal{{ $cardBox->id }}" aria-expanded="false">{{ $cardBox->button_text }}</a>
+            @endif
+        </div>
+        @empty
         <div class="vote-menu">
             <h3 class="vote-menu__title">Vote Pengelola IGT Terbaik 2025</h3>
             <p class="vote-menu__desc">Klik tombol di bawah untuk menuju halaman voting.</p>
             <a href="javascript:void(0);" id="openVoteConfirm" class="vote-menu__btn" aria-controls="voteConfirmModal" aria-expanded="false">Buka Halaman Voting</a>
         </div>
+        @endforelse
 
     </div>
 
-    <!-- Vote Confirmation Modal -->
+    @foreach($cardBoxes as $cardBox)
+        @if($cardBox->content_type === 'modal')
+        <!-- Modal for {{ $cardBox->title }} -->
+        <div id="cardBoxModal{{ $cardBox->id }}" class="modal-overlay" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>{{ $cardBox->title }}</h3>
+                    <span class="modal-close" aria-label="Tutup">&times;</span>
+                </div>
+                <div class="modal-body">
+                    {!! nl2br(e($cardBox->modal_content)) !!}
+                </div>
+                <div class="modal-footer">
+                    <button class="modal-btn-close" type="button">Tutup</button>
+                </div>
+            </div>
+        </div>
+        @endif
+    @endforeach
+
+    <!-- Default Vote Confirmation Modal (fallback) -->
     <div id="voteConfirmModal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
@@ -97,7 +132,7 @@
                 <span class="modal-close" aria-label="Tutup">&times;</span>
             </div>
             <div class="modal-body">
-                <p>Apakah Anda ingin menuju halaman voting 2025?</p>
+                <p>Apakah Anda ingin menuju halaman?</p>
             </div>
             <div class="modal-footer">
                 <button class="modal-btn-close" type="button">Batal</button>
@@ -159,35 +194,81 @@ document.addEventListener('DOMContentLoaded', function () {
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    // Generic modal handler for all box counter modals
+    function showModal(modal, trigger) {
+        if (!modal) return;
+        modal.style.display = 'flex';
+        setTimeout(function () { modal.classList.add('show'); }, 10);
+        if (trigger) trigger.setAttribute('aria-expanded', 'true');
+    }
+
+    function hideModal(modal, trigger) {
+        if (!modal) return;
+        modal.classList.remove('show');
+        setTimeout(function () { modal.style.display = 'none'; }, 300);
+        if (trigger) trigger.setAttribute('aria-expanded', 'false');
+    }
+
+    // Handle all open-box-modal buttons
+    document.querySelectorAll('.open-box-modal').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            var modalId = this.getAttribute('data-modal-id');
+            var modal = document.getElementById(modalId);
+            showModal(modal, this);
+        });
+    });
+
+    // Handle all modal close buttons and icons
+    document.querySelectorAll('.modal-overlay').forEach(function(modal) {
+        var closeIcon = modal.querySelector('.modal-close');
+        var closeBtn = modal.querySelector('.modal-btn-close');
+        
+        if (closeIcon) {
+            closeIcon.addEventListener('click', function() {
+                hideModal(modal);
+            });
+        }
+        
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function() {
+                hideModal(modal);
+            });
+        }
+        
+        // Close on backdrop click
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) hideModal(modal);
+        });
+    });
+
+    // Default vote modal (fallback)
     var voteModal = document.getElementById('voteConfirmModal');
     var openBtn = document.getElementById('openVoteConfirm');
-    var closeIcon = voteModal ? voteModal.querySelector('.modal-close') : null;
-    var closeBtn = voteModal ? voteModal.querySelector('.modal-btn-close') : null;
     var goBtn = document.getElementById('btnGoVote');
     var targetUrl = 'https://form.sigap-award.site/voting2025';
 
-    function showVoteModal() {
-        if (!voteModal) return;
-        voteModal.style.display = 'flex';
-        setTimeout(function () { voteModal.classList.add('show'); }, 10);
-        if (openBtn) openBtn.setAttribute('aria-expanded', 'true');
+    if (openBtn) {
+        openBtn.addEventListener('click', function (e) { 
+            e.preventDefault(); 
+            showModal(voteModal, openBtn); 
+        });
     }
 
-    function hideVoteModal() {
-        if (!voteModal) return;
-        voteModal.classList.remove('show');
-        setTimeout(function () { voteModal.style.display = 'none'; }, 300);
-        if (openBtn) openBtn.setAttribute('aria-expanded', 'false');
+    if (goBtn) {
+        goBtn.addEventListener('click', function () { 
+            window.open(targetUrl, '_blank'); 
+            hideModal(voteModal, openBtn); 
+        });
     }
 
-    if (openBtn) openBtn.addEventListener('click', function (e) { e.preventDefault(); showVoteModal(); });
-    if (closeIcon) closeIcon.addEventListener('click', hideVoteModal);
-    if (closeBtn) closeBtn.addEventListener('click', hideVoteModal);
-    if (voteModal) voteModal.addEventListener('click', function (e) { if (e.target === voteModal) hideVoteModal(); });
-    if (goBtn) goBtn.addEventListener('click', function () { window.open(targetUrl, '_blank'); hideVoteModal(); });
-
+    // ESC key to close any open modal
     document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && voteModal && voteModal.classList.contains('show')) hideVoteModal();
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.modal-overlay.show').forEach(function(modal) {
+                hideModal(modal);
+            });
+        }
     });
 });
 </script>

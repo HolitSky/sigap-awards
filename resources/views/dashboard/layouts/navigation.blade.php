@@ -160,6 +160,13 @@
                     </a>
                 </li>
 
+                 <li>
+                    <a href="{{ route('dashboard.cms.card-box.index') }}" class="waves-effect">
+                        <i class="mdi mdi-card-outline"></i>
+                        <span key="t-forms">Card Box</span>
+                    </a>
+                </li>
+
 
 
             </ul>
