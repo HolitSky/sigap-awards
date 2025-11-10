@@ -147,6 +147,13 @@
 
 
                  <li>
+                    <a href="{{ route('dashboard.cms.menu-choice.index') }}" class="waves-effect">
+                        <i class="mdi mdi-menu"></i>
+                        <span key="t-forms">Menu Choices</span>
+                    </a>
+                </li>
+
+                 <li>
                     <a href="{{ route('dashboard.cms.launch-date.index') }}" class="waves-effect">
                         <i class="mdi mdi-calendar-range"></i>
                         <span key="t-forms">Launch Date</span>

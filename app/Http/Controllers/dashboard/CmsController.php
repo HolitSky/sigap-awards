@@ -5,6 +5,7 @@ namespace App\Http\Controllers\dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\CardBox;
 use App\Models\LaunchDate;
+use App\Models\MenuChoice;
 use App\Models\ModalInfo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -375,6 +376,118 @@ class CmsController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Urutan berhasil diupdate'
+        ]);
+    }
+
+    /**
+     * Display menu choices management page
+     */
+    public function menuChoiceIndex()
+    {
+        $title = 'Menu Choices';
+        $menuChoices = MenuChoice::latest()->get();
+        return view('dashboard.pages.cms.menu-choices.index', compact('title', 'menuChoices'));
+    }
+
+    /**
+     * Store new menu choice
+     */
+    public function menuChoiceStore(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'main_menu_title' => 'nullable|string|max:100',
+            'use_main_menu' => 'required|boolean',
+            'menu_items' => 'required|json',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // Decode and validate menu items
+        $menuItems = json_decode($request->menu_items, true);
+        if (!is_array($menuItems) || empty($menuItems)) {
+            return redirect()->back()
+                ->with('error', 'Menu items harus berisi minimal 1 item')
+                ->withInput();
+        }
+
+        // Auto-deactivate other active menu choices if this one is active
+        $isActive = $request->has('is_active');
+        if ($isActive) {
+            MenuChoice::where('is_active', true)->update(['is_active' => false]);
+        }
+
+        MenuChoice::create([
+            'main_menu_title' => $request->main_menu_title,
+            'use_main_menu' => $request->use_main_menu,
+            'menu_items' => $menuItems,
+            'is_active' => $isActive,
+        ]);
+
+        return redirect()->route('dashboard.cms.menu-choice.index')
+            ->with('success', 'Menu choice berhasil ditambahkan');
+    }
+
+    /**
+     * Update menu choice
+     */
+    public function menuChoiceUpdate(Request $request, $id)
+    {
+        $menuChoice = MenuChoice::findOrFail($id);
+
+        $validator = Validator::make($request->all(), [
+            'main_menu_title' => 'nullable|string|max:100',
+            'use_main_menu' => 'required|boolean',
+            'menu_items' => 'required|json',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        // Decode and validate menu items
+        $menuItems = json_decode($request->menu_items, true);
+        if (!is_array($menuItems) || empty($menuItems)) {
+            return redirect()->back()
+                ->with('error', 'Menu items harus berisi minimal 1 item')
+                ->withInput();
+        }
+
+        // Auto-deactivate other active menu choices if this one is active
+        $isActive = $request->has('is_active');
+        if ($isActive) {
+            MenuChoice::where('id', '!=', $id)
+                ->where('is_active', true)
+                ->update(['is_active' => false]);
+        }
+
+        $menuChoice->update([
+            'main_menu_title' => $request->main_menu_title,
+            'use_main_menu' => $request->use_main_menu,
+            'menu_items' => $menuItems,
+            'is_active' => $isActive,
+        ]);
+
+        return redirect()->route('dashboard.cms.menu-choice.index')
+            ->with('success', 'Menu choice berhasil diupdate');
+    }
+
+    /**
+     * Delete menu choice
+     */
+    public function menuChoiceDestroy($id)
+    {
+        $menuChoice = MenuChoice::findOrFail($id);
+        $menuChoice->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Menu choice berhasil dihapus'
         ]);
     }
 }

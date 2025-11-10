@@ -187,6 +187,12 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/cms/card-box/{id}', [CmsController::class, 'cardBoxUpdate'])->name('dashboard.cms.card-box.update');
         Route::delete('/cms/card-box/{id}', [CmsController::class, 'cardBoxDestroy'])->name('dashboard.cms.card-box.destroy');
         Route::post('/cms/card-box/update-order', [CmsController::class, 'cardBoxUpdateOrder'])->name('dashboard.cms.card-box.update-order');
+        
+        // CMS Menu Choices Routes (Superadmin only)
+        Route::get('/cms/menu-choice', [CmsController::class, 'menuChoiceIndex'])->name('dashboard.cms.menu-choice.index');
+        Route::post('/cms/menu-choice', [CmsController::class, 'menuChoiceStore'])->name('dashboard.cms.menu-choice.store');
+        Route::put('/cms/menu-choice/{id}', [CmsController::class, 'menuChoiceUpdate'])->name('dashboard.cms.menu-choice.update');
+        Route::delete('/cms/menu-choice/{id}', [CmsController::class, 'menuChoiceDestroy'])->name('dashboard.cms.menu-choice.destroy');
     });
 
 });

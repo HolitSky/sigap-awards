@@ -2,6 +2,28 @@
 <!-- GLightbox CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
 <style>
+    /* Fix border issue on circle animation */
+    .about-team__users,
+    .about-team__users-header {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    /* Hide content during circle animation at 1100px width */
+    @media (min-width: 1100px) and (max-width: 1199px) {
+        .about-team__users-content {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transition: opacity 0.3s ease 0.5s, visibility 0s 0.5s !important;
+        }
+        
+        .about-team__users.active .about-team__users-content {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+    }
+
     /* Floating animation for desktop (up & down) */
     @keyframes floating {
         0% {
@@ -112,5 +134,26 @@
                              const lightbox = GLightbox({
                                  selector: '[data-fancybox="team-gallery"]'
                              });
+
+                             // Fix: Add 'active' class after animation completes (for 1100px width)
+                             const aboutTeamBox = document.querySelector('.about-team__box');
+                             const aboutTeamUsers = document.querySelector('.about-team__users');
+                             
+                             if (aboutTeamBox && aboutTeamUsers) {
+                                 aboutTeamBox.addEventListener('click', function() {
+                                     // Add active class after animation delay (800ms)
+                                     setTimeout(() => {
+                                         aboutTeamUsers.classList.add('active');
+                                     }, 800);
+                                 });
+                                 
+                                 // Remove active class when closing
+                                 const closeBtn = document.querySelector('.about-team__users-btn-close');
+                                 if (closeBtn) {
+                                     closeBtn.addEventListener('click', function() {
+                                         aboutTeamUsers.classList.remove('active');
+                                     });
+                                 }
+                             }
                          </script>
                          @endpush

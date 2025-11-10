@@ -1,3 +1,9 @@
+@php
+    // Define variables at top level for use throughout the view
+    $hasMenuChoice = isset($menuChoice) && $menuChoice;
+    $useModal = $hasMenuChoice && ($menuChoice->use_main_menu === true || $menuChoice->use_main_menu === 1 || $menuChoice->use_main_menu === '1');
+@endphp
+
 @push('styles')
     <style>
                             .glass-card {
@@ -431,11 +437,40 @@
                             <img src="{{ asset('sigap-assets/images/m4cr-logo.png') }}" alt="Logo M4CR">
                         </div>
                         <div class="glass-container">
-                            <!-- Main Menu Button -->
-                            <button class="main-menu-button" onclick="showMenuModal()">
-                                <span class="menu-item-icon">📋</span>
-                                <span>Menu SIGAP Award 2025</span>
-                            </button>
+                            @if($hasMenuChoice && $useModal)
+                                <!-- Main Menu Button (Modal Mode) -->
+                                <button class="main-menu-button" onclick="event.preventDefault(); event.stopPropagation(); showMenuModal();">
+                                    <span class="menu-item-icon">📋</span>
+                                    <span>{{ $menuChoice->main_menu_title }}</span>
+                                </button>
+                            @elseif($hasMenuChoice && !$useModal)
+                                <!-- Direct Menu Display -->
+                                @foreach($menuChoice->menu_items as $index => $item)
+                                <div class="glass-card">
+                                    @if(isset($item['type']) && $item['type'] === 'modal')
+                                        <a href="javascript:void(0);" onclick="showSubmenuModal('submenu-{{ $index }}')">
+                                            @if(!empty($item['icon']))
+                                                <span class="menu-item-icon">{{ $item['icon'] }}</span>
+                                            @endif
+                                            {{ $item['title'] }}
+                                        </a>
+                                    @else
+                                        <a href="{{ $item['link'] }}" target="_blank">
+                                            @if(!empty($item['icon']))
+                                                <span class="menu-item-icon">{{ $item['icon'] }}</span>
+                                            @endif
+                                            {{ $item['title'] }}
+                                        </a>
+                                    @endif
+                                </div>
+                                @endforeach
+                            @else
+                                <!-- Fallback jika tidak ada menu choice aktif -->
+                                <button class="main-menu-button" onclick="showMenuModal()">
+                                    <span class="menu-item-icon">📋</span>
+                                    <span>Menu SIGAP Award 2025</span>
+                                </button>
+                            @endif
                         </div>
                     </div>
 
@@ -506,37 +541,87 @@
                     <div id="menuModal" class="menu-modal">
                         <div class="menu-modal-content">
                             <div class="menu-modal-header">
-                                <h3 class="menu-modal-title">Menu SIGAP Award 2025</h3>
+                                <h3 class="menu-modal-title">
+                                    @if($hasMenuChoice && $useModal)
+                                        {{ $menuChoice->main_menu_title }}
+                                    @else
+                                        Menu SIGAP Award 2025
+                                    @endif
+                                </h3>
                                 <button class="menu-modal-close" onclick="closeMenuModal()">&times;</button>
                             </div>
                             <div class="menu-list">
-                                 <a href="javascript:void(0);" onclick="closeMenuModal(); showUploadPosterModal();" class="menu-item">
-                                    <span class="menu-item-icon">🖼️</span>
-                                    <span>Upload Poster SIGAP Award 2025</span>
-                                </a>
-                                <a href="{{ route('poster-criteria') }}" class="menu-item">
-                                    <span class="menu-item-icon">📋</span>
-                                    <span>Kriteria Poster SIGAP Award 2025</span>
-                                </a>
-                                <a href="{{ route('result-presentation') }}" class="menu-item">
-                                    <span class="menu-item-icon">📑</span>
-                                    <span>Rekapan Presentasi Peserta Sigap Award 2025</span>
-                                </a>
-                                <a href="{{ route('cv-juri') }}" class="menu-item">
-                                    <span class="menu-item-icon">👨‍⚖️</span>
-                                    <span>Lihat CV Juri SIGAP Award 2025</span>
-                                </a>
-                                <a href="{{ route('announcement') }}" class="menu-item">
-                                    <span class="menu-item-icon">📢</span>
-                                    <span>Pengumuman: List Peserta Tahap Presentasi</span>
-                                </a>
-                                {{-- <a href="javascript:void(0);" onclick="closeMenuModal(); showUploadPresentasiModal();" class="menu-item">
-                                    <span class="menu-item-icon">📤</span>
-                                    <span>Upload Presentasi SIGAP Award 2025</span>
-                                </a> --}}
+                                @if($hasMenuChoice && $useModal)
+                                    @foreach($menuChoice->menu_items as $index => $item)
+                                        @if(isset($item['type']) && $item['type'] === 'modal')
+                                            <a href="javascript:void(0);" onclick="closeMenuModal(); showSubmenuModal('submenu-{{ $index }}');" class="menu-item">
+                                                @if(!empty($item['icon']))
+                                                    <span class="menu-item-icon">{{ $item['icon'] }}</span>
+                                                @endif
+                                                <span>{{ $item['title'] }}</span>
+                                            </a>
+                                        @else
+                                            <a href="{{ $item['link'] }}" class="menu-item">
+                                                @if(!empty($item['icon']))
+                                                    <span class="menu-item-icon">{{ $item['icon'] }}</span>
+                                                @endif
+                                                <span>{{ $item['title'] }}</span>
+                                            </a>
+                                        @endif
+                                    @endforeach
+                                @else
+                                    <!-- Fallback Static Menu Items -->
+                                    <a href="javascript:void(0);" onclick="closeMenuModal(); showUploadPosterModal();" class="menu-item">
+                                        <span class="menu-item-icon">🖼️</span>
+                                        <span>Upload Poster SIGAP Award 2025</span>
+                                    </a>
+                                    <a href="{{ route('poster-criteria') }}" class="menu-item">
+                                        <span class="menu-item-icon">📋</span>
+                                        <span>Kriteria Poster SIGAP Award 2025</span>
+                                    </a>
+                                    <a href="{{ route('result-presentation') }}" class="menu-item">
+                                        <span class="menu-item-icon">📑</span>
+                                        <span>Rekapan Presentasi Peserta Sigap Award 2025</span>
+                                    </a>
+                                    <a href="{{ route('cv-juri') }}" class="menu-item">
+                                        <span class="menu-item-icon">👨‍⚖️</span>
+                                        <span>Lihat CV Juri SIGAP Award 2025</span>
+                                    </a>
+                                    <a href="{{ route('announcement') }}" class="menu-item">
+                                        <span class="menu-item-icon">📢</span>
+                                        <span>Pengumuman: List Peserta Tahap Presentasi</span>
+                                    </a>
+                                @endif
                             </div>
                         </div>
                     </div>
+
+                    <!-- Sub-menu Modals (Dynamic) -->
+                    @if($hasMenuChoice)
+                        @foreach($menuChoice->menu_items as $index => $item)
+                            @if(isset($item['type']) && $item['type'] === 'modal' && isset($item['submenu']))
+                            <div id="submenu-{{ $index }}" class="modal-overlay" style="display: none;">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h3>{{ $item['title'] }}</h3>
+                                        <span class="modal-close" onclick="closeSubmenuModal('submenu-{{ $index }}')">&times;</span>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p style="margin-bottom: 20px;">Pilih kategori:</p>
+                                        <div style="display: flex; flex-direction: column; gap: 15px;">
+                                            @foreach($item['submenu'] as $subitem)
+                                            <a href="{{ $subitem['link'] }}" target="_blank"
+                                               style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 30px; border-radius: 25px; text-decoration: none; font-weight: bold; text-align: center; transition: all 0.3s ease;">
+                                                {{ $subitem['title'] }}
+                                            </a>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
+                        @endforeach
+                    @endif
 </div>
 
 
@@ -711,16 +796,49 @@
         });
 
         // Menu Modal Functions
-        const menuModal = document.getElementById('menuModal');
-
         window.showMenuModal = function() {
-            menuModal.classList.add('show');
-            document.body.style.overflow = 'hidden'; // Prevent background scroll
+            const menuModal = document.getElementById('menuModal');
+            console.log('showMenuModal called, menuModal:', menuModal);
+            if (menuModal) {
+                menuModal.style.display = 'flex';
+                setTimeout(() => {
+                    menuModal.classList.add('show');
+                }, 10);
+                console.log('Modal opened with show class');
+            } else {
+                console.error('menuModal element not found!');
+            }
         }
 
         window.closeMenuModal = function() {
-            menuModal.classList.remove('show');
-            document.body.style.overflow = ''; // Restore scroll
+            const menuModal = document.getElementById('menuModal');
+            if (menuModal) {
+                menuModal.classList.remove('show');
+                setTimeout(() => {
+                    menuModal.style.display = 'none';
+                }, 300);
+            }
+        }
+
+        // Sub-menu Modal Functions
+        window.showSubmenuModal = function(modalId) {
+            const submenuModal = document.getElementById(modalId);
+            if (submenuModal) {
+                submenuModal.style.display = 'flex';
+                setTimeout(() => {
+                    submenuModal.classList.add('show');
+                }, 10);
+            }
+        }
+
+        window.closeSubmenuModal = function(modalId) {
+            const submenuModal = document.getElementById(modalId);
+            if (submenuModal) {
+                submenuModal.classList.remove('show');
+                setTimeout(() => {
+                    submenuModal.style.display = 'none';
+                }, 300);
+            }
         }
 
         // Close menu modal when clicking outside
