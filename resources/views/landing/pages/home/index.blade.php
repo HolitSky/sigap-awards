@@ -23,7 +23,7 @@
                 @if($welcomeModal->meta_links && is_array($welcomeModal->meta_links))
                     @foreach($welcomeModal->meta_links as $link)
                         @if($link['is_active'] ?? true)
-                            <div class="category-option" 
+                            <div class="category-option"
                                  data-link="{{ $link['link_url'] ?? '#' }}"
                                  style="padding: 10px; background: {{ $link['bg_color'] ?? 'rgba(0,0,0,0.05)' }}; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent; margin-bottom: 10px;">
                                 <strong>{{ $link['icon'] ?? '📌' }} {{ $link['title'] ?? 'Link' }}</strong><br>
@@ -175,9 +175,9 @@
         rangeDateEnd: @json(optional($rangeDateEnd)->locale('en')->isoFormat('MMMM D, YYYY 00:00:00')) ?? 'October 24, 2025 00:00:00',
         launchTitle: @json(optional($launchDate)->title) ?? 'Penganugerahan Sigap Award'
     };
-    
+
     console.log('LAUNCH_DATES config:', window.LAUNCH_DATES);
-    
+
     // Override calendar display for range date mode - CONTINUOUS FORCE
     document.addEventListener('DOMContentLoaded', function() {
         if (window.LAUNCH_DATES.rangeDate) {
@@ -185,7 +185,7 @@
                 const calendarDate = document.querySelector('.launch-date__calendar-date');
                 const calendarMonth = document.querySelector('.launch-date__calendar-month');
                 const calendarLabel = document.querySelector('.launch-date__calendar-label');
-                
+
                 if (calendarDate && calendarMonth && calendarLabel) {
                     // Get dates dynamically from LAUNCH_DATES
                     const startDate = new Date(window.LAUNCH_DATES.rangeDateStart);
@@ -195,14 +195,14 @@
                     const displayDate = startDay + '-' + endDay;
                     const monthName = startDate.toLocaleString('id-ID', { month: 'long' });
                     const isoDate = startDate.toISOString().split('T')[0];
-                    
+
                     // Only update if current value is wrong
                     if (calendarDate.textContent.trim() !== displayDate) {
                         calendarLabel.textContent = window.LAUNCH_DATES.launchTitle || 'Penganugerahan Sigap Award';
                         calendarDate.textContent = displayDate;
                         calendarMonth.textContent = monthName.charAt(0).toUpperCase() + monthName.slice(1);
                         calendarDate.setAttribute('datetime', isoDate);
-                        
+
                         // Stop any GSAP animations on these elements
                         if (window.gsap) {
                             gsap.killTweensOf(calendarDate);
@@ -211,13 +211,13 @@
                     }
                 }
             }
-            
+
             // Force immediately and continuously
             forceCalendarDisplay();
-            
+
             // Keep forcing every 100ms to override any animations
             const intervalId = setInterval(forceCalendarDisplay, 100);
-            
+
             // Also use MutationObserver to catch any changes
             setTimeout(function() {
                 const calendarDate = document.querySelector('.launch-date__calendar-date');
@@ -229,7 +229,7 @@
                             }
                         });
                     });
-                    
+
                     observer.observe(calendarDate, {
                         childList: true,
                         characterData: true,
@@ -243,7 +243,7 @@
     // Welcome Modal Auto Show
     document.addEventListener('DOMContentLoaded', function() {
         const welcomeModal = document.getElementById('welcomeModal');
-        
+
         // If welcome modal exists, initialize it
         if (welcomeModal) {
             const welcomeCloseBtn = document.getElementById('welcome-close');
@@ -281,7 +281,7 @@
             categoryOptions.forEach(option => {
                 option.addEventListener('click', function() {
                     const link = this.getAttribute('data-link');
-                    
+
                     if (link) {
                         hideWelcomeModal();
                         setTimeout(() => {
