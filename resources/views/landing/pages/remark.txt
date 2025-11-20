@@ -595,6 +595,101 @@ DATE: October 24–25, 2025
 
 Notes: All changes are backward compatible and affect only landing pages and peserta registration validation.
 
+DATE: November 18, 2025
+
+6) Dashboard Navigation  Poster Results
+- New sidebar entry **"Hasil Penilaian Poster"** under the main Dashboard menu.
+- Route definitions in `routes/web.php`:
+  - `Route::get('/hasil-poster', HasilPenilaianController::class.'@posterIndex')->name('dashboard.hasil.poster');`
+  - `Route::get('/hasil-poster/export', HasilPenilaianController::class.'@exportPoster')->name('dashboard.hasil.export-poster');`
+- Controller implementation in `App\Http\Controllers\dashboard\HasilPenilaianController`:
+  - Method `posterIndex()` reads **all** participants from `bpkh_forms` and `produsen_forms` tables and joins exhibition scores:
+    - Uses correlated subqueries to fetch `nilai_final_dengan_bobot` from `bpkh_exhibitions` and `produsen_exhibitions`.
+    - Counts distinct jury IDs from `record_exhibition_assesments` to derive `total_juri_exhibition` per respondent.
+    - Merges BPKH & Produsen collections and sorts by `nilai_exhibition` descending.
+  - Method `exportPoster(Request $request)` exposes export in **Excel** and **PDF** formats (`format` query: `excel` / `pdf`):
+    - Rebuilds the same BPKH/Produsen exhibition query as `posterIndex()`.
+    - Prepares a flattened array payload with columns: `Rank`, `Kategori`, `Nama`, `Petugas`, `Nilai Exhibition`, `Juri Penilai Exhibition`.
+    - Uses `Maatwebsite\Excel` (anonymous `FromArray` + `WithHeadings`) for `.xlsx` export.
+    - Uses `Barryvdh\DomPDF` with Blade view `dashboard.pages.hasil.exports.pdf-poster` for `.pdf` export.
+- Blade view `resources/views/dashboard/pages/hasil/poster_index.blade.php`:
+  - Extends `dashboard.layouts.app` and receives `$hasilPoster` from `posterIndex()`.
+  - Renders a DataTables-enhanced table (`#table-poster`) with columns: Rank, Kategori, Nama, Petugas, Nilai Exhibition, Juri Penilai.
+  - Applies rank badges (gold/silver/bronze gradients for Top 3) and grey badge for 4+.
+  - Highlights rows with less than **3** exhibition juries using `row-not-final` class and red-tinted background.
+  - Includes export dropdown buttons wired to routes `dashboard.hasil.export-poster` for Excel/PDF.
+
+7) CMS  Landing Page Configuration Module
+- New **"CMS"** section in the dashboard sidebar (`resources/views/dashboard/layouts/navigation.blade.php`), only visible for roles with `see-admin-menus` permission.
+- Backed by a dedicated controller `App\Http\Controllers\dashboard\CmsController` and 4 Eloquent models:
+  - `App\Models\MenuChoice`
+  - `App\Models\LaunchDate`
+  - `App\Models\ModalInfo`
+  - `App\Models\CardBox`
+
+  a) Menu Choices
+  - Database schema:
+    - Migration: `2024_11_10_070600_create_menu_choices_table.php`, table **`menu_choices`**.
+    - Columns: `main_menu_title` (nullable string), `use_main_menu` (boolean, default true), `menu_items` (JSON, array of `{title, link, icon}`), `is_active` (boolean), timestamps.
+  - Model: `App\Models\MenuChoice`
+    - `$fillable`: `main_menu_title`, `use_main_menu`, `menu_items`, `is_active`.
+    - `$casts`: `use_main_menu` and `is_active` as booleans, `menu_items` as array.
+    - Scope `active()` to filter the currently active configuration.
+    - Helper methods `usesMainMenu()` dan `getMenuItems()` untuk konsumsi di landing page.
+  - Controller actions in `CmsController`:
+    - `menuChoiceIndex()`  list all configurations and load view `dashboard.pages.cms.menu-choices.index`.
+    - `menuChoiceStore()`  validate JSON `menu_items`, auto-deactivate previous active record, create new row.
+    - `menuChoiceUpdate()`  update existing record and ensure only one active configuration at a time.
+    - `menuChoiceDestroy()`  soft delete (actually `delete()`) via JSON response.
+  - Seeder: `database/seeders/MenuChoiceSeeder.php`  provides an initial menu configuration for development/demo.
+
+  b) Launch Date
+  - Database schema:
+    - Migration: `2025_10_29_000001_create_launch_dates_table.php`, table **`launch_dates`**.
+    - Columns: `title`, `is_range_date`, `single_date`, `start_date`, `end_date`, `is_active`, `order`, timestamps.
+  - Model: `App\Models\LaunchDate`
+    - `$fillable` fields aligned with the migration.
+    - `$casts` ensures date casting for `single_date`, `start_date`, `end_date` and boolean flags.
+    - Helper methods: `getActiveLaunchDate()`, `getAllActiveLaunchDates()`, `formatted_date` and `month_name` accessors for landing display.
+  - Controller actions in `CmsController`:
+    - `launchDateIndex()`  list all launch windows ordered by `order` and `created_at`, view `dashboard.pages.cms.launch-date.index`.
+    - `launchDateStore()` dan `launchDateUpdate()`  handle single vs range dates, auto-ordering, and `is_active` flag.
+    - `launchDateUpdateOrder()`  AJAX endpoint to persist drag-and-drop ordering from the UI.
+    - `launchDateDestroy()`  remove a configuration via JSON response.
+  - Seeder: `database/seeders/LaunchDateSeeder.php`  seeds default SIGAP Awards date(s) for initial setup.
+
+  c) Modal Info
+  - Database schema built by a series of migrations on **`modal_infos`**:
+    - `2025_10_30_000001_create_modal_infos_table.php`  base table (`title`, `subtitle`, `is_show`).
+    - `2025_10_30_000002_add_welcome_modal_fields_to_modal_infos.php`  adds `modal_type` (`reminder`/`welcome`), `intro_text`, `footer_text`, `show_form_options`.
+    - `2025_10_30_000003_add_meta_links_to_modal_infos.php`  adds JSON `meta_links`.
+    - `2025_10_30_000004_make_subtitle_nullable_in_modal_infos.php` dan `2025_10_30_000005_update_title_subtitle_length_in_modal_infos.php`  adjust max length and nullable constraints for better copy flexibility.
+  - Model: `App\Models\ModalInfo`
+    - `$fillable`: `modal_type`, `title`, `subtitle`, `intro_text`, `footer_text`, `show_form_options`, `meta_links`, `is_show`.
+    - `$casts`: booleans for flags, array cast for `meta_links`.
+    - Static helpers: `getActiveReminderModal()`, `getActiveWelcomeModal()`, and legacy `getActiveModal()`.
+  - Controller actions in `CmsController`:
+    - `modalInfoIndex()`  load all records and render `dashboard.pages.cms.modal-info.index` with breadcrumbs `Dashboard > CMS > Modal Info`.
+    - `modalInfoUpdate()`  validation rules differ for `reminder` vs `welcome`, JSON decode `meta_links`, toggle `is_show` and `show_form_options` flags.
+  - Seeder: `database/seeders/ModalInfoSeeder.php`  seeds default reminder/welcome modal content for the landing page.
+
+  d) Card Box
+  - Database schema:
+    - Migration: `2024_11_10_063400_create_card_boxes_table.php`, table **`card_boxes`**.
+    - Columns: `title`, `description`, `content_type` (`text_only`/`link`/`modal`), `button_text`, `link_url`, `modal_content`, `order`, `is_active`, timestamps.
+  - Model: `App\Models\CardBox`
+    - Constants: `TYPE_TEXT_ONLY`, `TYPE_LINK`, `TYPE_MODAL`.
+    - Scopes: `active()` and `ordered()` to fetch the active card set in sorted order.
+    - Helper methods: `isTextOnly()`, `isLink()`, `isModal()`.
+  - Controller actions in `CmsController`:
+    - `cardBoxIndex()`  list cards ordered by `order`, view `dashboard.pages.cms.card-box.index`.
+    - `cardBoxStore()`  validate content type, auto-increment `order`, and ensure only one **active** card set at a time (deactivate others when `is_active` is checked).
+    - `cardBoxUpdate()`  similar validation and single-active enforcement, updates existing row.
+    - `cardBoxDestroy()` dan `cardBoxUpdateOrder()`  support deletion and drag-and-drop ordering via JSON endpoints.
+  - Seeder: `database/seeders/CardBoxSeeder.php`  seeds initial highlight cards (title, description, content type, and CTA) for the landing page hero section.
+
+- All CMS modules and Poster Results features are backward compatible and scoped to dashboard/landing configuration; no breaking changes to core scoring logic.
+
 ================================================================================
 END OF DOCUMENTATION
 ================================================================================

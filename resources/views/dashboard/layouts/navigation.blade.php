@@ -33,6 +33,13 @@
                     </a>
                 </li>
 
+                <li>
+                    <a href="{{ route('dashboard.hasil.favorite-poster') }}" class="waves-effect">
+                        <i class="mdi mdi-heart-multiple"></i>
+                        <span key="t-dashboards">Hasil Poster Favorit</span>
+                    </a>
+                </li>
+
             </ul>
 
              <ul class="metismenu list-unstyled" id="side-menu">
@@ -100,6 +107,21 @@
                         <i class="mdi mdi-image-album"></i>
                         {{-- <span class="badge rounded-pill bg-danger float-end">10</span> --}}
                         <span key="t-forms">Produsen DG</span>
+                    </a>
+                </li>
+
+
+            </ul>
+
+            <ul class="metismenu list-unstyled" id="side-menu">
+                <li class="menu-title" key="t-menu">Penilaian Poster Favorit</li>
+
+
+                 <li>
+                    <a href="{{ route('dashboard.favorite-poster.index') }}" class="waves-effect">
+                        <i class="mdi mdi-heart-multiple"></i>
+                        {{-- <span class="badge rounded-pill bg-danger float-end">10</span> --}}
+                        <span key="t-forms">Poster Favorit</span>
                     </a>
                 </li>
 

@@ -9,7 +9,10 @@ use App\Models\BpkhForm;
 use App\Models\ProdusenForm;
 use App\Models\BpkhPresentationAssesment;
 use App\Models\ProdusenPresentationAssesment;
+use App\Models\FavoritePosterVote;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DashboardController extends Controller
 {
@@ -131,5 +134,87 @@ class DashboardController extends Controller
         ];
 
         return view('dashboard.pages.form.produsen.index', compact('title', 'pageTitle', 'breadcrumbs'));
+    }
+
+    /**
+     * Display favorite poster results
+     */
+    public function favoritePosterResults()
+    {
+        $title = 'Hasil Penilaian Poster Favorit';
+
+        // Get all favorite poster votes, ordered by vote count descending
+        $hasilFavorite = FavoritePosterVote::orderBy('vote_count', 'desc')
+            ->orderBy('participant_name', 'asc')
+            ->get()
+            ->map(function ($vote, $index) {
+                $vote->rank = $index + 1;
+                return $vote;
+            });
+
+        return view('dashboard.pages.hasil.favorite_poster_index', compact('title', 'hasilFavorite'));
+    }
+
+    /**
+     * Export favorite poster results
+     */
+    public function exportFavoritePoster(Request $request)
+    {
+        $format = $request->query('format', 'excel'); // excel, pdf
+
+        $hasilFavorite = FavoritePosterVote::orderBy('vote_count', 'desc')
+            ->orderBy('participant_name', 'asc')
+            ->get();
+
+        $fileName = 'Hasil_Poster_Favorit_' . date('Y-m-d');
+
+        // Prepare data
+        $data = [];
+        foreach ($hasilFavorite as $index => $vote) {
+            $data[] = [
+                'Rank' => $index + 1,
+                'Kategori' => $vote->participant_type === 'bpkh' ? 'BPKH' : 'Produsen DG',
+                'Nama' => $vote->participant_name,
+                'Petugas' => $vote->petugas ?? '-',
+                'Jumlah Vote' => $vote->vote_count,
+                'Catatan' => $vote->notes ?? '-',
+            ];
+        }
+
+        if (empty($data)) {
+            return back()->withErrors(['error' => 'Tidak ada data untuk diekspor']);
+        }
+
+        if ($format === 'excel') {
+            return Excel::download(new class($data) implements \Maatwebsite\Excel\Concerns\FromArray, \Maatwebsite\Excel\Concerns\WithHeadings {
+                protected $data;
+
+                public function __construct($data)
+                {
+                    $this->data = $data;
+                }
+
+                public function array(): array
+                {
+                    return array_map(function($row) {
+                        return array_values($row);
+                    }, $this->data);
+                }
+
+                public function headings(): array
+                {
+                    return array_keys($this->data[0]);
+                }
+            }, $fileName . '.xlsx');
+        } elseif ($format === 'pdf') {
+            $pdf = Pdf::loadView('dashboard.pages.hasil.exports.favorite_poster_pdf', [
+                'data' => $data,
+                'title' => 'Hasil Penilaian Poster Favorit'
+            ])->setPaper('a4', 'portrait');
+
+            return $pdf->download($fileName . '.pdf');
+        }
+
+        return back()->withErrors(['error' => 'Format tidak valid']);
     }
 }

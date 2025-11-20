@@ -13,6 +13,7 @@ use App\Http\Controllers\dashboard\BpkhPresentationController;
 use App\Http\Controllers\dashboard\ProdusenPresentationController;
 use App\Http\Controllers\dashboard\BpkhExhibitionController;
 use App\Http\Controllers\dashboard\ProdusenExhibitionController;
+use App\Http\Controllers\dashboard\FavoritePosterController;
 use App\Http\Controllers\dashboard\PresentationSessionController;
 use App\Http\Controllers\dashboard\CmsController;
 use App\Http\Controllers\DashboardPeserta\AuthController as PesertaAuthController;
@@ -65,10 +66,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/hasil-penilaian', [\App\Http\Controllers\dashboard\HasilPenilaianController::class, 'index'])->name('dashboard.hasil.index');
     Route::get('/hasil-penilaian/export-bpkh', [\App\Http\Controllers\dashboard\HasilPenilaianController::class, 'exportBpkh'])->name('dashboard.hasil.export-bpkh');
     Route::get('/hasil-penilaian/export-produsen', [\App\Http\Controllers\dashboard\HasilPenilaianController::class, 'exportProdusen'])->name('dashboard.hasil.export-produsen');
-    
+
     // Hasil Penilaian Poster/Exhibition
     Route::get('/hasil-poster', [\App\Http\Controllers\dashboard\HasilPenilaianController::class, 'posterIndex'])->name('dashboard.hasil.poster');
     Route::get('/hasil-poster/export', [\App\Http\Controllers\dashboard\HasilPenilaianController::class, 'exportPoster'])->name('dashboard.hasil.export-poster');
+
+    // Hasil Poster Favorit
+    Route::get('/hasil-poster-favorit', [DashboardController::class, 'favoritePosterResults'])->name('dashboard.hasil.favorite-poster');
+    Route::get('/hasil-poster-favorit/export', [DashboardController::class, 'exportFavoritePoster'])->name('dashboard.hasil.export-favorite-poster');
 
     // Profile Routes
     Route::get('/profile', [UserProfileController::class, 'index'])->name('profile.index');
@@ -144,6 +149,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/exhibition-produsen-dg/{respondentId}/nilai', [ProdusenExhibitionController::class, 'edit'])->name('dashboard.exhibition.produsen.edit')->middleware('prevent.admin.view');
     Route::post('/exhibition-produsen-dg/{respondentId}/nilai', [ProdusenExhibitionController::class, 'update'])->name('dashboard.exhibition.produsen.update')->middleware('prevent.admin.view');
 
+    // Penilaian Poster Favorit
+    Route::get('/favorite-poster', [FavoritePosterController::class, 'index'])->name('dashboard.favorite-poster.index');
+    Route::get('/favorite-poster/export-all', [FavoritePosterController::class, 'exportAll'])->name('dashboard.favorite-poster.export-all');
+    Route::get('/favorite-poster/bulk-edit', [FavoritePosterController::class, 'bulkEdit'])->name('dashboard.favorite-poster.bulk-edit')->middleware('prevent.admin.view');
+    Route::post('/favorite-poster/bulk-update', [FavoritePosterController::class, 'bulkUpdate'])->name('dashboard.favorite-poster.bulk-update')->middleware('prevent.admin.view');
+    Route::get('/favorite-poster/{id}/edit', [FavoritePosterController::class, 'edit'])->name('dashboard.favorite-poster.edit')->middleware('prevent.admin.view');
+    Route::put('/favorite-poster/{id}', [FavoritePosterController::class, 'update'])->name('dashboard.favorite-poster.update')->middleware('prevent.admin.view');
+
     // User Management Routes (Admin & Superadmin only)
     Route::middleware(['role:admin,superadmin'])->group(function () {
         Route::get('/user-management', [UserManagementController::class, 'index'])->name('dashboard.user-management.index');
@@ -158,7 +171,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/sync-form', [SyncFormController::class, 'index'])->name('sync-form.index');
         Route::post('/sync-form/bpkh', [SyncFormController::class, 'syncFormBpkh'])->name('sync-form.bpkh');
         Route::post('/sync-form/produsen', [SyncFormController::class, 'syncFormProdusen'])->name('sync-form.produsen');
-        
+
         // Presentation Session Management Routes (Superadmin only)
         Route::get('/presentation-session', [PresentationSessionController::class, 'index'])->name('dashboard.presentation-session.index');
         Route::post('/presentation-session/bpkh', [PresentationSessionController::class, 'storeBpkh'])->name('dashboard.presentation-session.bpkh.store');
@@ -169,25 +182,25 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/presentation-session/update-session-order', [PresentationSessionController::class, 'updateSessionOrder'])->name('dashboard.presentation-session.update-session-order');
         Route::post('/presentation-session/config', [PresentationSessionController::class, 'storeSessionConfig'])->name('dashboard.presentation-session.config.store');
         Route::delete('/presentation-session/config/{id}', [PresentationSessionController::class, 'destroySessionConfig'])->name('dashboard.presentation-session.config.destroy');
-        
+
         // CMS Launch Date Routes (Superadmin only)
         Route::get('/cms/launch-date', [CmsController::class, 'launchDateIndex'])->name('dashboard.cms.launch-date.index');
         Route::post('/cms/launch-date', [CmsController::class, 'launchDateStore'])->name('dashboard.cms.launch-date.store');
         Route::put('/cms/launch-date/{id}', [CmsController::class, 'launchDateUpdate'])->name('dashboard.cms.launch-date.update');
         Route::delete('/cms/launch-date/{id}', [CmsController::class, 'launchDateDestroy'])->name('dashboard.cms.launch-date.destroy');
         Route::post('/cms/launch-date/update-order', [CmsController::class, 'launchDateUpdateOrder'])->name('dashboard.cms.launch-date.update-order');
-        
+
         // CMS Modal Info Routes (Superadmin only)
         Route::get('/cms/modal-info', [CmsController::class, 'modalInfoIndex'])->name('dashboard.cms.modal-info.index');
         Route::put('/cms/modal-info/{id}', [CmsController::class, 'modalInfoUpdate'])->name('dashboard.cms.modal-info.update');
-        
+
         // CMS Card Box Routes (Superadmin only)
         Route::get('/cms/card-box', [CmsController::class, 'cardBoxIndex'])->name('dashboard.cms.card-box.index');
         Route::post('/cms/card-box', [CmsController::class, 'cardBoxStore'])->name('dashboard.cms.card-box.store');
         Route::put('/cms/card-box/{id}', [CmsController::class, 'cardBoxUpdate'])->name('dashboard.cms.card-box.update');
         Route::delete('/cms/card-box/{id}', [CmsController::class, 'cardBoxDestroy'])->name('dashboard.cms.card-box.destroy');
         Route::post('/cms/card-box/update-order', [CmsController::class, 'cardBoxUpdateOrder'])->name('dashboard.cms.card-box.update-order');
-        
+
         // CMS Menu Choices Routes (Superadmin only)
         Route::get('/cms/menu-choice', [CmsController::class, 'menuChoiceIndex'])->name('dashboard.cms.menu-choice.index');
         Route::post('/cms/menu-choice', [CmsController::class, 'menuChoiceStore'])->name('dashboard.cms.menu-choice.store');
