@@ -28,6 +28,7 @@
                                 font-weight: bold;
                                 display: block;
                                 padding: 20px;
+                                text-transform: capitalize;
                             }
                             .logo-container {
                                 display: flex;
@@ -553,10 +554,10 @@
                             </div>
                             <div class="modal-body">
                                 <p style="margin-bottom: 20px; text-align: center; font-size: 1.1em;">
-                                    Fitur ini sedang dalam tahap persiapan dan akan segera tersedia.
+                                    Halaman Sedang dalam Tahap Persiapan dan Akan Segera Tersedia.
                                 </p>
                                 <p style="text-align: center; color: #666;">
-                                    Mohon ditunggu untuk informasi lebih lanjut. Terima kasih! 🙏
+                                    Mohon Ditunggu untuk Informasi Lebih Lanjut. Terima Kasih! 🙏
                                 </p>
                             </div>
                             <div class="modal-footer">
