@@ -1,6 +1,18 @@
 @push('scripts')
 <script>
 $(document).ready(function() {
+    // Ensure input fields in menu items are always editable
+    $(document).on('mousedown click focus', '.menu-item input, .menu-item select', function(e) {
+        e.stopPropagation();
+    });
+
+    // Prevent card body from interfering with input clicks
+    $(document).on('mousedown', '.menu-item .card-body', function(e) {
+        if ($(e.target).is('input, select, button, textarea')) {
+            e.stopPropagation();
+        }
+    });
+
     // Toggle main menu title field based on mode
     $('input[name="use_main_menu"]').on('change', function() {
         const useMainMenu = $(this).val() === '1';
@@ -44,45 +56,62 @@ $(document).ready(function() {
 
     // Add menu item
     function addMenuItem(container, data = {}) {
+        if (!container) {
+            console.error('Container element not found');
+            return;
+        }
+
         const template = document.getElementById('menu-item-template');
+        if (!template) {
+            console.error('Menu item template not found');
+            return;
+        }
+
         const clone = template.content.cloneNode(true);
 
-        const $clone = $(clone);
-        if (data.title) $clone.find('.menu-title').val(data.title);
-        if (data.link) $clone.find('.menu-link').val(data.link);
-        if (data.icon) $clone.find('.menu-icon').val(data.icon);
+        // Append to DOM first
+        container.appendChild(clone);
+
+        // Now get the last added menu item from the DOM
+        const $menuItem = $(container).find('.menu-item').last();
+
+        // Ensure all inputs are enabled and editable
+        $menuItem.find('input, select, textarea').prop('disabled', false).prop('readonly', false);
+
+        // Set values after element is in DOM
+        if (data.title) $menuItem.find('.menu-title').val(data.title);
+        if (data.link) $menuItem.find('.menu-link').val(data.link);
+        if (data.icon) $menuItem.find('.menu-icon').val(data.icon);
 
         const itemType = data.type || 'link';
-        $clone.find('.menu-type').val(itemType);
+        $menuItem.find('.menu-type').val(itemType);
 
         if (itemType === 'modal') {
-            $clone.find('.menu-link-field').hide();
-            $clone.find('.menu-link').prop('required', false).val('');
-            $clone.find('.menu-link-required').hide();
-            $clone.find('.submenu-container').show();
-            $clone.find('.add-submenu-btn').show();
+            $menuItem.find('.menu-link-field').hide();
+            $menuItem.find('.menu-link').prop('required', false).val('');
+            $menuItem.find('.menu-link-required').hide();
+            $menuItem.find('.submenu-container').show();
+            $menuItem.find('.add-submenu-btn').show();
 
             // Add sub-menu items
             if (data.submenu && Array.isArray(data.submenu)) {
-                const submenuContainer = $clone.find('.submenu-items')[0];
+                const submenuContainer = $menuItem.find('.submenu-items')[0];
                 data.submenu.forEach(subitem => {
                     addSubmenuItem(submenuContainer, subitem);
                 });
             }
         } else if (itemType === 'coming_soon') {
-            $clone.find('.menu-link-field').hide();
-            $clone.find('.menu-link').prop('required', false).val('javascript:void(0)');
-            $clone.find('.menu-link-required').hide();
-            $clone.find('.submenu-container').hide();
-            $clone.find('.add-submenu-btn').hide();
+            $menuItem.find('.menu-link-field').hide();
+            $menuItem.find('.menu-link').prop('required', false).val('javascript:void(0)');
+            $menuItem.find('.menu-link-required').hide();
+            $menuItem.find('.submenu-container').hide();
+            $menuItem.find('.add-submenu-btn').hide();
         } else {
             // Ensure link field is visible for link type
-            $clone.find('.menu-link-field').show();
-            $clone.find('.menu-link').prop('required', true);
-            $clone.find('.menu-link-required').show();
+            $menuItem.find('.menu-link-field').show();
+            $menuItem.find('.menu-link').prop('required', true);
+            $menuItem.find('.menu-link-required').show();
         }
-
-        container.appendChild(clone);
     }
 
     // Add sub-menu item
@@ -223,6 +252,10 @@ $(document).ready(function() {
     // Initialize add modal with one empty menu item
     $('#addMenuChoiceModal').on('shown.bs.modal', function() {
         const container = document.getElementById('add-menu-items-container');
+        if (!container) {
+            console.error('Add menu items container not found');
+            return;
+        }
         container.innerHTML = '';
         addMenuItem(container);
     });
@@ -247,28 +280,36 @@ $(document).ready(function() {
             $('#edit-main-menu-title').prop('required', false);
         }
 
-        // Load menu items
-        const container = document.getElementById('edit-menu-items-container');
-        container.innerHTML = '';
+        // Show modal first
+        $('#editMenuChoiceModal').modal('show');
 
-        try {
-            const menuItems = typeof data.menuItems === 'string'
-                ? JSON.parse(data.menuItems)
-                : data.menuItems;
+        // Load menu items after modal is shown
+        setTimeout(() => {
+            const container = document.getElementById('edit-menu-items-container');
+            if (!container) {
+                console.error('Edit menu items container not found');
+                return;
+            }
 
-            if (Array.isArray(menuItems) && menuItems.length > 0) {
-                menuItems.forEach(item => {
-                    addMenuItem(container, item);
-                });
-            } else {
+            container.innerHTML = '';
+
+            try {
+                const menuItems = typeof data.menuItems === 'string'
+                    ? JSON.parse(data.menuItems)
+                    : data.menuItems;
+
+                if (Array.isArray(menuItems) && menuItems.length > 0) {
+                    menuItems.forEach(item => {
+                        addMenuItem(container, item);
+                    });
+                } else {
+                    addMenuItem(container);
+                }
+            } catch (e) {
+                console.error('Error parsing menu items:', e);
                 addMenuItem(container);
             }
-        } catch (e) {
-            console.error('Error parsing menu items:', e);
-            addMenuItem(container);
-        }
-
-        $('#editMenuChoiceModal').modal('show');
+        }, 100);
     });
 
     // Delete button click

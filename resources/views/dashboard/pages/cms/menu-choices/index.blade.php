@@ -11,6 +11,18 @@
         opacity: 0.4;
         background: #f8f9fa;
     }
+    /* Ensure menu item inputs are clickable and editable */
+    .menu-item input,
+    .menu-item select,
+    .menu-item button {
+        pointer-events: auto !important;
+        user-select: auto !important;
+    }
+    .menu-item .form-control,
+    .menu-item .form-select {
+        position: relative;
+        z-index: 1;
+    }
 </style>
 
 <div class="container-fluid">
