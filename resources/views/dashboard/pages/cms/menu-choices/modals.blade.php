@@ -129,6 +129,7 @@
                     <select class="form-select form-select-sm menu-type" required>
                         <option value="link">Direct Link</option>
                         <option value="modal">Modal (Sub-menu)</option>
+                        <option value="coming_soon">Coming Soon</option>
                     </select>
                 </div>
                 <div class="col-md-3 menu-link-field">

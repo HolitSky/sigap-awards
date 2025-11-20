@@ -454,6 +454,13 @@
                                             @endif
                                             {{ $item['title'] }}
                                         </a>
+                                    @elseif(isset($item['type']) && $item['type'] === 'coming_soon')
+                                        <a href="javascript:void(0);" onclick="showComingSoonModal()">
+                                            @if(!empty($item['icon']))
+                                                <span class="menu-item-icon">{{ $item['icon'] }}</span>
+                                            @endif
+                                            {{ $item['title'] }}
+                                        </a>
                                     @else
                                         <a href="{{ $item['link'] }}" target="_blank">
                                             @if(!empty($item['icon']))
@@ -537,6 +544,29 @@
                         </div>
                     </div>
 
+                    <!-- Modal Coming Soon -->
+                    <div id="comingSoonModal" class="modal-overlay" style="display: none;">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>⏳ Sedang Disiapkan</h3>
+                                <span class="modal-close-coming-soon">&times;</span>
+                            </div>
+                            <div class="modal-body">
+                                <p style="margin-bottom: 20px; text-align: center; font-size: 1.1em;">
+                                    Fitur ini sedang dalam tahap persiapan dan akan segera tersedia.
+                                </p>
+                                <p style="text-align: center; color: #666;">
+                                    Mohon ditunggu untuk informasi lebih lanjut. Terima kasih! 🙏
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="modal-btn-close-coming-soon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 30px; border: none; border-radius: 25px; font-weight: bold; cursor: pointer; transition: all 0.3s ease;">
+                                    Tutup
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Menu Modal -->
                     <div id="menuModal" class="menu-modal">
                         <div class="menu-modal-content">
@@ -555,6 +585,13 @@
                                     @foreach($menuChoice->menu_items as $index => $item)
                                         @if(isset($item['type']) && $item['type'] === 'modal')
                                             <a href="javascript:void(0);" onclick="closeMenuModal(); showSubmenuModal('submenu-{{ $index }}');" class="menu-item">
+                                                @if(!empty($item['icon']))
+                                                    <span class="menu-item-icon">{{ $item['icon'] }}</span>
+                                                @endif
+                                                <span>{{ $item['title'] }}</span>
+                                            </a>
+                                        @elseif(isset($item['type']) && $item['type'] === 'coming_soon')
+                                            <a href="javascript:void(0);" onclick="closeMenuModal(); showComingSoonModal();" class="menu-item">
                                                 @if(!empty($item['icon']))
                                                     <span class="menu-item-icon">{{ $item['icon'] }}</span>
                                                 @endif
@@ -852,6 +889,53 @@
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' && menuModal.classList.contains('show')) {
                 closeMenuModal();
+            }
+        });
+
+        // Coming Soon Modal Functions
+        const comingSoonModal = document.getElementById('comingSoonModal');
+        const closeComingSoonBtn = document.querySelector('.modal-close-coming-soon');
+        const closeComingSoonFooterBtn = document.querySelector('.modal-btn-close-coming-soon');
+
+        window.showComingSoonModal = function() {
+            if (comingSoonModal) {
+                comingSoonModal.style.display = 'flex';
+                setTimeout(() => {
+                    comingSoonModal.classList.add('show');
+                }, 10);
+            }
+        }
+
+        window.hideComingSoonModal = function() {
+            if (comingSoonModal) {
+                comingSoonModal.classList.remove('show');
+                setTimeout(() => {
+                    comingSoonModal.style.display = 'none';
+                }, 300);
+            }
+        }
+
+        // Close coming soon modal events
+        if (closeComingSoonBtn) {
+            closeComingSoonBtn.addEventListener('click', hideComingSoonModal);
+        }
+        if (closeComingSoonFooterBtn) {
+            closeComingSoonFooterBtn.addEventListener('click', hideComingSoonModal);
+        }
+
+        // Close coming soon modal when clicking outside
+        if (comingSoonModal) {
+            comingSoonModal.addEventListener('click', function(e) {
+                if (e.target === comingSoonModal) {
+                    hideComingSoonModal();
+                }
+            });
+        }
+
+        // Close coming soon modal with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && comingSoonModal && comingSoonModal.classList.contains('show')) {
+                hideComingSoonModal();
             }
         });
     });

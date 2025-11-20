@@ -6,7 +6,7 @@ $(document).ready(function() {
         const useMainMenu = $(this).val() === '1';
         const modalId = $(this).closest('.modal').attr('id');
         const prefix = modalId === 'addMenuChoiceModal' ? 'add' : 'edit';
-        
+
         if (useMainMenu) {
             $(`#${prefix}-main-menu-title-group`).show();
             $(`#${prefix}-main-menu-title`).prop('required', true);
@@ -20,13 +20,19 @@ $(document).ready(function() {
     $(document).on('change', '.menu-type', function() {
         const $menuItem = $(this).closest('.menu-item');
         const type = $(this).val();
-        
+
         if (type === 'modal') {
             $menuItem.find('.menu-link-field').hide();
             $menuItem.find('.menu-link').prop('required', false).val('');
             $menuItem.find('.menu-link-required').hide();
             $menuItem.find('.submenu-container').show();
             $menuItem.find('.add-submenu-btn').show();
+        } else if (type === 'coming_soon') {
+            $menuItem.find('.menu-link-field').hide();
+            $menuItem.find('.menu-link').prop('required', false).val('javascript:void(0)');
+            $menuItem.find('.menu-link-required').hide();
+            $menuItem.find('.submenu-container').hide();
+            $menuItem.find('.add-submenu-btn').hide();
         } else {
             $menuItem.find('.menu-link-field').show();
             $menuItem.find('.menu-link').prop('required', true);
@@ -40,22 +46,22 @@ $(document).ready(function() {
     function addMenuItem(container, data = {}) {
         const template = document.getElementById('menu-item-template');
         const clone = template.content.cloneNode(true);
-        
+
         const $clone = $(clone);
         if (data.title) $clone.find('.menu-title').val(data.title);
         if (data.link) $clone.find('.menu-link').val(data.link);
         if (data.icon) $clone.find('.menu-icon').val(data.icon);
-        
+
         const itemType = data.type || 'link';
         $clone.find('.menu-type').val(itemType);
-        
+
         if (itemType === 'modal') {
             $clone.find('.menu-link-field').hide();
             $clone.find('.menu-link').prop('required', false).val('');
             $clone.find('.menu-link-required').hide();
             $clone.find('.submenu-container').show();
             $clone.find('.add-submenu-btn').show();
-            
+
             // Add sub-menu items
             if (data.submenu && Array.isArray(data.submenu)) {
                 const submenuContainer = $clone.find('.submenu-items')[0];
@@ -63,13 +69,19 @@ $(document).ready(function() {
                     addSubmenuItem(submenuContainer, subitem);
                 });
             }
+        } else if (itemType === 'coming_soon') {
+            $clone.find('.menu-link-field').hide();
+            $clone.find('.menu-link').prop('required', false).val('javascript:void(0)');
+            $clone.find('.menu-link-required').hide();
+            $clone.find('.submenu-container').hide();
+            $clone.find('.add-submenu-btn').hide();
         } else {
             // Ensure link field is visible for link type
             $clone.find('.menu-link-field').show();
             $clone.find('.menu-link').prop('required', true);
             $clone.find('.menu-link-required').show();
         }
-        
+
         container.appendChild(clone);
     }
 
@@ -77,10 +89,10 @@ $(document).ready(function() {
     function addSubmenuItem(container, data = {}) {
         const template = document.getElementById('submenu-item-template');
         const clone = template.content.cloneNode(true);
-        
+
         if (data.title) clone.querySelector('.submenu-title').value = data.title;
         if (data.link) clone.querySelector('.submenu-link').value = data.link;
-        
+
         container.appendChild(clone);
     }
 
@@ -121,14 +133,14 @@ $(document).ready(function() {
             const type = $item.find('.menu-type').val();
             const link = $item.find('.menu-link').val();
             const icon = $item.find('.menu-icon').val();
-            
+
             if (title) {
-                const menuItem = { 
-                    title, 
+                const menuItem = {
+                    title,
                     type: type || 'link',
-                    icon: icon || null 
+                    icon: icon || null
                 };
-                
+
                 if (type === 'modal') {
                     // Collect sub-menu items
                     const submenu = [];
@@ -141,20 +153,22 @@ $(document).ready(function() {
                     });
                     menuItem.submenu = submenu;
                     menuItem.link = null;
+                } else if (type === 'coming_soon') {
+                    menuItem.link = 'javascript:void(0)';
                 } else {
                     menuItem.link = link;
                 }
-                
+
                 menuItems.push(menuItem);
             }
         });
-        
+
         if (menuItems.length === 0) {
             e.preventDefault();
             Swal.fire('Error!', 'Minimal harus ada 1 menu item', 'error');
             return false;
         }
-        
+
         $('#add-menu-items-json').val(JSON.stringify(menuItems));
     });
 
@@ -167,14 +181,14 @@ $(document).ready(function() {
             const type = $item.find('.menu-type').val();
             const link = $item.find('.menu-link').val();
             const icon = $item.find('.menu-icon').val();
-            
+
             if (title) {
-                const menuItem = { 
-                    title, 
+                const menuItem = {
+                    title,
                     type: type || 'link',
-                    icon: icon || null 
+                    icon: icon || null
                 };
-                
+
                 if (type === 'modal') {
                     // Collect sub-menu items
                     const submenu = [];
@@ -187,20 +201,22 @@ $(document).ready(function() {
                     });
                     menuItem.submenu = submenu;
                     menuItem.link = null;
+                } else if (type === 'coming_soon') {
+                    menuItem.link = 'javascript:void(0)';
                 } else {
                     menuItem.link = link;
                 }
-                
+
                 menuItems.push(menuItem);
             }
         });
-        
+
         if (menuItems.length === 0) {
             e.preventDefault();
             Swal.fire('Error!', 'Minimal harus ada 1 menu item', 'error');
             return false;
         }
-        
+
         $('#edit-menu-items-json').val(JSON.stringify(menuItems));
     });
 
@@ -215,7 +231,7 @@ $(document).ready(function() {
     $('.btn-edit').on('click', function() {
         const $btn = $(this);
         const data = $btn.data();
-        
+
         $('#editMenuChoiceForm').attr('action', `/cms/menu-choice/${data.id}`);
         $('#edit-main-menu-title').val(data.mainMenuTitle || '');
         $('#edit-is-active').prop('checked', data.isActive === 1);
@@ -234,12 +250,12 @@ $(document).ready(function() {
         // Load menu items
         const container = document.getElementById('edit-menu-items-container');
         container.innerHTML = '';
-        
+
         try {
-            const menuItems = typeof data.menuItems === 'string' 
-                ? JSON.parse(data.menuItems) 
+            const menuItems = typeof data.menuItems === 'string'
+                ? JSON.parse(data.menuItems)
                 : data.menuItems;
-            
+
             if (Array.isArray(menuItems) && menuItems.length > 0) {
                 menuItems.forEach(item => {
                     addMenuItem(container, item);
