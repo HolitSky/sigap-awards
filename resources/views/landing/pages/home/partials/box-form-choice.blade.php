@@ -386,6 +386,7 @@
                                 display: flex;
                                 align-items: center;
                                 gap: 12px;
+                                text-transform: capitalize;
                             }
 
                             .menu-item:hover {
