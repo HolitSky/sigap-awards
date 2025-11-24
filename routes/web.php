@@ -16,6 +16,7 @@ use App\Http\Controllers\dashboard\ProdusenExhibitionController;
 use App\Http\Controllers\dashboard\FavoritePosterController;
 use App\Http\Controllers\dashboard\PresentationSessionController;
 use App\Http\Controllers\dashboard\CmsController;
+use App\Http\Controllers\dashboard\PemenangSigapController;
 use App\Http\Controllers\DashboardPeserta\AuthController as PesertaAuthController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -206,6 +207,13 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/cms/menu-choice', [CmsController::class, 'menuChoiceStore'])->name('dashboard.cms.menu-choice.store');
         Route::put('/cms/menu-choice/{id}', [CmsController::class, 'menuChoiceUpdate'])->name('dashboard.cms.menu-choice.update');
         Route::delete('/cms/menu-choice/{id}', [CmsController::class, 'menuChoiceDestroy'])->name('dashboard.cms.menu-choice.destroy');
+
+        // CMS Pemenang SIGAP Award 2025 Routes (Superadmin only)
+        Route::get('/cms/pemenang-sigap', [PemenangSigapController::class, 'index'])->name('dashboard.cms.pemenang-sigap.index');
+        Route::post('/cms/pemenang-sigap', [PemenangSigapController::class, 'store'])->name('dashboard.cms.pemenang-sigap.store');
+        Route::put('/cms/pemenang-sigap/{id}', [PemenangSigapController::class, 'update'])->name('dashboard.cms.pemenang-sigap.update');
+        Route::delete('/cms/pemenang-sigap/{id}', [PemenangSigapController::class, 'destroy'])->name('dashboard.cms.pemenang-sigap.destroy');
+        Route::get('/cms/pemenang-sigap/peserta-list', [PemenangSigapController::class, 'getPesertaList'])->name('dashboard.cms.pemenang-sigap.peserta-list');
     });
 
 });

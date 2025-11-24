@@ -98,19 +98,27 @@
                                                 <strong>{{ $launchDate->title }}</strong>
                                             </td>
                                             <td>
-                                                @if($launchDate->is_range_date)
-                                                    <span class="badge bg-info">Range Date</span>
-                                                @else
+                                                @if($launchDate->date_type == 'single')
                                                     <span class="badge bg-secondary">Single Date</span>
+                                                @elseif($launchDate->date_type == 'range')
+                                                    <span class="badge bg-info">Range Date</span>
+                                                @elseif($launchDate->date_type == 'month_only')
+                                                    <span class="badge bg-primary">Month Only</span>
+                                                @elseif($launchDate->date_type == 'coming_soon')
+                                                    <span class="badge bg-warning">Coming Soon</span>
                                                 @endif
                                             </td>
                                             <td>
-                                                @if($launchDate->is_range_date)
-                                                    {{ $launchDate->start_date ? $launchDate->start_date->format('d M Y') : '-' }} 
-                                                    s/d 
-                                                    {{ $launchDate->end_date ? $launchDate->end_date->format('d M Y') : '-' }}
-                                                @else
+                                                @if($launchDate->date_type == 'single')
                                                     {{ $launchDate->single_date ? $launchDate->single_date->format('d M Y') : '-' }}
+                                                @elseif($launchDate->date_type == 'range')
+                                                    {{ $launchDate->start_date ? $launchDate->start_date->format('d M Y') : '-' }}
+                                                    s/d
+                                                    {{ $launchDate->end_date ? $launchDate->end_date->format('d M Y') : '-' }}
+                                                @elseif($launchDate->date_type == 'month_only')
+                                                    {{ $launchDate->month_name ?? '-' }}
+                                                @elseif($launchDate->date_type == 'coming_soon')
+                                                    <em>Coming Soon</em>
                                                 @endif
                                             </td>
                                             <td>
@@ -121,18 +129,19 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                <button type="button" class="btn btn-sm btn-warning btn-edit" 
+                                                <button type="button" class="btn btn-sm btn-warning btn-edit"
                                                         data-id="{{ $launchDate->id }}"
                                                         data-title="{{ $launchDate->title }}"
-                                                        data-is-range="{{ $launchDate->is_range_date ? 1 : 0 }}"
+                                                        data-date-type="{{ $launchDate->date_type }}"
                                                         data-single-date="{{ $launchDate->single_date ? $launchDate->single_date->format('Y-m-d') : '' }}"
                                                         data-start-date="{{ $launchDate->start_date ? $launchDate->start_date->format('Y-m-d') : '' }}"
                                                         data-end-date="{{ $launchDate->end_date ? $launchDate->end_date->format('Y-m-d') : '' }}"
+                                                        data-month-year="{{ $launchDate->month_year ?? '' }}"
                                                         data-is-active="{{ $launchDate->is_active ? 1 : 0 }}"
                                                         data-order="{{ $launchDate->order }}">
                                                     <i class="mdi mdi-pencil"></i>
                                                 </button>
-                                                <button type="button" class="btn btn-sm btn-danger btn-delete" 
+                                                <button type="button" class="btn btn-sm btn-danger btn-delete"
                                                         data-id="{{ $launchDate->id }}"
                                                         data-title="{{ $launchDate->title }}">
                                                     <i class="mdi mdi-delete"></i>
@@ -173,29 +182,41 @@
                         <input type="text" name="title" class="form-control" required minlength="4" maxlength="50" placeholder="Contoh: Penganugerahan Sigap Award">
                         <small class="text-muted">Minimal 4 karakter, maksimal 50 karakter</small>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label class="form-label">Tipe Tanggal <span class="text-danger">*</span></label>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="is_range_date" id="singleDateAdd" value="0" checked>
+                            <input class="form-check-input date-type-radio" type="radio" name="date_type" id="singleDateAdd" value="single" checked>
                             <label class="form-check-label" for="singleDateAdd">
                                 Single Date (1 tanggal)
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="is_range_date" id="rangeDateAdd" value="1">
+                            <input class="form-check-input date-type-radio" type="radio" name="date_type" id="rangeDateAdd" value="range">
                             <label class="form-check-label" for="rangeDateAdd">
                                 Range Date (rentang tanggal)
                             </label>
                         </div>
+                        <div class="form-check">
+                            <input class="form-check-input date-type-radio" type="radio" name="date_type" id="monthOnlyAdd" value="month_only">
+                            <label class="form-check-label" for="monthOnlyAdd">
+                                Month Only (hanya bulan)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input date-type-radio" type="radio" name="date_type" id="comingSoonAdd" value="coming_soon">
+                            <label class="form-check-label" for="comingSoonAdd">
+                                Coming Soon (teks coming soon)
+                            </label>
+                        </div>
                     </div>
 
-                    <div id="singleDateFieldAdd" class="mb-3">
+                    <div id="singleDateFieldAdd" class="mb-3 date-field">
                         <label class="form-label">Tanggal <span class="text-danger">*</span></label>
                         <input type="date" name="single_date" class="form-control">
                     </div>
 
-                    <div id="rangeDateFieldsAdd" class="mb-3" style="display: none;">
+                    <div id="rangeDateFieldsAdd" class="mb-3 date-field" style="display: none;">
                         <div class="row">
                             <div class="col-md-6 mb-2">
                                 <label class="form-label">Tanggal Mulai <span class="text-danger">*</span></label>
@@ -205,6 +226,19 @@
                                 <label class="form-label">Tanggal Selesai <span class="text-danger">*</span></label>
                                 <input type="date" name="end_date" class="form-control">
                             </div>
+                        </div>
+                    </div>
+
+                    <div id="monthOnlyFieldAdd" class="mb-3 date-field" style="display: none;">
+                        <label class="form-label">Bulan & Tahun <span class="text-danger">*</span></label>
+                        <input type="month" name="month_year" class="form-control" placeholder="Pilih bulan dan tahun">
+                        <small class="text-muted">Hanya bulan akan ditampilkan (contoh: Desember)</small>
+                    </div>
+
+                    <div id="comingSoonFieldAdd" class="mb-3 date-field" style="display: none;">
+                        <div class="alert alert-info mb-0">
+                            <i class="mdi mdi-information-outline me-2"></i>
+                            Akan menampilkan teks <strong>"COMING SOON"</strong> di kalender
                         </div>
                     </div>
 
@@ -251,29 +285,41 @@
                         <input type="text" name="title" id="editTitle" class="form-control" required minlength="4" maxlength="50">
                         <small class="text-muted">Minimal 4 karakter, maksimal 50 karakter</small>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label class="form-label">Tipe Tanggal <span class="text-danger">*</span></label>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="is_range_date" id="singleDateEdit" value="0">
+                            <input class="form-check-input date-type-radio-edit" type="radio" name="date_type" id="singleDateEdit" value="single">
                             <label class="form-check-label" for="singleDateEdit">
                                 Single Date (1 tanggal)
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="is_range_date" id="rangeDateEdit" value="1">
+                            <input class="form-check-input date-type-radio-edit" type="radio" name="date_type" id="rangeDateEdit" value="range">
                             <label class="form-check-label" for="rangeDateEdit">
                                 Range Date (rentang tanggal)
                             </label>
                         </div>
+                        <div class="form-check">
+                            <input class="form-check-input date-type-radio-edit" type="radio" name="date_type" id="monthOnlyEdit" value="month_only">
+                            <label class="form-check-label" for="monthOnlyEdit">
+                                Month Only (hanya bulan)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input date-type-radio-edit" type="radio" name="date_type" id="comingSoonEdit" value="coming_soon">
+                            <label class="form-check-label" for="comingSoonEdit">
+                                Coming Soon (teks coming soon)
+                            </label>
+                        </div>
                     </div>
 
-                    <div id="singleDateFieldEdit" class="mb-3">
+                    <div id="singleDateFieldEdit" class="mb-3 date-field-edit">
                         <label class="form-label">Tanggal <span class="text-danger">*</span></label>
                         <input type="date" name="single_date" id="editSingleDate" class="form-control">
                     </div>
 
-                    <div id="rangeDateFieldsEdit" class="mb-3" style="display: none;">
+                    <div id="rangeDateFieldsEdit" class="mb-3 date-field-edit" style="display: none;">
                         <div class="row">
                             <div class="col-md-6 mb-2">
                                 <label class="form-label">Tanggal Mulai <span class="text-danger">*</span></label>
@@ -283,6 +329,19 @@
                                 <label class="form-label">Tanggal Selesai <span class="text-danger">*</span></label>
                                 <input type="date" name="end_date" id="editEndDate" class="form-control">
                             </div>
+                        </div>
+                    </div>
+
+                    <div id="monthOnlyFieldEdit" class="mb-3 date-field-edit" style="display: none;">
+                        <label class="form-label">Bulan & Tahun <span class="text-danger">*</span></label>
+                        <input type="month" name="month_year" id="editMonthYear" class="form-control">
+                        <small class="text-muted">Hanya bulan akan ditampilkan (contoh: Desember)</small>
+                    </div>
+
+                    <div id="comingSoonFieldEdit" class="mb-3 date-field-edit" style="display: none;">
+                        <div class="alert alert-info mb-0">
+                            <i class="mdi mdi-information-outline me-2"></i>
+                            Akan menampilkan teks <strong>"COMING SOON"</strong> di kalender
                         </div>
                     </div>
 
@@ -323,19 +382,19 @@ $(document).ready(function() {
     // Strict validation for title input (min 4, max 50)
     $('input[name="title"]').on('input', function() {
         let value = $(this).val();
-        
+
         // Enforce max length
         if (value.length > 50) {
             $(this).val(value.substring(0, 50));
         }
-        
+
         // Show validation feedback
         const length = $(this).val().length;
         const parent = $(this).parent();
-        
+
         // Remove existing feedback
         parent.find('.validation-feedback').remove();
-        
+
         if (length < 4 && length > 0) {
             parent.append('<div class="validation-feedback text-danger small mt-1">Minimal 4 karakter (saat ini: ' + length + ')</div>');
         } else if (length >= 4) {
@@ -344,26 +403,50 @@ $(document).ready(function() {
     });
 
     // Toggle date fields on Add Modal
-    $('input[name="is_range_date"]').on('change', function() {
-        const isRange = $(this).val() == '1';
-        const modalId = $(this).closest('.modal').attr('id');
-        
-        if (modalId === 'addLaunchDateModal') {
-            if (isRange) {
-                $('#singleDateFieldAdd').hide();
-                $('#rangeDateFieldsAdd').show();
-            } else {
+    $('.date-type-radio').on('change', function() {
+        const dateType = $(this).val();
+
+        // Hide all date fields
+        $('.date-field').hide();
+
+        // Show relevant field
+        switch(dateType) {
+            case 'single':
                 $('#singleDateFieldAdd').show();
-                $('#rangeDateFieldsAdd').hide();
-            }
-        } else if (modalId === 'editLaunchDateModal') {
-            if (isRange) {
-                $('#singleDateFieldEdit').hide();
-                $('#rangeDateFieldsEdit').show();
-            } else {
+                break;
+            case 'range':
+                $('#rangeDateFieldsAdd').show();
+                break;
+            case 'month_only':
+                $('#monthOnlyFieldAdd').show();
+                break;
+            case 'coming_soon':
+                $('#comingSoonFieldAdd').show();
+                break;
+        }
+    });
+
+    // Toggle date fields on Edit Modal
+    $('.date-type-radio-edit').on('change', function() {
+        const dateType = $(this).val();
+
+        // Hide all date fields
+        $('.date-field-edit').hide();
+
+        // Show relevant field
+        switch(dateType) {
+            case 'single':
                 $('#singleDateFieldEdit').show();
-                $('#rangeDateFieldsEdit').hide();
-            }
+                break;
+            case 'range':
+                $('#rangeDateFieldsEdit').show();
+                break;
+            case 'month_only':
+                $('#monthOnlyFieldEdit').show();
+                break;
+            case 'coming_soon':
+                $('#comingSoonFieldEdit').show();
+                break;
         }
     });
 
@@ -371,29 +454,43 @@ $(document).ready(function() {
     $('.btn-edit').on('click', function() {
         const id = $(this).data('id');
         const title = $(this).data('title');
-        const isRange = $(this).data('is-range');
+        const dateType = $(this).data('date-type');
         const singleDate = $(this).data('single-date');
         const startDate = $(this).data('start-date');
         const endDate = $(this).data('end-date');
+        const monthYear = $(this).data('month-year');
         const isActive = $(this).data('is-active');
         const order = $(this).data('order');
 
         $('#editTitle').val(title);
-        // Display order as visual number (order + 1) for user-friendly display
         $('#editOrder').val(parseInt(order) + 1);
         $('#editSingleDate').val(singleDate);
         $('#editStartDate').val(startDate);
         $('#editEndDate').val(endDate);
+        $('#editMonthYear').val(monthYear);
         $('#isActiveEdit').prop('checked', isActive == 1);
 
-        if (isRange == 1) {
-            $('#rangeDateEdit').prop('checked', true);
-            $('#singleDateFieldEdit').hide();
-            $('#rangeDateFieldsEdit').show();
-        } else {
-            $('#singleDateEdit').prop('checked', true);
-            $('#singleDateFieldEdit').show();
-            $('#rangeDateFieldsEdit').hide();
+        // Hide all date fields first
+        $('.date-field-edit').hide();
+
+        // Set radio button and show relevant field
+        switch(dateType) {
+            case 'single':
+                $('#singleDateEdit').prop('checked', true);
+                $('#singleDateFieldEdit').show();
+                break;
+            case 'range':
+                $('#rangeDateEdit').prop('checked', true);
+                $('#rangeDateFieldsEdit').show();
+                break;
+            case 'month_only':
+                $('#monthOnlyEdit').prop('checked', true);
+                $('#monthOnlyFieldEdit').show();
+                break;
+            case 'coming_soon':
+                $('#comingSoonEdit').prop('checked', true);
+                $('#comingSoonFieldEdit').show();
+                break;
         }
 
         $('#editLaunchDateForm').attr('action', '{{ route("dashboard.cms.launch-date.update", ":id") }}'.replace(':id', id));
@@ -440,7 +537,7 @@ $(document).ready(function() {
         $('#sortable-launch-dates tr.launch-date-item').each(function(index) {
             // Update visual number
             $(this).find('td:eq(1) .badge').text(index + 1);
-            
+
             // Update data-order attribute on edit button
             $(this).find('.btn-edit').attr('data-order', index);
         });
@@ -454,7 +551,7 @@ $(document).ready(function() {
         onEnd: function(evt) {
             // Update row numbers immediately after drag
             updateRowNumbers();
-            
+
             const orders = [];
             $('#sortable-launch-dates tr.launch-date-item').each(function(index) {
                 orders.push({

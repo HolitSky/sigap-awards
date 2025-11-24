@@ -168,18 +168,93 @@
 @push('scripts')
 <script>
     window.LAUNCH_DATES = {
-        startDate: @json(optional($launchStart)->locale('en')->isoFormat('MMMM D, YYYY 00:00:00')) ?? 'October 1, 2025 00:00:00',
-        finishDate: @json(optional($launchFinish)->locale('en')->isoFormat('MMMM D, YYYY 00:00:00')) ?? 'October 10, 2025 00:00:00',
+        startDate: @json($launchStart ? $launchStart->locale('en')->isoFormat('MMMM D, YYYY 00:00:00') : 'October 1, 2025 00:00:00'),
+        finishDate: @json($launchFinish ? $launchFinish->locale('en')->isoFormat('MMMM D, YYYY 00:00:00') : 'December 1, 2025 00:00:00'),
         rangeDate: {{ isset($rangeDate) && $rangeDate ? 'true' : 'false' }},
-        rangeDateStart: @json(optional($rangeDateStart)->locale('en')->isoFormat('MMMM D, YYYY 00:00:00')) ?? 'October 22, 2025 00:00:00',
-        rangeDateEnd: @json(optional($rangeDateEnd)->locale('en')->isoFormat('MMMM D, YYYY 00:00:00')) ?? 'October 24, 2025 00:00:00',
-        launchTitle: @json(optional($launchDate)->title) ?? 'Penganugerahan Sigap Award'
+        rangeDateStart: @json($rangeDateStart ? $rangeDateStart->locale('en')->isoFormat('MMMM D, YYYY 00:00:00') : null),
+        rangeDateEnd: @json($rangeDateEnd ? $rangeDateEnd->locale('en')->isoFormat('MMMM D, YYYY 00:00:00') : null),
+        launchTitle: @json(optional($launchDate)->title ?? 'Penganugerahan Sigap Award'),
+        dateType: @json(optional($launchDate)->date_type ?? 'single')
     };
 
     console.log('LAUNCH_DATES config:', window.LAUNCH_DATES);
 
-    // Override calendar display for range date mode - CONTINUOUS FORCE
+    // PROTECT month_only and coming_soon from JS override
     document.addEventListener('DOMContentLoaded', function() {
+        const dateType = window.LAUNCH_DATES.dateType;
+
+        // For month_only and coming_soon, lock the content and prevent any changes
+        if (dateType === 'month_only' || dateType === 'coming_soon') {
+            console.log('PROTECTING date type from JS override:', dateType);
+
+            const calendarDate = document.querySelector('.launch-date__calendar-date');
+            const calendarMonth = document.querySelector('.launch-date__calendar-month');
+
+            if (calendarDate && calendarMonth) {
+                // Store original content
+                const originalDateContent = calendarDate.innerHTML;
+                const originalMonthContent = calendarMonth.innerHTML;
+
+                console.log('Original content locked:', {
+                    date: originalDateContent,
+                    month: originalMonthContent
+                });
+
+                // Create MutationObserver to restore content if changed
+                const observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.type === 'childList' || mutation.type === 'characterData') {
+                            // Restore original content if changed
+                            if (calendarDate.innerHTML !== originalDateContent) {
+                                console.log('BLOCKING date change, restoring:', originalDateContent);
+                                calendarDate.innerHTML = originalDateContent;
+                            }
+                            if (calendarMonth.innerHTML !== originalMonthContent) {
+                                console.log('BLOCKING month change, restoring:', originalMonthContent);
+                                calendarMonth.innerHTML = originalMonthContent;
+                            }
+                        }
+                    });
+                });
+
+                // Observe both elements
+                observer.observe(calendarDate, {
+                    childList: true,
+                    characterData: true,
+                    subtree: true
+                });
+
+                observer.observe(calendarMonth, {
+                    childList: true,
+                    characterData: true,
+                    subtree: true
+                });
+
+                // Also prevent textContent changes
+                Object.defineProperty(calendarDate, 'textContent', {
+                    set: function(value) {
+                        console.log('BLOCKED textContent change on date');
+                        return originalDateContent;
+                    },
+                    get: function() {
+                        return originalDateContent;
+                    }
+                });
+
+                Object.defineProperty(calendarMonth, 'textContent', {
+                    set: function(value) {
+                        console.log('BLOCKED textContent change on month');
+                        return originalMonthContent;
+                    },
+                    get: function() {
+                        return originalMonthContent;
+                    }
+                });
+            }
+
+            return; // Don't run range date override logic
+        }
+
         if (window.LAUNCH_DATES.rangeDate) {
             function forceCalendarDisplay() {
                 const calendarDate = document.querySelector('.launch-date__calendar-date');

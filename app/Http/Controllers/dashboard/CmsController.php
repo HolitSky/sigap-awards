@@ -24,7 +24,7 @@ class CmsController extends Controller
             ['name' => 'CMS', 'url' => '#'],
             ['name' => 'Launch Date', 'active' => true]
         ];
-        
+
         $launchDates = LaunchDate::orderBy('order')->orderBy('created_at', 'desc')->get();
         return view('dashboard.pages.cms.launch-date.index', compact('launchDates', 'title', 'pageTitle', 'breadcrumbs'));
     }
@@ -36,10 +36,11 @@ class CmsController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|min:4|max:50',
-            'is_range_date' => 'required',
-            'single_date' => 'required_if:is_range_date,0|nullable|date',
-            'start_date' => 'required_if:is_range_date,1|nullable|date',
-            'end_date' => 'required_if:is_range_date,1|nullable|date|after_or_equal:start_date',
+            'date_type' => 'required|in:single,range,month_only,coming_soon',
+            'single_date' => 'required_if:date_type,single|nullable|date',
+            'start_date' => 'required_if:date_type,range|nullable|date',
+            'end_date' => 'required_if:date_type,range|nullable|date|after_or_equal:start_date',
+            'month_year' => 'required_if:date_type,month_only|nullable|string',
             'order' => 'nullable|integer|min:0'
         ]);
 
@@ -52,24 +53,44 @@ class CmsController extends Controller
         // Get max order and set new order
         $maxOrder = LaunchDate::max('order') ?? -1;
         $newOrder = $request->order ? (int)$request->order - 1 : ($maxOrder + 1);
-        
+
         $data = [
             'title' => $request->title,
-            'is_range_date' => $request->is_range_date == '1' ? true : false,
-            'order' => $newOrder, // Auto increment if not specified
+            'date_type' => $request->date_type,
+            'is_range_date' => $request->date_type == 'range' ? true : false,
+            'order' => $newOrder,
             'is_active' => $request->has('is_active') ? true : false,
         ];
 
-        // Clear single_date if range_date is true
-        if ($data['is_range_date']) {
-            $data['single_date'] = null;
-            $data['start_date'] = $request->start_date;
-            $data['end_date'] = $request->end_date;
-        } else {
-            // Clear range dates if single date
-            $data['single_date'] = $request->single_date;
-            $data['start_date'] = null;
-            $data['end_date'] = null;
+        // Set dates based on type
+        switch ($request->date_type) {
+            case 'single':
+                $data['single_date'] = $request->single_date;
+                $data['start_date'] = null;
+                $data['end_date'] = null;
+                $data['month_year'] = null;
+                break;
+
+            case 'range':
+                $data['single_date'] = null;
+                $data['start_date'] = $request->start_date;
+                $data['end_date'] = $request->end_date;
+                $data['month_year'] = null;
+                break;
+
+            case 'month_only':
+                $data['single_date'] = null;
+                $data['start_date'] = null;
+                $data['end_date'] = null;
+                $data['month_year'] = $request->month_year;
+                break;
+
+            case 'coming_soon':
+                $data['single_date'] = null;
+                $data['start_date'] = null;
+                $data['end_date'] = null;
+                $data['month_year'] = null;
+                break;
         }
 
         LaunchDate::create($data);
@@ -87,10 +108,11 @@ class CmsController extends Controller
 
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|min:4|max:50',
-            'is_range_date' => 'required',
-            'single_date' => 'required_if:is_range_date,0|nullable|date',
-            'start_date' => 'required_if:is_range_date,1|nullable|date',
-            'end_date' => 'required_if:is_range_date,1|nullable|date|after_or_equal:start_date',
+            'date_type' => 'required|in:single,range,month_only,coming_soon',
+            'single_date' => 'required_if:date_type,single|nullable|date',
+            'start_date' => 'required_if:date_type,range|nullable|date',
+            'end_date' => 'required_if:date_type,range|nullable|date|after_or_equal:start_date',
+            'month_year' => 'required_if:date_type,month_only|nullable|string',
             'order' => 'nullable|integer|min:0'
         ]);
 
@@ -102,21 +124,41 @@ class CmsController extends Controller
 
         $data = [
             'title' => $request->title,
-            'is_range_date' => $request->is_range_date == '1' ? true : false,
-            'order' => $request->order ? (int)$request->order - 1 : 0, // Convert visual number (1,2,3) to database order (0,1,2)
+            'date_type' => $request->date_type,
+            'is_range_date' => $request->date_type == 'range' ? true : false,
+            'order' => $request->order ? (int)$request->order - 1 : 0,
             'is_active' => $request->has('is_active') ? true : false,
         ];
 
-        // Clear single_date if range_date is true
-        if ($data['is_range_date']) {
-            $data['single_date'] = null;
-            $data['start_date'] = $request->start_date;
-            $data['end_date'] = $request->end_date;
-        } else {
-            // Clear range dates if single date
-            $data['single_date'] = $request->single_date;
-            $data['start_date'] = null;
-            $data['end_date'] = null;
+        // Set dates based on type
+        switch ($request->date_type) {
+            case 'single':
+                $data['single_date'] = $request->single_date;
+                $data['start_date'] = null;
+                $data['end_date'] = null;
+                $data['month_year'] = null;
+                break;
+
+            case 'range':
+                $data['single_date'] = null;
+                $data['start_date'] = $request->start_date;
+                $data['end_date'] = $request->end_date;
+                $data['month_year'] = null;
+                break;
+
+            case 'month_only':
+                $data['single_date'] = null;
+                $data['start_date'] = null;
+                $data['end_date'] = null;
+                $data['month_year'] = $request->month_year;
+                break;
+
+            case 'coming_soon':
+                $data['single_date'] = null;
+                $data['start_date'] = null;
+                $data['end_date'] = null;
+                $data['month_year'] = null;
+                break;
         }
 
         $launchDate->update($data);
@@ -169,7 +211,7 @@ class CmsController extends Controller
             ['name' => 'CMS', 'url' => '#'],
             ['name' => 'Modal Info', 'active' => true]
         ];
-        
+
         $modalInfos = ModalInfo::orderBy('id')->get();
         return view('dashboard.pages.cms.modal-info.index', compact('modalInfos', 'title', 'pageTitle', 'breadcrumbs'));
     }
@@ -217,7 +259,7 @@ class CmsController extends Controller
                     $metaLinks = $links;
                 }
             }
-            
+
             $modalInfo->update([
                 'title' => $request->title,
                 'intro_text' => $request->intro_text,
@@ -244,7 +286,7 @@ class CmsController extends Controller
             ['name' => 'CMS', 'url' => '#'],
             ['name' => 'Card Box', 'active' => true]
         ];
-        
+
         $cardBoxes = CardBox::ordered()->get();
         return view('dashboard.pages.cms.card-box.index', compact('cardBoxes', 'title', 'pageTitle', 'breadcrumbs'));
     }
@@ -273,7 +315,7 @@ class CmsController extends Controller
         // Get max order and set new order
         $maxOrder = CardBox::max('order') ?? -1;
         $newOrder = $request->order ? (int)$request->order - 1 : ($maxOrder + 1);
-        
+
         $isActive = $request->has('is_active') ? true : false;
 
         // Jika set aktif, nonaktifkan semua card box lain

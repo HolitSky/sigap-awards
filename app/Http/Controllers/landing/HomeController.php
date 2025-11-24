@@ -14,18 +14,69 @@ class HomeController extends Controller
 {
     public function index()
     {
-        // Konfigurasi launch date dari Controller
-        $launchStart = Carbon::create(2025, 10, 3, 0, 0, 0);
-        $launchFinish = Carbon::create(2025, 11, 20, 0, 0, 0);
-
         // Get active launch date from database (dynamic)
         $launchDate = LaunchDate::getActiveLaunchDate();
-        
-        // Fallback to default if no active launch date
-        $rangeDate = $launchDate ? $launchDate->is_range_date : false;
-        $rangeDateStart = $launchDate && $launchDate->is_range_date ? $launchDate->start_date : Carbon::create(2025, 10, 23, 0, 0, 0);
-        $rangeDateEnd = $launchDate && $launchDate->is_range_date ? $launchDate->end_date : Carbon::create(2025, 10, 24, 0, 0, 0);
-        $singleDate = $launchDate && !$launchDate->is_range_date ? $launchDate->single_date : null;
+
+        // Determine launch dates based on database or fallback
+        if ($launchDate) {
+            switch ($launchDate->date_type) {
+                case 'range':
+                    $rangeDate = true;
+                    $rangeDateStart = $launchDate->start_date;
+                    $rangeDateEnd = $launchDate->end_date;
+                    $singleDate = null;
+                    $launchFinish = $launchDate->end_date;
+                    break;
+
+                case 'single':
+                    $rangeDate = false;
+                    $rangeDateStart = null;
+                    $rangeDateEnd = null;
+                    $singleDate = $launchDate->single_date;
+                    $launchFinish = $launchDate->single_date;
+                    break;
+
+                case 'month_only':
+                    // Month only - use first day of the month for countdown
+                    $rangeDate = false;
+                    $rangeDateStart = null;
+                    $rangeDateEnd = null;
+                    $singleDate = null;
+                    if ($launchDate->month_year) {
+                        list($year, $month) = explode('-', $launchDate->month_year);
+                        $launchFinish = Carbon::create($year, $month, 1, 0, 0, 0);
+                    } else {
+                        $launchFinish = Carbon::now();
+                    }
+                    break;
+
+                case 'coming_soon':
+                    // Coming soon - use a far future date
+                    $rangeDate = false;
+                    $rangeDateStart = null;
+                    $rangeDateEnd = null;
+                    $singleDate = null;
+                    $launchFinish = Carbon::create(2099, 12, 31, 0, 0, 0);
+                    break;
+
+                default:
+                    $rangeDate = false;
+                    $rangeDateStart = null;
+                    $rangeDateEnd = null;
+                    $singleDate = $launchDate->single_date;
+                    $launchFinish = $launchDate->single_date ?? Carbon::now();
+            }
+        } else {
+            // Fallback if no active launch date in database
+            $rangeDate = false;
+            $rangeDateStart = null;
+            $rangeDateEnd = null;
+            $singleDate = Carbon::create(2025, 12, 1, 0, 0, 0);
+            $launchFinish = Carbon::create(2025, 12, 1, 0, 0, 0);
+        }
+
+        // Start date for countdown (can be static or dynamic)
+        $launchStart = Carbon::create(2025, 10, 3, 0, 0, 0);
 
         // Get active modal infos from database (dynamic)
         $reminderModal = ModalInfo::getActiveReminderModal();
