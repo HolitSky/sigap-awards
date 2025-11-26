@@ -7,6 +7,7 @@ use App\Models\PemenangSigap;
 use App\Models\BpkhList;
 use App\Models\ProdusenList;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -39,7 +40,7 @@ class PemenangSigapController extends Controller
             'nama_petugas' => 'nullable|string|max:255',
             'juara' => 'required|in:juara_1,juara_2,juara_3,juara_harapan',
             'deskripsi' => 'nullable|string',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:8192',
             'urutan' => 'nullable|integer|min:0',
             'is_active' => 'nullable|boolean',
         ]);
@@ -57,12 +58,8 @@ class PemenangSigapController extends Controller
             $data['is_active'] = $request->has('is_active') ? true : false;
             $data['urutan'] = $request->urutan ?? 0;
 
-            // Handle file upload
             if ($request->hasFile('foto')) {
-                $file = $request->file('foto');
-                $filename = time() . '_' . $file->getClientOriginalName();
-                $path = $file->storeAs('pemenang-sigap', $filename, 'public');
-                $data['foto_path'] = $path;
+                $data['foto_path'] = $this->processWinnerImage($request->file('foto'));
             }
 
             PemenangSigap::create($data);
@@ -93,7 +90,7 @@ class PemenangSigapController extends Controller
             'nama_petugas' => 'nullable|string|max:255',
             'juara' => 'required|in:juara_1,juara_2,juara_3,juara_harapan',
             'deskripsi' => 'nullable|string',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:8192',
             'urutan' => 'nullable|integer|min:0',
             'is_active' => 'nullable|boolean',
         ]);
@@ -111,17 +108,12 @@ class PemenangSigapController extends Controller
             $data['is_active'] = $request->has('is_active') ? true : false;
             $data['urutan'] = $request->urutan ?? 0;
 
-            // Handle file upload
             if ($request->hasFile('foto')) {
-                // Delete old file if exists
                 if ($pemenang->foto_path && Storage::disk('public')->exists($pemenang->foto_path)) {
                     Storage::disk('public')->delete($pemenang->foto_path);
                 }
 
-                $file = $request->file('foto');
-                $filename = time() . '_' . $file->getClientOriginalName();
-                $path = $file->storeAs('pemenang-sigap', $filename, 'public');
-                $data['foto_path'] = $path;
+                $data['foto_path'] = $this->processWinnerImage($request->file('foto'));
             }
 
             $pemenang->update($data);
@@ -189,5 +181,63 @@ class PemenangSigapController extends Controller
         }
 
         return response()->json($data);
+    }
+
+    protected function processWinnerImage(UploadedFile $file): string
+    {
+        $tmpPath = $file->getPathname();
+        $mime = $file->getMimeType();
+
+        $image = null;
+        $extension = 'jpg';
+
+        if ($mime === 'image/jpeg' || $mime === 'image/jpg') {
+            $image = imagecreatefromjpeg($tmpPath);
+        } elseif ($mime === 'image/png') {
+            $image = imagecreatefrompng($tmpPath);
+        } else {
+            $filename = time() . '_' . $file->getClientOriginalName();
+            return $file->storeAs('pemenang-sigap', $filename, 'public');
+        }
+
+        if (!$image) {
+            $filename = time() . '_' . $file->getClientOriginalName();
+            return $file->storeAs('pemenang-sigap', $filename, 'public');
+        }
+
+        $width = imagesx($image);
+        $height = imagesy($image);
+
+        $maxWidth = 1600;
+        $maxHeight = 1600;
+        $ratio = min($maxWidth / $width, $maxHeight / $height, 1);
+
+        $newWidth = (int)($width * $ratio);
+        $newHeight = (int)($height * $ratio);
+
+        $resized = imagecreatetruecolor($newWidth, $newHeight);
+        imagecopyresampled($resized, $image, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+        imagedestroy($image);
+
+        $tmpFile = tempnam(sys_get_temp_dir(), 'winner_');
+        $quality = 85;
+        $targetSize = 2 * 1024 * 1024;
+
+        do {
+            imagejpeg($resized, $tmpFile, $quality);
+            $filesize = filesize($tmpFile);
+            $quality -= 5;
+        } while ($filesize > $targetSize && $quality >= 60);
+
+        imagedestroy($resized);
+
+        $baseName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $filename = time() . '_' . $baseName . '.' . $extension;
+        $storagePath = 'pemenang-sigap/' . $filename;
+
+        Storage::disk('public')->put($storagePath, file_get_contents($tmpFile));
+        @unlink($tmpFile);
+
+        return $storagePath;
     }
 }
