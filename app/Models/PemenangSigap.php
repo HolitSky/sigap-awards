@@ -66,7 +66,7 @@ class PemenangSigap extends Model
     {
         return [
             self::TIPE_BPKH => 'BPKH',
-            self::TIPE_PRODUSEN => 'Produsen',
+            self::TIPE_PRODUSEN => 'Produsen DG',
         ];
     }
 

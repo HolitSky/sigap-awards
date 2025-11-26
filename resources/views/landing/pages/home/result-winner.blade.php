@@ -309,7 +309,6 @@
                             <tr>
                                 <th style="width:56px;">No</th>
                                 <th>Nama Pemenang</th>
-                                <th>Tipe Peserta</th>
                                 <th>Juara</th>
                                 <th>Foto</th>
                             </tr>
@@ -319,7 +318,6 @@
                                 <tr>
                                     <td class="col-no" data-label="No">{{ $loop->iteration }}</td>
                                     <td data-label="Nama Pemenang">{{ $winner->nama_pemenang }}</td>
-                                    <td data-label="Tipe Peserta">{{ $winner->tipe_peserta_label }}</td>
                                     <td data-label="Juara">{{ $winner->juara_label }}</td>
                                     <td data-label="Foto">
                                         @if($winner->foto_path)
@@ -335,7 +333,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="is-empty">Belum ada data pemenang untuk kategori ini.</td>
+                                    <td colspan="4" class="is-empty">Belum ada data pemenang untuk kategori ini.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -357,7 +355,6 @@
                             <tr>
                                 <th style="width:56px;">No</th>
                                 <th>Nama Pemenang</th>
-                                <th>Tipe Peserta</th>
                                 <th>Juara</th>
                                 <th>Foto</th>
                             </tr>
@@ -367,7 +364,6 @@
                                 <tr>
                                     <td class="col-no" data-label="No">{{ $loop->iteration }}</td>
                                     <td data-label="Nama Pemenang">{{ $winner->nama_pemenang }}</td>
-                                    <td data-label="Tipe Peserta">{{ $winner->tipe_peserta_label }}</td>
                                     <td data-label="Juara">{{ $winner->juara_label }}</td>
                                     <td data-label="Foto">
                                         @if($winner->foto_path)
@@ -383,7 +379,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="is-empty">Belum ada data pemenang untuk kategori ini.</td>
+                                    <td colspan="4" class="is-empty">Belum ada data pemenang untuk kategori ini.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -431,7 +427,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="is-empty">Belum ada data pemenang untuk kategori ini.</td>
+                                    <td colspan="4" class="is-empty">Belum ada data pemenang untuk kategori ini.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -502,7 +498,6 @@
                                 <th style="width:56px;">No</th>
                                 <th>Nama Pemenang</th>
                                 <th>Tipe Peserta</th>
-                                <th>Juara</th>
                                 <th>Foto</th>
                             </tr>
                         </thead>
@@ -512,7 +507,6 @@
                                     <td class="col-no" data-label="No">{{ $loop->iteration }}</td>
                                     <td data-label="Nama Pemenang">{{ $winner->nama_pemenang }}</td>
                                     <td data-label="Tipe Peserta">{{ $winner->tipe_peserta_label }}</td>
-                                    <td data-label="Juara">{{ $winner->juara_label }}</td>
                                     <td data-label="Foto">
                                         @if($winner->foto_path)
                                             <a href="{{ asset('storage/' . $winner->foto_path) }}"
