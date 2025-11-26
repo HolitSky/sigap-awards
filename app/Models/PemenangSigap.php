@@ -108,6 +108,25 @@ class PemenangSigap extends Model
     }
 
     /**
+     * Get juara number/short label (1, 2, 3, Harapan)
+     */
+    public function getJuaraNumberAttribute()
+    {
+        switch ($this->juara) {
+            case self::JUARA_1:
+                return '1';
+            case self::JUARA_2:
+                return '2';
+            case self::JUARA_3:
+                return '3';
+            case self::JUARA_HARAPAN:
+                return 'Harapan';
+            default:
+                return $this->juara;
+        }
+    }
+
+    /**
      * Scope untuk filter by kategori
      */
     public function scopeByKategori($query, $kategori)

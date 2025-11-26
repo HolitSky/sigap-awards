@@ -197,6 +197,10 @@
         cursor: pointer;
     }
 
+    .juara-medal {
+        margin-left: 4px;
+    }
+
     @keyframes fadeInDown {
         from { opacity: 0; transform: translateY(-30px); }
         to { opacity: 1; transform: translateY(0); }
@@ -318,7 +322,16 @@
                                 <tr>
                                     <td class="col-no" data-label="No">{{ $loop->iteration }}</td>
                                     <td data-label="Nama Pemenang">{{ $winner->nama_pemenang }}</td>
-                                    <td data-label="Juara">{{ $winner->juara_label }}</td>
+                                    <td data-label="Juara">
+                                        {{ $winner->juara_number }}
+                                        @if($winner->juara_number === '1')
+                                            <span class="juara-medal">🥇</span>
+                                        @elseif($winner->juara_number === '2')
+                                            <span class="juara-medal">🥈</span>
+                                        @elseif($winner->juara_number === '3')
+                                            <span class="juara-medal">🥉</span>
+                                        @endif
+                                    </td>
                                     <td data-label="Foto">
                                         @if($winner->foto_path)
                                             <a href="{{ asset('storage/' . $winner->foto_path) }}"
@@ -364,7 +377,16 @@
                                 <tr>
                                     <td class="col-no" data-label="No">{{ $loop->iteration }}</td>
                                     <td data-label="Nama Pemenang">{{ $winner->nama_pemenang }}</td>
-                                    <td data-label="Juara">{{ $winner->juara_label }}</td>
+                                    <td data-label="Juara">
+                                        {{ $winner->juara_number }}
+                                        @if($winner->juara_number === '1')
+                                            <span class="juara-medal">🥇</span>
+                                        @elseif($winner->juara_number === '2')
+                                            <span class="juara-medal">🥈</span>
+                                        @elseif($winner->juara_number === '3')
+                                            <span class="juara-medal">🥉</span>
+                                        @endif
+                                    </td>
                                     <td data-label="Foto">
                                         @if($winner->foto_path)
                                             <a href="{{ asset('storage/' . $winner->foto_path) }}"
@@ -414,7 +436,16 @@
                                         {{ $winner->nama_pemenang }}@if($winner->nama_petugas) / {{ $winner->nama_petugas }}@endif
                                     </td>
                                     <td data-label="Tipe Peserta">{{ $winner->tipe_peserta_label }}</td>
-                                    <td data-label="Juara">{{ $winner->juara_label }}</td>
+                                    <td data-label="Juara">
+                                        {{ $winner->juara_number }}
+                                        @if($winner->juara_number === '1')
+                                            <span class="juara-medal">🥇</span>
+                                        @elseif($winner->juara_number === '2')
+                                            <span class="juara-medal">🥈</span>
+                                        @elseif($winner->juara_number === '3')
+                                            <span class="juara-medal">🥉</span>
+                                        @endif
+                                    </td>
                                     <td data-label="Foto">
                                         @if($winner->foto_path)
                                             <a href="{{ asset('storage/' . $winner->foto_path) }}"
@@ -462,7 +493,16 @@
                                     <td class="col-no" data-label="No">{{ $loop->iteration }}</td>
                                     <td data-label="Nama Pemenang">{{ $winner->nama_pemenang }}</td>
                                     <td data-label="Tipe Peserta">{{ $winner->tipe_peserta_label }}</td>
-                                    <td data-label="Juara">{{ $winner->juara_label }}</td>
+                                    <td data-label="Juara">
+                                        {{ $winner->juara_number }}
+                                        @if($winner->juara_number === '1')
+                                            <span class="juara-medal">🥇</span>
+                                        @elseif($winner->juara_number === '2')
+                                            <span class="juara-medal">🥈</span>
+                                        @elseif($winner->juara_number === '3')
+                                            <span class="juara-medal">🥉</span>
+                                        @endif
+                                    </td>
                                     <td data-label="Foto">
                                         @if($winner->foto_path)
                                             <a href="{{ asset('storage/' . $winner->foto_path) }}"
