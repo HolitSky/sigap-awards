@@ -44,6 +44,8 @@
     @media (max-width: 640px) {
         .box.counter .modal-overlay { padding: 12px; }
         .box.counter .modal-content { max-width: none; width: 100%; border-radius: 10px; }
+        .vote-menu__title { font-size: 24px; }
+        .vote-menu__desc { font-size: 16px; }
     }
 </style>
 @endpush
@@ -85,7 +87,7 @@
         <div class="vote-menu">
             <h3 class="vote-menu__title">{{ $cardBox->title }}</h3>
             <p class="vote-menu__desc">{{ $cardBox->description }}</p>
-            
+
             @if($cardBox->content_type === 'text_only')
                 {{-- No button for text only --}}
             @elseif($cardBox->content_type === 'link')
@@ -223,19 +225,19 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.modal-overlay').forEach(function(modal) {
         var closeIcon = modal.querySelector('.modal-close');
         var closeBtn = modal.querySelector('.modal-btn-close');
-        
+
         if (closeIcon) {
             closeIcon.addEventListener('click', function() {
                 hideModal(modal);
             });
         }
-        
+
         if (closeBtn) {
             closeBtn.addEventListener('click', function() {
                 hideModal(modal);
             });
         }
-        
+
         // Close on backdrop click
         modal.addEventListener('click', function(e) {
             if (e.target === modal) hideModal(modal);
@@ -249,16 +251,16 @@ document.addEventListener('DOMContentLoaded', function () {
     var targetUrl = 'https://form.sigap-award.site/voting2025';
 
     if (openBtn) {
-        openBtn.addEventListener('click', function (e) { 
-            e.preventDefault(); 
-            showModal(voteModal, openBtn); 
+        openBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            showModal(voteModal, openBtn);
         });
     }
 
     if (goBtn) {
-        goBtn.addEventListener('click', function () { 
-            window.open(targetUrl, '_blank'); 
-            hideModal(voteModal, openBtn); 
+        goBtn.addEventListener('click', function () {
+            window.open(targetUrl, '_blank');
+            hideModal(voteModal, openBtn);
         });
     }
 
