@@ -410,7 +410,9 @@
                             @forelse($pengelolaIgtWinners as $winner)
                                 <tr>
                                     <td class="col-no" data-label="No">{{ $loop->iteration }}</td>
-                                    <td data-label="Nama Pemenang">{{ $winner->nama_pemenang }}</td>
+                                    <td data-label="Nama Pemenang">
+                                        {{ $winner->nama_pemenang }}@if($winner->nama_petugas) / {{ $winner->nama_petugas }}@endif
+                                    </td>
                                     <td data-label="Tipe Peserta">{{ $winner->tipe_peserta_label }}</td>
                                     <td data-label="Juara">{{ $winner->juara_label }}</td>
                                     <td data-label="Foto">
