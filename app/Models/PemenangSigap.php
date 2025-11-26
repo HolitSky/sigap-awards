@@ -54,8 +54,8 @@ class PemenangSigap extends Model
             self::KATEGORI_POSTER_TERBAIK => 'Poster Terbaik',
             self::KATEGORI_POSTER_FAVORIT => 'Poster Favorit',
             self::KATEGORI_PENGELOLA_IGT => 'Pengelola IGT Terbaik',
-            self::KATEGORI_INOVASI_BPKH => 'Inovasi BPKH Terbaik',
-            self::KATEGORI_INOVASI_PRODUSEN => 'Inovasi Produsen DG Terbaik',
+            self::KATEGORI_INOVASI_BPKH => 'BPKH Terbaik',
+            self::KATEGORI_INOVASI_PRODUSEN => 'Produsen DG Terbaik',
         ];
     }
 

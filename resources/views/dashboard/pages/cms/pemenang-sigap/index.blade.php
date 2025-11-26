@@ -60,6 +60,7 @@
                                     <th>Kategori</th>
                                     <th>Tipe</th>
                                     <th>Nama Pemenang</th>
+                                    <th>Foto</th>
                                     <th>Juara</th>
                                     <th>Urutan</th>
                                     <th>Status</th>
@@ -81,6 +82,13 @@
                                             @endif
                                         </td>
                                         <td>{{ $item->nama_pemenang }}</td>
+                                        <td class="text-center">
+                                            @if($item->foto_path)
+                                                <img src="{{ asset('storage/' . $item->foto_path) }}" alt="Foto {{ $item->nama_pemenang }}" class="img-thumbnail" style="max-width: 80px; max-height: 80px; object-fit: cover;">
+                                            @else
+                                                <span class="text-muted small">Tidak ada foto</span>
+                                            @endif
+                                        </td>
                                         <td>
                                             @if($item->juara === 'juara_1')
                                                 <span class="badge bg-warning text-dark"><i class="mdi mdi-trophy me-1"></i>Juara 1</span>
@@ -124,7 +132,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8" class="text-center text-muted">
+                                        <td colspan="9" class="text-center text-muted">
                                             <i class="mdi mdi-information-outline me-1"></i>Belum ada data pemenang
                                         </td>
                                     </tr>

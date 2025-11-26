@@ -28,6 +28,9 @@ Route::get('/announcement', [HomeController::class, 'announcement'])->name('anno
 // Result of presentation (Google Sheets tables)
 Route::get('/result-presentation', [HomeController::class, 'resultPresentation'])->name('result-presentation');
 
+// Result of SIGAP Award winners (from CMS)
+Route::get('/result-winner', [HomeController::class, 'resultWinner'])->name('result-winner');
+
 Route::get('/cv-juri', [HomeController::class, 'cvJuri'])->name('cv-juri');
 
 Route::get('/poster-criteria', [HomeController::class, 'posterCriteria'])->name('poster-criteria');

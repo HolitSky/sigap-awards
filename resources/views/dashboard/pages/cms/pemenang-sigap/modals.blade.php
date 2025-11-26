@@ -17,8 +17,8 @@
                                 <option value="poster_terbaik">Poster Terbaik</option>
                                 <option value="poster_favorit">Poster Favorit</option>
                                 <option value="pengelola_igt_terbaik">Pengelola IGT Terbaik</option>
-                                <option value="inovasi_bpkh_terbaik">Inovasi BPKH Terbaik</option>
-                                <option value="inovasi_produsen_terbaik">Inovasi Produsen DG Terbaik</option>
+                                <option value="inovasi_bpkh_terbaik">BPKH Terbaik</option>
+                                <option value="inovasi_produsen_terbaik">Produsen DG Terbaik</option>
                             </select>
                         </div>
 
@@ -113,10 +113,11 @@
                                 <option value="poster_terbaik">Poster Terbaik</option>
                                 <option value="poster_favorit">Poster Favorit</option>
                                 <option value="pengelola_igt_terbaik">Pengelola IGT Terbaik</option>
-                                <option value="inovasi_bpkh_terbaik">Inovasi BPKH Terbaik</option>
-                                <option value="inovasi_produsen_terbaik">Inovasi Produsen DG Terbaik</option>
+                                <option value="inovasi_bpkh_terbaik">BPKH Terbaik</option>
+                                <option value="inovasi_produsen_terbaik">Produsen DG Terbaik</option>
                             </select>
                         </div>
+
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Tipe Peserta <span class="text-danger">*</span></label>

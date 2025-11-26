@@ -7,6 +7,7 @@ use App\Models\CardBox;
 use App\Models\LaunchDate;
 use App\Models\MenuChoice;
 use App\Models\ModalInfo;
+use App\Models\PemenangSigap;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -155,6 +156,49 @@ class HomeController extends Controller
         $launchStart = Carbon::create(2025, 10, 3, 0, 0, 0);
         $launchFinish = Carbon::create(2025, 10, 17, 0, 0, 0);
         return view('landing.pages.home.result-presentation', compact('launchStart', 'launchFinish'));
+    }
+
+    public function resultWinner()
+    {
+        // Konsisten dengan halaman lain yang pakai launch date
+        $launchStart = Carbon::create(2025, 10, 3, 0, 0, 0);
+        $launchFinish = Carbon::create(2025, 10, 17, 0, 0, 0);
+
+        // Ambil pemenang aktif per kategori sesuai urutan yang diminta
+        $produsenWinners = PemenangSigap::active()
+            ->byKategori(PemenangSigap::KATEGORI_INOVASI_PRODUSEN)
+            ->ordered()
+            ->get();
+
+        $bpkhWinners = PemenangSigap::active()
+            ->byKategori(PemenangSigap::KATEGORI_INOVASI_BPKH)
+            ->ordered()
+            ->get();
+
+        $pengelolaIgtWinners = PemenangSigap::active()
+            ->byKategori(PemenangSigap::KATEGORI_PENGELOLA_IGT)
+            ->ordered()
+            ->get();
+
+        $posterTerbaikWinners = PemenangSigap::active()
+            ->byKategori(PemenangSigap::KATEGORI_POSTER_TERBAIK)
+            ->ordered()
+            ->get();
+
+        $posterFavoritWinners = PemenangSigap::active()
+            ->byKategori(PemenangSigap::KATEGORI_POSTER_FAVORIT)
+            ->ordered()
+            ->get();
+
+        return view('landing.pages.home.result-winner', compact(
+            'launchStart',
+            'launchFinish',
+            'produsenWinners',
+            'bpkhWinners',
+            'pengelolaIgtWinners',
+            'posterTerbaikWinners',
+            'posterFavoritWinners'
+        ));
     }
 
     public function cvJuri()
