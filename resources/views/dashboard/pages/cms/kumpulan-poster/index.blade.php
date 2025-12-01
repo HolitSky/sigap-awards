@@ -1,6 +1,11 @@
 @extends('dashboard.layouts.app')
 @section('title', 'Manajemen Kumpulan Poster')
 
+@push('styles')
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+@endpush
+
 @section('content')
 <div class="page-content">
     <div class="container-fluid">
@@ -63,7 +68,7 @@
                                     @csrf
                                     <div class="col-md-4">
                                         <label class="form-label">Nama BPKH <span class="text-danger">*</span></label>
-                                        <select name="nama_bpkh" class="form-select" required>
+                                        <select name="nama_bpkh" class="form-select select2-poster" required>
                                             <option value="">-- Pilih BPKH --</option>
                                             @foreach($bpkhList as $item)
                                                 <option value="{{ $item->nama_wilayah }}" {{ old('nama_bpkh') == $item->nama_wilayah ? 'selected' : '' }}>
@@ -156,7 +161,7 @@
                                     @csrf
                                     <div class="col-md-4">
                                         <label class="form-label">Nama Produsen <span class="text-danger">*</span></label>
-                                        <select name="nama_instansi" class="form-select" required>
+                                        <select name="nama_instansi" class="form-select select2-poster" required>
                                             <option value="">-- Pilih Produsen --</option>
                                             @foreach($produsenList as $item)
                                                 <option value="{{ $item->nama_unit }}" {{ old('nama_instansi') == $item->nama_unit ? 'selected' : '' }}>
@@ -264,7 +269,7 @@
                         <div class="modal-body">
                             <div class="mb-3">
                                 <label class="form-label">Nama BPKH <span class="text-danger">*</span></label>
-                                <select name="nama_bpkh" id="edit_bpkh_nama_bpkh" class="form-select" required>
+                                <select name="nama_bpkh" id="edit_bpkh_nama_bpkh" class="form-select select2-poster" required>
                                     <option value="">-- Pilih BPKH --</option>
                                     @foreach($bpkhList as $item)
                                         <option value="{{ $item->nama_wilayah }}">{{ $item->nama_wilayah }}</option>
@@ -307,7 +312,7 @@
                         <div class="modal-body">
                             <div class="mb-3">
                                 <label class="form-label">Nama Produsen <span class="text-danger">*</span></label>
-                                <select name="nama_instansi" id="edit_produsen_nama_instansi" class="form-select" required>
+                                <select name="nama_instansi" id="edit_produsen_nama_instansi" class="form-select select2-poster" required>
                                     <option value="">-- Pilih Produsen --</option>
                                     @foreach($produsenList as $item)
                                         <option value="{{ $item->nama_unit }}">{{ $item->nama_unit }}</option>
@@ -342,8 +347,14 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     $(function () {
+        // Init Select2 for nama BPKH & Produsen (create)
+        $('.select2-poster').select2({
+            theme: 'bootstrap-5',
+            width: '100%'
+        });
         // Preview untuk semua input file poster
         $(document).on('change', '.poster-input', function () {
             const input = this;
@@ -400,6 +411,13 @@
 
             $('#preview-bpkh-edit').empty();
 
+            // Re-init Select2 inside modal with proper dropdownParent
+            $('#edit_bpkh_nama_bpkh').select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                dropdownParent: $('#editBpkhPosterModal')
+            });
+
             $('#editBpkhPosterModal').modal('show');
         });
 
@@ -422,6 +440,13 @@
             }
 
             $('#preview-produsen-edit').empty();
+
+            // Re-init Select2 inside modal with proper dropdownParent
+            $('#edit_produsen_nama_instansi').select2({
+                theme: 'bootstrap-5',
+                width: '100%',
+                dropdownParent: $('#editProdusenPosterModal')
+            });
 
             $('#editProdusenPosterModal').modal('show');
         });
