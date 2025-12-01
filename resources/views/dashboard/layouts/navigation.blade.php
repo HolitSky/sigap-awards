@@ -134,12 +134,19 @@
             @can('see-admin-menus')
 
              <ul class="metismenu list-unstyled" id="side-menu">
-                <li class="menu-title" key="t-menu">Pemenang SIGAP AWARD 2025</li>
+                <li class="menu-title" key="t-menu">Output SIGAP AWARD 2025</li>
 
                  <li>
                     <a href="{{ route('dashboard.cms.pemenang-sigap.index') }}" class="waves-effect">
                         <i class="mdi mdi-trophy"></i>
                         <span key="t-forms">Input Pemenang</span>
+                    </a>
+                </li>
+
+                 <li>
+                    <a href="{{ route('dashboard.cms.kumpulan-poster.index') }}" class="waves-effect">
+                        <i class="mdi mdi-file-pdf-box"></i>
+                        <span key="t-forms">Input Poster</span>
                     </a>
                 </li>
 

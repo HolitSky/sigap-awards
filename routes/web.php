@@ -17,6 +17,7 @@ use App\Http\Controllers\dashboard\FavoritePosterController;
 use App\Http\Controllers\dashboard\PresentationSessionController;
 use App\Http\Controllers\dashboard\CmsController;
 use App\Http\Controllers\dashboard\PemenangSigapController;
+use App\Http\Controllers\dashboard\PosterCmsController;
 use App\Http\Controllers\DashboardPeserta\AuthController as PesertaAuthController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -210,6 +211,15 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/cms/menu-choice', [CmsController::class, 'menuChoiceStore'])->name('dashboard.cms.menu-choice.store');
         Route::put('/cms/menu-choice/{id}', [CmsController::class, 'menuChoiceUpdate'])->name('dashboard.cms.menu-choice.update');
         Route::delete('/cms/menu-choice/{id}', [CmsController::class, 'menuChoiceDestroy'])->name('dashboard.cms.menu-choice.destroy');
+
+        // CMS Kumpulan Poster Routes (Superadmin only)
+        Route::get('/cms/kumpulan-poster', [PosterCmsController::class, 'index'])->name('dashboard.cms.kumpulan-poster.index');
+        Route::post('/cms/kumpulan-poster/bpkh', [PosterCmsController::class, 'storeBpkh'])->name('dashboard.cms.kumpulan-poster.bpkh.store');
+        Route::put('/cms/kumpulan-poster/bpkh/{id}', [PosterCmsController::class, 'updateBpkh'])->name('dashboard.cms.kumpulan-poster.bpkh.update');
+        Route::delete('/cms/kumpulan-poster/bpkh/{id}', [PosterCmsController::class, 'destroyBpkh'])->name('dashboard.cms.kumpulan-poster.bpkh.destroy');
+        Route::post('/cms/kumpulan-poster/produsen', [PosterCmsController::class, 'storeProdusen'])->name('dashboard.cms.kumpulan-poster.produsen.store');
+        Route::put('/cms/kumpulan-poster/produsen/{id}', [PosterCmsController::class, 'updateProdusen'])->name('dashboard.cms.kumpulan-poster.produsen.update');
+        Route::delete('/cms/kumpulan-poster/produsen/{id}', [PosterCmsController::class, 'destroyProdusen'])->name('dashboard.cms.kumpulan-poster.produsen.destroy');
 
         // CMS Pemenang SIGAP Award 2025 Routes (Superadmin only)
         Route::get('/cms/pemenang-sigap', [PemenangSigapController::class, 'index'])->name('dashboard.cms.pemenang-sigap.index');
