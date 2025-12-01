@@ -29,6 +29,9 @@ Route::get('/announcement', [HomeController::class, 'announcement'])->name('anno
 // Result of presentation (Google Sheets tables)
 Route::get('/result-presentation', [HomeController::class, 'resultPresentation'])->name('result-presentation');
 
+// Result of poster uploads (from CMS Kumpulan Poster)
+Route::get('/result-poster-2025', [HomeController::class, 'resultPoster2025'])->name('result-poster-2025');
+
 // Result of SIGAP Award winners (from CMS)
 Route::get('/result-winner', [HomeController::class, 'resultWinner'])->name('result-winner');
 
