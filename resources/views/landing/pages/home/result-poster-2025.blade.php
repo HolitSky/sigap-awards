@@ -410,10 +410,9 @@
                         <tbody>
                             @forelse($bpkhPosters as $index => $poster)
                                 <tr>
-                                    <button type="button" class="expand-btn">+</button>
                                     <td class="col-no" data-label="No">{{ $index + 1 }}</td>
                                     <td data-label="Nama BPKH">{{ $poster->nama_bpkh }}</td>
-                                    <td class="mobile-hidden" data-label="File Poster">
+                                    <td data-label="File Poster">
                                         @if($poster->poster_pdf_path)
                                             <a href="{{ asset('storage/' . $poster->poster_pdf_path) }}" target="_blank" rel="noopener" class="sheet-link">Lihat Poster</a>
                                         @else
@@ -451,10 +450,9 @@
                         <tbody>
                             @forelse($produsenPosters as $index => $poster)
                                 <tr>
-                                    <button type="button" class="expand-btn">+</button>
                                     <td class="col-no" data-label="No">{{ $index + 1 }}</td>
                                     <td data-label="Nama Instansi">{{ $poster->nama_instansi }}</td>
-                                    <td class="mobile-hidden" data-label="File Poster">
+                                    <td data-label="File Poster">
                                         @if($poster->poster_pdf_path)
                                             <a href="{{ asset('storage/' . $poster->poster_pdf_path) }}" target="_blank" rel="noopener" class="sheet-link">Lihat Poster</a>
                                         @else
